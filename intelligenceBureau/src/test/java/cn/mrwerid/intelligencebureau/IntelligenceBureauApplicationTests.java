@@ -8,6 +8,7 @@ class IntelligenceBureauApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

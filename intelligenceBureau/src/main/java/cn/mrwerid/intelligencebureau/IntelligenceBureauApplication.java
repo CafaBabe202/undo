@@ -8,6 +8,7 @@ public class IntelligenceBureauApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(IntelligenceBureauApplication.class, args);
+
     }
 
 }
