@@ -7,11 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="spy" />
         <module name="undo" />
-        <module name="intelligenceBureau" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="intelligenceBureau" target="11" />
+      <module name="spy" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
