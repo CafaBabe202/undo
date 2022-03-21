@@ -80,7 +80,7 @@ public class SimpleFileManager {
                 return true;
             boolean res = true;
             for (String s : file.getContent())
-                res &= this.deleteBlock(md5);
+                res &= this.deleteBlock(s);
             return this.deleteFile(md5) && res;
         } catch (NotBlockException | NotFileException e) {
             e.printStackTrace();

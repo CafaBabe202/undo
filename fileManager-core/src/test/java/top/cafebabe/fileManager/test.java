@@ -31,7 +31,7 @@ public class test {
 
     @Before
     public void init() throws Exception {
-        this.memory = new MongodbMemory("172.20.10.10", 27017, "file", "Admin@123", "file");
+        this.memory = new MongodbMemory("192.168.2.202", 27017, "file", "Admin@123", "file");
         this.splitterFactory = new SimpleSplitterFactory(1024 * 1024);
         this.integratorFactory = new SimpleIntegratorFactory();
         this.simpleFileManager = new SimpleFileManager(this.memory, this.splitterFactory, this.integratorFactory, true);
@@ -51,7 +51,7 @@ public class test {
     @Test
     public void get() throws Exception {
 
-        Integrator file = this.simpleFileManager.getFile("24ae6d6e92cd324b1eeb67f3f5bd3d98");
+        Integrator file = this.simpleFileManager.getFile("279317a0df0e6bb90f2800efe556c09d");
         OutputStream os = new FileOutputStream(this.path1);
         while (file.hasNext()) {
             os.write(file.next());
@@ -60,12 +60,12 @@ public class test {
 
     @Test
     public void delete() throws Exception{
-        this.simpleFileManager.removeFile("24ae6d6e92cd324b1eeb67f3f5bd3d98");
+        this.simpleFileManager.removeFile("279317a0df0e6bb90f2800efe556c09d");
     }
 
     @Test
     public void exist(){
-        System.out.println(this.simpleFileManager.exist("24ae6d6e92cd324b1eeb67f3f5bd3d98"));
+        System.out.println(this.simpleFileManager.exist("279317a0df0e6bb90f2800efe556c09d"));
     }
 
 }
