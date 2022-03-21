@@ -12,8 +12,8 @@ import java.util.Iterator;
 public class SimpleIntegratorFactory implements IntegratorFactory {
 
     @Override
-    public Integrator getInstance(Memory memory, String md5)throws ObjectInitException {
-        return new SimpleIntegrator(memory,md5);
+    public Integrator getInstance(Memory memory, String md5) throws ObjectInitException {
+        return new SimpleIntegrator(memory, md5);
     }
 
     class SimpleIntegrator implements Integrator {
@@ -44,6 +44,12 @@ public class SimpleIntegratorFactory implements IntegratorFactory {
             if (this.now.hasNext())
                 return this.memory.getBlock(this.now.next()).getContent();
             return null;
+        }
+
+        @Override
+        public void skip(int length) {
+            while (length-- > 0 && this.now.hasNext())
+                this.now.next();
         }
     }
 

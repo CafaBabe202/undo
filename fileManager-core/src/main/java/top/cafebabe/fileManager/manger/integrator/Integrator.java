@@ -9,4 +9,5 @@ import java.util.Iterator;
  * @author cafababe
  */
 public interface Integrator extends Iterator<byte[]> {
+    void skip(int length);
 }

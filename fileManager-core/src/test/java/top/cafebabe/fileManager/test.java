@@ -12,11 +12,8 @@ import top.cafebabe.fileManager.manger.integrator.SimpleIntegratorFactory;
 import top.cafebabe.fileManager.manger.splitter.SimpleSplitterFactory;
 import top.cafebabe.fileManager.manger.splitter.SplitterFactory;
 import top.cafebabe.fileManager.manger.memory.MongodbMemory;
-import top.cafebabe.fileManager.utils.Md5Util;
 
 import java.io.*;
-import java.security.MessageDigest;
-import java.util.List;
 
 /**
  * @author cafababe
