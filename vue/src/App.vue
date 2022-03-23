@@ -1,23 +1,35 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+      <MyAvatar v-show="login"/>
+    <Me/>
+    <LoginDialog/>
     <router-view/>
   </div>
 </template>
 
 <script>
+import MyAvatar from "./components/MyAvatar";
+import Me from "./components/Me"
+import LoginDialog from "./components/LoginDialog";
+
+import common from "./components/js/common";
+
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {
+      login: true,
+      drawer: true
+    }
+  }, methods: {
+    open() {
+      if (common.User.isLogin) {
+        common.MeConfig.isDrawer = true
+      } else {
+        common.LoginDialogConfig.isDialog = true
+      }
+    }
+  },
+  components: {LoginDialog, MyAvatar, Me},
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

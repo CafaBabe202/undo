@@ -1,0 +1,61 @@
+const MeConfig = {
+  isDrawer: false
+}
+
+const LoginDialogConfig = {
+  isDialog: false,
+  isLogin: true,
+}
+
+const User = {
+  isLogin: false,
+  userId: "",
+  email:"",
+  avatarUrl: "data:image/png;base64,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",
+}
+
+const LoginForm = {
+  userid: "",
+  password: "",
+}
+
+const LoginFromRules = {
+  userid: [
+    {required: true, message: '请输入昵称', trigger: 'blur'},
+    {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+  ], password: [
+    {required: true, message: '请输入密码', trigger: 'blur'},
+    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+  ]
+}
+
+const RegisterForm = {
+  userid: "",
+  email: "",
+  password: "",
+  checkPassword: "",
+  code: ""
+}
+
+const RegisterFormRules = {
+  userid: [
+    {required: true, message: '请输入昵称', trigger: 'blur'},
+    {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+  ], email: [
+    {required: true, message: '请输入邮箱', trigger: 'blur'},
+    {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+  ], password: [
+    {required: true, message: '请输入密码', trigger: 'blur'},
+    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+  ], checkPassword: [
+    {required: true, message: '请输入验证密码', trigger: 'blur'},
+    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+  ], code: [
+    {required: true, message: '请输入密码', trigger: 'blur'},
+    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+  ]
+}
+
+export default {
+  MeConfig, LoginDialogConfig, LoginFromRules, User, LoginForm, RegisterForm, RegisterFormRules
+}
