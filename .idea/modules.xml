@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/vue/vue.iml" filepath="$PROJECT_DIR$/vue/vue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/undo-vue/undo-vue.iml" filepath="$PROJECT_DIR$/undo-vue/undo-vue.iml" />
     </modules>
   </component>
 </project>

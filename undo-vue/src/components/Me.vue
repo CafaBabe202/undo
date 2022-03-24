@@ -69,10 +69,11 @@ export default {
         direction: "ltr",
       }, menu: {
         collapse: false,
-        books: ["Java", "C++"],
+        books: ["Java", "C++","PHP"],
         article: {
           "Java": ["Java 1", "Java 2"],
-          "C++": ["C++ 1", "C++ 2"]
+          "C++": ["C++ 1", "C++ 2"],
+          "PHP":["PHPH1","PHPH2"]
         }
       }
     }
