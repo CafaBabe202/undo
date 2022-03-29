@@ -1,6 +1,8 @@
 package top.cafebabe.undo.user.util;
 
-import top.cafebabe.undo.common.bean.SysUser;
+import top.cafebabe.undo.common.util.StringUtil;
+import top.cafebabe.undo.user.bean.AppConfig;
+import top.cafebabe.undo.user.form.LoginForm;
 import top.cafebabe.undo.user.form.RegisterForm;
 
 /**
@@ -14,7 +16,27 @@ public class Checker {
                 && form.getCode() != null;
     }
 
+    public static boolean LoginForm(LoginForm form) {
+        return form.getId() > 0 && form.getId() < Integer.MAX_VALUE && checkStringLen(form.getPassword(), 128, false);
+    }
+
     public static boolean checkStringLen(String str, int len, boolean nullAble) {
         return str == null ? nullAble : str.length() <= len;
+    }
+
+    public static boolean checkUsername(String username) {
+        return StringUtil.hasBlank(username) && username.length() <= AppConfig.USERNAME_LEN;
+    }
+
+    public static boolean checkPassword(String password) {
+        return StringUtil.hasBlank(password) && password.length() <= AppConfig.PASSWORD_LEN;
+    }
+
+    public static boolean checkEmail(String email) {
+        return StringUtil.isMatch(AppConfig.EMAIL_PATTEN, email);
+    }
+
+    public static boolean checkSign(String sign) {
+        return StringUtil.hasBlank(sign) && sign.length() <= AppConfig.SIGN_LEN;
     }
 }

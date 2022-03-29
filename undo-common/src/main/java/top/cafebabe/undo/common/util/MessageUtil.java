@@ -1,6 +1,5 @@
 package top.cafebabe.undo.common.util;
 
-
 import top.cafebabe.undo.common.bean.ResponseMessage;
 
 /**
@@ -21,7 +20,7 @@ public class MessageUtil {
     }
 
     /**
-     * 创建一个失败的消息
+     * 创建一个失败的消息，fail 代表的是由于用户提交的数据的异常所导致的失败。
      *
      * @param data 返回给前端的数据
      * @return ResponseMessage
@@ -29,6 +28,18 @@ public class MessageUtil {
     public static ResponseMessage fail(Object data) {
         ResponseMessage responseMessage = create(data);
         responseMessage.setStatus(ResponseMessage.STATUS_FAIL);
+        return responseMessage;
+    }
+
+    /**
+     * 创建一个失败的消息，error 代表的是由于服务器异常所导致的失败。
+     *
+     * @param data 返回给前端的数据
+     * @return ResponseMessage
+     */
+    public static ResponseMessage error(Object data) {
+        ResponseMessage responseMessage = create(data);
+        responseMessage.setStatus(ResponseMessage.STATUS_ERROR);
         return responseMessage;
     }
 

@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class ResponseMessage {
-    public static final int STATUS_FAIL = 100;
+    public static final int STATUS_FAIL = 400;
     public static final int STATUS_OK = 200;
     public static final int STATUS_ERROR = 500;
 

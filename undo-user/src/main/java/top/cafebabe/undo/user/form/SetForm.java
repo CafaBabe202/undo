@@ -6,7 +6,7 @@ import lombok.Data;
  * @author cafababe
  */
 @Data
-public class LoginForm {
-    private int id;
-    private String password;
+public class SetForm {
+    public String field;
+    public String newVal;
 }
