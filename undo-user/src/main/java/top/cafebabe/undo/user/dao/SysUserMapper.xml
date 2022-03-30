@@ -54,10 +54,28 @@
         where id = #{id}
     </select>
 
+    <select id="getByUserEmail" resultMap="SysUser">
+        select *
+        from user
+        where email = #{email}
+    </select>
+
     <select id="getByUsername" resultMap="SysUser">
         select *
         from user
         where username = #{id}
+    </select>
+
+    <select id="checkUsername" resultType="int">
+        select count(id) as count
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="checkEmail" resultType="int">
+        select count(id) as count
+        from user
+        where email=#{email}
     </select>
 
 </mapper>

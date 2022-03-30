@@ -6,8 +6,8 @@
       <div v-show="config.isLogin">
         <el-form :model="loginForm" :rules="loginFormRules" ref="loginFormRules" label-width="80px"
                  label-position="top">
-          <el-form-item label="帐号" prop="id">
-            <el-input v-model="loginForm.id"/>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="loginForm.email"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="loginForm.password"/>
@@ -23,8 +23,8 @@
       <div v-show="!config.isLogin">
         <el-form :model="registerForm" :rules="registerFormRules" ref="registerFormRules" label-width="80px"
                  label-position="left">
-          <el-form-item label="用户昵称" prop="userid">
-            <el-input type="string" v-model="registerForm.userid"/>
+          <el-form-item label="用户昵称" prop="username">
+            <el-input type="string" v-model="registerForm.username"/>
           </el-form-item>
           <el-form-item label="绑定邮箱" prop="email">
             <el-input type="email" v-model="registerForm.email"/>
@@ -72,26 +72,22 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           ajax.login()
-          return true
         } else {
           return false
         }
       });
     }, resetLoginForm(formName) {
-      console.log(this);
-      this.$refs[formName].resetFields();
+      common.LoginForm.reset()
     }, submitRegisterForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          ajax.register()
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
     }, resetRegisterForm(formName) {
-      console.log(this);
-      this.$refs[formName].resetFields();
+      common.RegisterForm.reset()
     }
   }
 }

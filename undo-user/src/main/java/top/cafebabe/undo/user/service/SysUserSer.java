@@ -1,6 +1,5 @@
 package top.cafebabe.undo.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.SysUser;
@@ -21,14 +20,17 @@ import java.util.Map;
  */
 @Service
 public class SysUserSer {
-    @Autowired
-    SysUserMapper userMapper;
+    final SysUserMapper userMapper;
 
-    @Autowired
-    TokenRedis tokenRedis;
+    final TokenRedis tokenRedis;
+
+    public SysUserSer(SysUserMapper userMapper, TokenRedis tokenRedis) {
+        this.userMapper = userMapper;
+        this.tokenRedis = tokenRedis;
+    }
 
     /**
-     * 注册用户的服务。主要用来向数据库中插入一个合法的用户数据。但是在这个用户对象中原来的 createTime,avatar,sing,属性均不生效，因为在添加之前这些属性将被重置为 AppConfig 中的默认值。
+     * 注册用户的服务。主要用来向数据库中插入一个合法的用户数据。但是在这个用户对象中原来的 createTime,avatar,sing 属性将被重置为 AppConfig 中的默认值。
      * <b>注意：</b> 当前版本中，这里并不会对数据的合法行进行检查，这需要在 controller 中进行数据的合法性检查。
      *
      * @param user 一个用户对象。
@@ -46,13 +48,25 @@ public class SysUserSer {
     /**
      * 检查用户的密码是否正确。
      *
-     * @param id       用户 id。
+     * @param email    用户邮箱。
      * @param password 密码。
-     * @return true：正确；false：不正确。
+     * @return 返回登录的用户对象，但是已经抹除了密码，防止后边的编写错误造成密码泄漏。
      */
-    public SysUser checkPassword(int id, String password) {
-        SysUser byUserId = userMapper.getByUserId(id);
-        return (byUserId != null && byUserId.getPassword().equals(password)) ? byUserId : null;
+    public SysUser checkPassword(String email, String password) {
+        SysUser byUserId = userMapper.getByUserEmail(email);
+        if (byUserId != null && byUserId.getPassword().equals(password)) {
+            byUserId.setPassword("");
+            return byUserId;
+        }
+        return null;
+    }
+
+    public boolean existEmail(String email) {
+        return userMapper.checkEmail(email) == 1;
+    }
+
+    public boolean existUsername(String username) {
+        return userMapper.checkUsername(username) == 1;
     }
 
     public boolean setUsername(int id, String username) {
@@ -76,7 +90,7 @@ public class SysUserSer {
     }
 
     /**
-     * 向 redis 中添加一个 Token，你只需要的提供用户的 id 和 登录 ip，生成 Token 的动作已经集成好了。
+     * 向 redis 中添加一个 Token。
      *
      * @param user 用户对象。
      * @param ip   用户的 ip。
@@ -93,18 +107,17 @@ public class SysUserSer {
     /**
      * 获取用户信息。
      *
-     * @param id 用户 id。
+     * @param token token。
      * @return Map 形式的用户信息。
      */
-    public Map<String, String> userDetail(int id) {
-        SysUser byUserId = userMapper.getByUserId(id);
-        if (byUserId == null)
-            return null;
-        Map<String, String> res = ClassConverter.objectToMap(byUserId);
-        res.remove("password");
-        res.remove("createTime");
-        res.remove("isDelete");
-        return res;
+    public Map<String, String> userDetail(String token) {
+        LoginUser user = tokenRedis.getUser(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY));
+        if (user == null) return null;
+        Map<String, String> userMap = ClassConverter.objectToMap(user);
+        userMap.remove("loginTime");
+        userMap.remove("ip");
+        userMap.remove("userAgent");
+        return userMap;
     }
 
     /**
@@ -114,9 +127,16 @@ public class SysUserSer {
      * @return 以 Map 的形式保存的用户公开信息。
      */
     public Map<String, String> getSysUserPublicDetail(int id) {
-        Map<String, String> user = userDetail(id);
-        if (user != null) user.remove("email");
-        return user;
+        SysUser user = userMapper.getByUserId(id);
+        if (user == null)
+            return null;
+
+        Map<String, String> userMap = ClassConverter.objectToMap(user);
+        userMap.remove("password");
+        userMap.remove("email");
+        userMap.remove("createTime");
+        userMap.remove("isDelete");
+        return userMap;
     }
 
     /**

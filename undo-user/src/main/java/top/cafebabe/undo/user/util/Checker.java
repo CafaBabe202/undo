@@ -18,7 +18,7 @@ public class Checker {
     }
 
     public static boolean LoginForm(LoginForm form) {
-        return form.getId() > 0 && form.getId() < Integer.MAX_VALUE && checkStringLen(form.getPassword(), 128, false);
+        return checkEmail(form.getEmail()) && checkStringLen(form.getPassword(), 128, false);
     }
 
     public static boolean setForm(SetForm form) {

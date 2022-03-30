@@ -1,10 +1,10 @@
 import axios from 'axios';
 import common from "./common";
-import localStore from "./LocalStore";
 import Vue from "vue";
 import {Message} from "element-ui";
 
 const apis = {
+  registerUrl: "/api/user/register",
   loginUrl: "/api/user/login",
   getMyDetailUrl: "/api/user/getMyDetail.token"
 }
@@ -28,6 +28,24 @@ const getMyDetail = function () {
   })
 }
 
+const register = function () {
+  axios.post(
+    apis.registerUrl,
+    common.RegisterForm,
+  ).then(res => {
+    res = res.data
+    if (res.status === 200) {
+      common.LoginForm.email = common.RegisterForm.email
+      common.LoginForm.password = common.RegisterForm.password
+      login()
+    } else {
+      Vue.use(Message.error(res.data))
+    }
+  }).catch(
+    Vue.use(Message.error("注册失败！"))
+  )
+}
+
 const login = function () {
   axios.post(
     apis.loginUrl,
@@ -42,14 +60,14 @@ const login = function () {
       common.LoginForm.reset()
       getMyDetail()
     } else {
-      Vue.use(Message.error("登录失败！"))
+      Vue.use(Message.error(res.data))
     }
-  }).catch(res=>{
+  }).catch(res => {
     Vue.use(Message.error("登录失败！"))
   });
 }
 
 
 export default {
-  login
+  register, login
 }

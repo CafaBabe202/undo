@@ -28,7 +28,16 @@ public class ClassConverter {
         return user;
     }
 
-    public static LoginUser toLoginUser(SysUser user){
+    public static SysUser toSysUser(LoginUser user) {
+        SysUser sysUser = new SysUser();
+        sysUser.setId(user.getId());
+        sysUser.setUsername(user.getUsername());
+        sysUser.setSign(user.getSign());
+        sysUser.setAvatar(user.getAvatar());
+        return sysUser;
+    }
+
+    public static LoginUser toLoginUser(SysUser user) {
         LoginUser loginUser = new LoginUser();
         loginUser.setId(user.getId());
         loginUser.setUsername(user.getUsername());

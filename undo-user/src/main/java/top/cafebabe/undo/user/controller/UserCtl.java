@@ -1,6 +1,5 @@
 package top.cafebabe.undo.user.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.bean.SysUser;
@@ -8,7 +7,6 @@ import top.cafebabe.undo.common.util.MessageUtil;
 import top.cafebabe.undo.common.util.RequestUtil;
 import top.cafebabe.undo.common.util.TokenUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
-import top.cafebabe.undo.user.dao.TokenRedis;
 import top.cafebabe.undo.user.form.GetDetailForm;
 import top.cafebabe.undo.user.form.LoginForm;
 import top.cafebabe.undo.user.form.RegisterForm;
@@ -29,16 +27,20 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserCtl {
 
-    @Autowired
-    SysUserSer sysUserSer;
+    final SysUserSer sysUserSer;
 
-    @Autowired
-    TokenRedis tokenRedis;
+    public UserCtl(SysUserSer sysUserSer) {
+        this.sysUserSer = sysUserSer;
+    }
 
     // 用户注册
     @PostMapping("/register")
     public ResponseMessage register(@RequestBody RegisterForm form) {
         if (!Checker.RegisterForm(form)) return MessageUtil.fail("参数异常");
+
+        if (sysUserSer.existUsername(form.getUsername())) return MessageUtil.fail("用户名已经存在");
+        if (sysUserSer.existEmail(form.getEmail())) return MessageUtil.fail("邮箱已被占用");
+
         return sysUserSer.register(ClassConverter.toSysUser(form)) ?
                 MessageUtil.ok("注册成功！") : MessageUtil.error("注册失败！");
     }
@@ -47,19 +49,19 @@ public class UserCtl {
     @PostMapping("/login")
     public ResponseMessage login(@RequestBody LoginForm form, HttpServletRequest request) {
         if (!Checker.LoginForm(form))
-            return MessageUtil.fail("登录失败");
-        SysUser sysUser = sysUserSer.checkPassword(form.getId(), form.getPassword());
+            return MessageUtil.fail("参数异常");
+        SysUser sysUser = sysUserSer.checkPassword(form.getEmail(), form.getPassword());
         if (sysUser == null)
             return MessageUtil.fail("用户名或密码错误");
         String token = sysUserSer.saveToken(sysUser, RequestUtil.getIp(request));
         return token == null ? MessageUtil.error("服务器异常") : MessageUtil.ok(token);
     }
 
+    // 获取自己的用户信息
     @GetMapping("/getMyDetail.token")
     public ResponseMessage getMyDetail(HttpServletRequest request) {
-        int id = TokenUtil.getLoginTokenId(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER), AppConfig.TOKEN_KEY);
-        Map<String, String> stringStringMap = sysUserSer.userDetail(id);
-        return stringStringMap == null ? MessageUtil.fail("没有此用户") : MessageUtil.ok(stringStringMap);
+        Map<String, String> user = sysUserSer.userDetail(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER));
+        return user == null ? MessageUtil.fail("Token过期") : MessageUtil.ok(user);
     }
 
     // 设置有用户信息。

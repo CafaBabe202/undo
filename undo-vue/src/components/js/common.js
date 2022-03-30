@@ -18,18 +18,17 @@ const LoginDialogConfig = {
 }
 
 const LoginForm = {
-  id: "",
+  email: "",
   password: "",
   reset() {
-    LoginForm.id = ""
-    LoginForm.password = ""
+    LoginForm.email = LoginForm.password = ""
   }
 }
 
 const LoginFromRules = {
-  userid: [
+  email: [
     {required: true, message: '请输入昵称', trigger: 'blur'},
-    {min: 1, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+    {min: 1, max: 15, message: '长度在 3 到 5 个字符', trigger: 'blur'}
   ], password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
     {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
@@ -37,20 +36,23 @@ const LoginFromRules = {
 }
 
 const RegisterForm = {
-  userid: "",
+  username: "",
   email: "",
   password: "",
   checkPassword: "",
-  code: ""
+  code: "",
+  reset() {
+    RegisterForm.username = RegisterForm.email = RegisterForm.password = RegisterForm.checkPassword = RegisterForm.code = ""
+  }
 }
 
 const RegisterFormRules = {
-  userid: [
+  username: [
     {required: true, message: '请输入昵称', trigger: 'blur'},
-    {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
   ], email: [
     {required: true, message: '请输入邮箱', trigger: 'blur'},
-    {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+    {min: 3, max: 25, message: '长度在 3 到 15 个字符', trigger: 'blur'}
   ], password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
     {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}

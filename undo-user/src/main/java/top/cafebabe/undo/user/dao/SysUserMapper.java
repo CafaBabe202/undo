@@ -24,5 +24,11 @@ public interface SysUserMapper {
 
     SysUser getByUserId(int id);
 
+    SysUser getByUserEmail(String email);
+
     SysUser getByUsername(String name);
+
+    int checkUsername(String username);
+
+    int checkEmail(String email);
 }
