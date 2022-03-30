@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import {get} from './js/ajax.js'
 export default {
   name: 'HelloWorld',
   data() {

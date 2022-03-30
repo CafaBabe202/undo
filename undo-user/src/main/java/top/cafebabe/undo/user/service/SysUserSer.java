@@ -2,6 +2,7 @@ package top.cafebabe.undo.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.common.util.CurrentUtil;
 import top.cafebabe.undo.common.util.TokenUtil;
@@ -49,21 +50,61 @@ public class SysUserSer {
      * @param password 密码。
      * @return true：正确；false：不正确。
      */
-    public boolean checkPassword(int id, String password) {
+    public SysUser checkPassword(int id, String password) {
         SysUser byUserId = userMapper.getByUserId(id);
-        return byUserId != null && byUserId.getPassword().equals(password);
+        return (byUserId != null && byUserId.getPassword().equals(password)) ? byUserId : null;
+    }
+
+    public boolean setUsername(int id, String username) {
+        return userMapper.setUsername(id, username) == 1;
+    }
+
+    public boolean setPassword(int id, String password) {
+        return userMapper.setPassword(id, password) == 1;
+    }
+
+    public boolean setEmail(int id, String email) {
+        return userMapper.setEmail(id, email) == 1;
+    }
+
+    public boolean setAvatar(int id, String avatar) {
+        return userMapper.setAvatar(id, avatar) == 1;
+    }
+
+    public boolean setSign(int id, String sign) {
+        return userMapper.setSign(id, sign) == 1;
     }
 
     /**
      * 向 redis 中添加一个 Token，你只需要的提供用户的 id 和 登录 ip，生成 Token 的动作已经集成好了。
      *
-     * @param id 用户的 id。
-     * @param ip 用户的 ip。
+     * @param user 用户对象。
+     * @param ip   用户的 ip。
      * @return 创建并保存的 Token，如果保存失败将返回 null。
      */
-    public String saveToken(int id, String ip) {
-        String loginToken = TokenUtil.createLoginToken(id, ip, AppConfig.TOKEN_KEY);
-        return tokenRedis.putToken(id, loginToken) ? loginToken : null;
+    public String saveToken(SysUser user, String ip) {
+        LoginUser loginUser = ClassConverter.toLoginUser(user);
+        loginUser.setLoginTime(CurrentUtil.now());
+        loginUser.setIp(ip);
+        String loginToken = TokenUtil.createLoginToken(user.getId(), ip, AppConfig.TOKEN_KEY);
+        return tokenRedis.putToken(loginToken, loginUser) ? loginToken : null;
+    }
+
+    /**
+     * 获取用户信息。
+     *
+     * @param id 用户 id。
+     * @return Map 形式的用户信息。
+     */
+    public Map<String, String> userDetail(int id) {
+        SysUser byUserId = userMapper.getByUserId(id);
+        if (byUserId == null)
+            return null;
+        Map<String, String> res = ClassConverter.objectToMap(byUserId);
+        res.remove("password");
+        res.remove("createTime");
+        res.remove("isDelete");
+        return res;
     }
 
     /**
@@ -73,14 +114,9 @@ public class SysUserSer {
      * @return 以 Map 的形式保存的用户公开信息。
      */
     public Map<String, String> getSysUserPublicDetail(int id) {
-        SysUser byUserId = userMapper.getByUserId(id);
-        if (byUserId == null) return null;
-        Map<String, String> res = ClassConverter.objectToMap(byUserId);
-        res.remove("password");
-        res.remove("email");
-        res.remove("createTime");
-        res.remove("isDelete");
-        return res;
+        Map<String, String> user = userDetail(id);
+        if (user != null) user.remove("email");
+        return user;
     }
 
     /**

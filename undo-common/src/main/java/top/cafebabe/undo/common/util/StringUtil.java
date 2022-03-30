@@ -2,12 +2,16 @@ package top.cafebabe.undo.common.util;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.gson.Gson;
 
 /**
  * @author cafababe
  * 各种字符串的基础工具。
  */
 public class StringUtil {
+
+    private static final Gson gson = new Gson();
+
     /**
      * 判断一个字符串是否是一个合法的 ipv4 地址。
      *
@@ -44,5 +48,13 @@ public class StringUtil {
      */
     public static boolean hasBlank(String str) {
         return StrUtil.hasBlank(str);
+    }
+
+    public static String toJson(Object o) {
+        return gson.toJson(o);
+    }
+
+    public static <T> T pareJson(String json, Class<T> clazz) {
+        return gson.fromJson(json, clazz);
     }
 }

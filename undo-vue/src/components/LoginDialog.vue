@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- 对话框 -->
-    <el-dialog @close="closeDialog" :width="width" :title="title" :visible.sync="config.isDialog">
+    <el-dialog :title="title" :visible.sync="config.isDialog" :width="width" @close="closeDialog">
       <!-- 登录表单 -->
       <div v-show="config.isLogin">
         <el-form :model="loginForm" :rules="loginFormRules" ref="loginFormRules" label-width="80px"
                  label-position="top">
-          <el-form-item label="昵称" prop="userid">
-            <el-input v-model="loginForm.userid"/>
+          <el-form-item label="帐号" prop="id">
+            <el-input v-model="loginForm.id"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="loginForm.password"/>
@@ -52,6 +52,7 @@
 <script>
 
 import common from "./js/common";
+import ajax from "./js/ajax";
 
 export default {
   name: "LoginDialog",
@@ -70,10 +71,10 @@ export default {
     }, submitLoginForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          ajax.login()
+          return true
         } else {
-          console.log('error submit!!');
-          return false;
+          return false
         }
       });
     }, resetLoginForm(formName) {

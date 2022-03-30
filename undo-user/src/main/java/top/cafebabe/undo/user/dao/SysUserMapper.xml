@@ -33,19 +33,19 @@
     <update id="setEmail">
         update user
         set email=#{email}
-        where id ={id}
+        where id = #{id}
     </update>
 
     <update id="setAvatar">
         update user
         set email=#{md5}
-        where id ={id}
+        where id = #{id}
     </update>
 
     <update id="setSign">
         update user
         set email=#{sing}
-        where id ={id}
+        where id = #{id}
     </update>
 
     <select id="getByUserId" resultMap="SysUser">

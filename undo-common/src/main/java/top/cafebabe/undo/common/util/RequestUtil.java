@@ -1,12 +1,12 @@
 package top.cafebabe.undo.common.util;
 
-import cn.hutool.http.server.HttpServerRequest;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author cafababe
  */
 public class RequestUtil {
-    public static String getIp(HttpServerRequest request) {
-        return request.getClientIP();
+    public static String getIp(HttpServletRequest request) {
+        return request.getRemoteHost();
     }
 }

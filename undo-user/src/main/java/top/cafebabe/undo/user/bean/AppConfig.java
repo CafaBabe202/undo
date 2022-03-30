@@ -19,4 +19,11 @@ public class AppConfig {
     public static final long AVATAR_SIZE = 1 * 1024 * 1024; // 头像文件的大小
     public static final int SIGN_LEN = 64; // 用户签名长度
 
+    public static final String REDIS_TOKEN_PREFIX = "Token: ";
+    public static final String REDIS_TOKEN_VALUE_TOKEN_KEY = "token";
+    public static final String REDIS_TOKEN_VALUE_USER_KEY = "user";
+
+
+    public static final String TOKEN_NAME_IN_HEADER = "token"; // token 在 header 中的 key
+
 }

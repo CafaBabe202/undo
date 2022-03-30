@@ -1,5 +1,6 @@
 package top.cafebabe.undo.user.util;
 
+import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.user.form.RegisterForm;
 
@@ -25,6 +26,17 @@ public class ClassConverter {
         user.setPassword(form.getPassword());
         user.setEmail(form.getEmail());
         return user;
+    }
+
+    public static LoginUser toLoginUser(SysUser user){
+        LoginUser loginUser = new LoginUser();
+        loginUser.setId(user.getId());
+        loginUser.setUsername(user.getUsername());
+        loginUser.setEmail(user.getEmail());
+        loginUser.setAvatar(user.getAvatar());
+        loginUser.setSign(user.getSign());
+        loginUser.setCreateTime(user.getCreateTime());
+        return loginUser;
     }
 
     /**
