@@ -1,0 +1,104 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.cafebabe.undo.article.dao.ArticleMapper">
+    <resultMap id="AllArticle" type="top.cafebabe.undo.article.bean.Article">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="recordsId" column="records_id"/>
+        <result property="like" column="like"/>
+        <result property="visit" column="visit"/>
+        <result property="clazzId" column="clazz_id"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="creat_time" jdbcType="TIMESTAMP"/>
+        <result property="isPrivate" column="is_private"/>
+    </resultMap>
+
+    <insert id="add" parameterType="top.cafebabe.undo.article.bean.Article" useGeneratedKeys="true" keyProperty="id">
+        insert into article(id, user_id, summary, title, records_id, clazz_id, update_time, create_time,is_private)
+            value (#{id},#{userId},#{summary},#{title},#{recordsId},#{clazzId},#{updateTime},#{createTime},#{isPrivate});
+    </insert>
+
+    <delete id="deleteById">
+        delete
+        from article
+        where id = #{articleId};
+    </delete>
+
+    <update id="like">
+        update article
+        set `like` = `like` + 1
+        where id = #{articleId}
+    </update>
+
+    <update id="visit">
+        update article
+        set visit = visit + 1
+        where id = #{articleId}
+    </update>
+
+    <update id="setClazz">
+        update article
+        set clazz_id = #{clazzId}
+        where id = #{articleId}
+    </update>
+
+    <update id="setUpdateTime">
+        update article
+        set update_time = #{updateTime}
+        where id = #{articleId}
+    </update>
+
+    <update id="setPrivate">
+        update article
+        set is_private = #{isPrivate}
+        where id = #{articleId}
+    </update>
+
+    <update id="setSummary">
+        update article
+        set summary = #{summary}
+        where id = #{articleId}
+    </update>
+
+    <select id="getArticleAuthor">
+        select userId
+        from article
+        where id = #{aritlceId}
+    </select>
+
+    <select id="getArticleById" resultMap="AllArticle" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.Article">
+        select *
+        from article
+        where id = #{articleId}
+        <if test="!#{isPublic}">and is_private = 1</if>
+    </select>
+
+    <select id="getArticleByUser" resultMap="AllArticle" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.Article">
+        select *
+        from article
+        where user_id = #{userId}
+        <if test="!#{isPublic}">and is_private = 1</if>
+    </select>
+
+    <select id="getArticleByClazzId" resultMap="AllArticle" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.Article">
+        select *
+        from article
+        where clazz_id = #{clazzId}
+        <if test="!#{isPublic}">and is_private = 1</if>
+    </select>
+
+    <select id="getArticleByTitleLike" resultMap="AllArticle" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.Article">
+        select *
+        from article
+        where title like %#{likeTitle}%
+        <if test="!#{isPublic}">and is_private = 1</if>
+    </select>
+</mapper>

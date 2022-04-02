@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="fileManager-core" />
+        <module name="undo-article" />
         <module name="undo-common" />
         <module name="undo-user" />
       </profile>
@@ -21,6 +22,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="intelligenceBureau" options="-parameters" />
+      <module name="undo-article" options="-parameters" />
       <module name="undo-user" options="-parameters" />
       <module name="undo-user (1) (top.cafebabe.undo)" options="-parameters" />
     </option>

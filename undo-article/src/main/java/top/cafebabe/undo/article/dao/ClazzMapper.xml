@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.cafebabe.undo.article.dao.ClazzMapper">
+    <resultMap id="AllClazz" type="top.cafebabe.undo.article.bean.Clazz">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <insert id="add" parameterType="top.cafebabe.undo.article.bean.Clazz">
+        insert into clazz(id, user_id, `name`)
+            value (#{id},#{userId},#{name})
+    </insert>
+
+    <delete id="deleteById">
+        delete
+        from clazz
+        where id = #{clazzId}
+    </delete>
+
+    <update id="setName">
+        update clazz
+        set name = #{name}
+        where id = #{clazzId}
+    </update>
+
+    <select id="getClazzByUserId" resultMap="AllClazz" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.Clazz">
+        select *
+        from clazz
+        where user_id = #{userId}
+    </select>
+
+    <select id="getClazzName">
+        select name
+        from clazz
+        where id = #{clazzId}
+    </select>
+</mapper>
