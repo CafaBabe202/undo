@@ -1,18 +1,26 @@
 <template>
   <div id="app">
-      <MyAvatar v-show="login"/>
-    <Me/>
-    <LoginDialog/>
-    <router-view/>
+    <div class="header">
+      <Search/>
+      <Me/>
+    </div>
+    <div class="body">
+      <LoginDialog/>
+      <router-view/>
+    </div>
+    <div>
+      <AppFoot/>
+    </div>
+    <div>
+    </div>
   </div>
 </template>
 
 <script>
-import MyAvatar from "./components/MyAvatar";
 import Me from "./components/Me"
 import LoginDialog from "./components/LoginDialog";
-
-import common from "./components/js/common";
+import Search from "./components/AppHeader";
+import AppFoot from "./components/AppFoot";
 
 export default {
   name: 'App',
@@ -22,14 +30,9 @@ export default {
       drawer: true
     }
   }, methods: {
-    open() {
-      if (common.User.isLogin) {
-        common.MeConfig.isDrawer = true
-      } else {
-        common.LoginDialogConfig.isDialog = true
-      }
-    }
   },
-  components: {LoginDialog, MyAvatar, Me},
+  components: {AppFoot, Search, LoginDialog, Me},
 }
 </script>
+<style>
+</style>

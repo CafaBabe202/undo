@@ -18,9 +18,9 @@ public interface SysUserMapper {
 
     int setEmail(int id, String email);
 
-    int setAvatar(int id, String md5);
+    int setAvatar(int id, String url);
 
-    int setSign(int id, String sing);
+    int setSign(int id, String sign);
 
     SysUser getByUserId(int id);
 

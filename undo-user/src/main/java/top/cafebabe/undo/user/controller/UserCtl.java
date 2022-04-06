@@ -1,6 +1,7 @@
 package top.cafebabe.undo.user.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.common.util.MessageUtil;
@@ -16,6 +17,7 @@ import top.cafebabe.undo.user.util.Checker;
 import top.cafebabe.undo.user.util.ClassConverter;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.*;
 import java.util.Map;
 
 /**
@@ -68,23 +70,40 @@ public class UserCtl {
     @PostMapping("/set.token")
     public ResponseMessage set(@RequestBody SetForm form, HttpServletRequest request) {
         if (!Checker.setForm(form)) return MessageUtil.fail("参数异常");
-        int id = TokenUtil.getLoginTokenId(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER), AppConfig.TOKEN_KEY);
+        String token = request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER);
         boolean res = false;
         switch (form.getField()) {
             case "username":
-                res = sysUserSer.setUsername(id, form.getNewVal());
+                res = sysUserSer.setUsername(token, form.getNewVal());
                 break;
             case "password":
-                res = sysUserSer.setPassword(id, form.getNewVal());
+                res = sysUserSer.setPassword(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), form.getNewVal());
                 break;
             case "email":
-                res = sysUserSer.setEmail(id, form.getNewVal());
+                res = sysUserSer.setEmail(token, form.getNewVal());
                 break;
             case "sign":
-                res = sysUserSer.setSign(id, form.getNewVal());
+                res = sysUserSer.setSign(token, form.getNewVal());
                 break;
         }
         return res ? MessageUtil.ok("设置成功！") : MessageUtil.error("设置失败！");
+    }
+
+    //上传头像
+    @PostMapping("/uploadAvatar.token")
+    public ResponseMessage setAvatar(@RequestParam("file") MultipartFile multipartFile, HttpServletRequest request) {
+        String token = request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER);
+        try {
+            InputStream inputStream = multipartFile.getInputStream();
+            byte[] bytes = inputStream.readAllBytes();
+            if (bytes.length > AppConfig.AVATAR_SIZE)
+                return MessageUtil.fail("文件过大");
+
+            return sysUserSer.setAvatar(token, bytes) ? MessageUtil.ok("设置成功！") : MessageUtil.fail("设置失败！");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return MessageUtil.error("未知错误！");
     }
 
     // 获取用户的公开资料

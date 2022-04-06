@@ -9,7 +9,16 @@ const User = {
   sign: "",
   email: "",
   avatar: "",
-  token: ""
+  token: "",
+  reset() {
+    User.id = User.username = User.sign = User.email = User.avatar = User.token = ""
+    User.isLogin = false
+  }
+}
+
+const UserArticle = {
+  allNumber: 0,
+  allLike: 0
 }
 
 const LoginDialogConfig = {
@@ -65,12 +74,19 @@ const RegisterFormRules = {
   ]
 }
 
+const UserNowEdit = {
+  field: "",
+  newVal: ""
+}
+
 export default {
   MeConfig,
   LoginDialogConfig,
   LoginFromRules,
   User,
+  UserArticle,
   LoginForm,
   RegisterForm,
   RegisterFormRules,
+  UserNowEdit
 }

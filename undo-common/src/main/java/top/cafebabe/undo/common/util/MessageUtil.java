@@ -31,6 +31,12 @@ public class MessageUtil {
         return responseMessage;
     }
 
+    public static ResponseMessage tokenInvalid(Object data) {
+        ResponseMessage responseMessage = create(data);
+        responseMessage.setStatus(ResponseMessage.STATUS_TOKEN_INVALID);
+        return responseMessage;
+    }
+
     /**
      * 创建一个失败的消息，error 代表的是由于服务器异常所导致的失败。
      *

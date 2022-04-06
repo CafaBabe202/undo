@@ -9,7 +9,11 @@ import top.cafebabe.undo.user.bean.AppConfig;
 import top.cafebabe.undo.user.dao.SysUserMapper;
 import top.cafebabe.undo.user.dao.TokenRedis;
 import top.cafebabe.undo.user.util.ClassConverter;
+import top.cafebabe.undo.user.util.Md5Util;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,24 +73,57 @@ public class SysUserSer {
         return userMapper.checkUsername(username) == 1;
     }
 
-    public boolean setUsername(int id, String username) {
-        return userMapper.setUsername(id, username) == 1;
+    private boolean updateRedisUser(String token, String field, String newVal) {
+        int id = TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY);
+        LoginUser user = tokenRedis.getUser(id);
+        if (user == null) return false;
+        try {
+            Field declaredField = user.getClass().getDeclaredField(field);
+            declaredField.setAccessible(true);
+            declaredField.set(user, newVal);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return tokenRedis.putToken(token, user);
+    }
+
+    public boolean setUsername(String token, String username) {
+        return updateRedisUser(token, "username", username) &&
+                userMapper.setUsername(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), username) == 1;
+    }
+
+    public boolean setEmail(String token, String email) {
+        return updateRedisUser(token, "email", email) &&
+                userMapper.setEmail(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), email) == 1;
+    }
+
+    public boolean setSign(String token, String sign) {
+        return updateRedisUser(token, "sign", sign) &&
+                userMapper.setSign(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), sign) == 1;
+    }
+
+    public boolean setAvatar(String token, byte[] avatar) {
+        int id = TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY);
+        Md5Util md5Util = new Md5Util();
+        md5Util.update(avatar, 0, avatar.length);
+        String md5 = md5Util.design();
+
+        try {
+            OutputStream os = new FileOutputStream(AppConfig.LOCAL_AVATAR_DIR + md5);
+            os.write(avatar);
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        String url = AppConfig.AVATAR_BASE_URL + md5;
+        return updateRedisUser(token, "avatar", url) && userMapper.setAvatar(id, url) == 1;
     }
 
     public boolean setPassword(int id, String password) {
         return userMapper.setPassword(id, password) == 1;
-    }
-
-    public boolean setEmail(int id, String email) {
-        return userMapper.setEmail(id, email) == 1;
-    }
-
-    public boolean setAvatar(int id, String avatar) {
-        return userMapper.setAvatar(id, avatar) == 1;
-    }
-
-    public boolean setSign(int id, String sign) {
-        return userMapper.setSign(id, sign) == 1;
     }
 
     /**

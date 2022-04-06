@@ -4,9 +4,11 @@ import Vue from "vue";
 import {Message} from "element-ui";
 
 const apis = {
-  registerUrl: "/api/user/register",
-  loginUrl: "/api/user/login",
-  getMyDetailUrl: "/api/user/getMyDetail.token"
+  registerUrl: "/userApi/user/register",
+  loginUrl: "/userApi/user/login",
+  getMyDetailUrl: "/userApi/user/getMyDetail.token",
+  updateUser: "/userApi/user/set.token",
+  uploadAvatar: "/userApi/user/uploadAvatar.token"
 }
 
 const getMyDetail = function () {
@@ -67,7 +69,57 @@ const login = function () {
   });
 }
 
+const update = function () {
+  axios.post(
+    apis.updateUser,
+    common.UserNowEdit,
+    {
+      headers: {
+        "token": common.User.token
+      }
+    }
+  ).then(res => {
+    res = res.data
+    if (res.status === 200) {
+      Vue.use(Message.success(res.data))
+      getMyDetail()
+    } else if (res.status === 401) {
+      Vue.use(Message.error("Token失效请重新登录！"))
+      common.User.reset()
+    }
+  })
+}
+
+const uploadAvatar = function (file) {
+  if (file.size / 1024 / 1024 > 2) {
+    Vue.use(Message.error("上传头像图片大小不能超过 2MB!"))
+    return
+  }
+  let data = new FormData()
+  data.append('file',file)
+  axios.post(
+    apis.uploadAvatar,
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryfMpiwYVb3Eliuo7t",
+        token: common.User.token
+      }
+    }
+  ).then(res => {
+    res = res.data
+    if (res.status === 200) {
+      Vue.use(Message.success(res.data))
+      getMyDetail()
+    } else if (res.status === 401) {
+      Vue.use(Message.error("Token失效请重新登录！"))
+      common.User.reset()
+    }
+  }).catch(res => {
+    Vue.use(Message.error("网络错误！"))
+  })
+}
 
 export default {
-  register, login
+  register, login, update, uploadAvatar
 }
