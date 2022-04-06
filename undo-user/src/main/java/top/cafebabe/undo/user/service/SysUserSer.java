@@ -24,6 +24,7 @@ import java.util.Map;
  */
 @Service
 public class SysUserSer {
+
     final SysUserMapper userMapper;
 
     final TokenRedis tokenRedis;
@@ -65,18 +66,37 @@ public class SysUserSer {
         return null;
     }
 
+    /**
+     * 判断制定的邮箱是否存在。
+     *
+     * @param email 邮箱。
+     * @return 存在：true；不存在：false。
+     */
     public boolean existEmail(String email) {
         return userMapper.checkEmail(email) == 1;
     }
 
+    /**
+     * 判断制定的用户名是否存在。
+     *
+     * @param username 用户名。
+     * @return 存在：true；不存在：false。
+     */
     public boolean existUsername(String username) {
         return userMapper.checkUsername(username) == 1;
     }
 
+    /**
+     * 通过反射更新 Redis 缓存中的用户数据。
+     *
+     * @param token  用户的 Token。
+     * @param field  更新的字段。
+     * @param newVal 新的值。
+     * @return 是否更新成功。
+     */
     private boolean updateRedisUser(String token, String field, String newVal) {
         int id = TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY);
         LoginUser user = tokenRedis.getUser(id);
-        if (user == null) return false;
         try {
             Field declaredField = user.getClass().getDeclaredField(field);
             declaredField.setAccessible(true);
@@ -88,21 +108,25 @@ public class SysUserSer {
         return tokenRedis.putToken(token, user);
     }
 
+    // 设置用户名
     public boolean setUsername(String token, String username) {
         return updateRedisUser(token, "username", username) &&
                 userMapper.setUsername(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), username) == 1;
     }
 
+    // 设置邮箱
     public boolean setEmail(String token, String email) {
         return updateRedisUser(token, "email", email) &&
                 userMapper.setEmail(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), email) == 1;
     }
 
+    // 设置签名
     public boolean setSign(String token, String sign) {
         return updateRedisUser(token, "sign", sign) &&
                 userMapper.setSign(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), sign) == 1;
     }
 
+    // 设置头像
     public boolean setAvatar(String token, byte[] avatar) {
         int id = TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY);
         Md5Util md5Util = new Md5Util();
@@ -122,6 +146,7 @@ public class SysUserSer {
         return updateRedisUser(token, "avatar", url) && userMapper.setAvatar(id, url) == 1;
     }
 
+    // 设置密码
     public boolean setPassword(int id, String password) {
         return userMapper.setPassword(id, password) == 1;
     }

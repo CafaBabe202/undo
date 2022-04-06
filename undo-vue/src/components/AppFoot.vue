@@ -1,6 +1,8 @@
 <template>
+  <div class="AppFoot-foot">
+    <el-divider>无丝竹之乱耳，无 undo 之劳形</el-divider>
+  </div>
 
-  <el-divider>无丝竹之乱耳，无 undo 之劳形</el-divider>
 </template>
 
 <script>
@@ -10,5 +12,7 @@ export default {
 </script>
 
 <style scoped>
-
+.AppFoot-foot{
+  user-select: none;
+}
 </style>

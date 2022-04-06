@@ -6,7 +6,7 @@ package top.cafebabe.undo.user.bean;
  * 这是一个全局的配置类，所有的全局配置都在这个类中。
  */
 public class AppConfig {
-    public static final long TOKEN_TIME_OUT = 24; // 设置 Token 的超时时间，单位：分钟
+    public static final long TOKEN_TIME_OUT = 10 * 60; // 设置 Token 的超时时间，单位：分钟
     public static final String TOKEN_KEY = "cafebabecafedade"; // 必须是 16 位
     public static final String PASSWORD = "NOCAFE"; // 其他组件访问时的口令
 

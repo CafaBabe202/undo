@@ -18,18 +18,22 @@
         <el-menu :collapse="menu.collapse" class="el-menu-vertical-demo">
           <el-menu-item-group>
             <el-menu-item index="1">
+              <i class="el-icon-s-home"/>
+              <span slot="title" @click="toIndex">应用首页</span>
+            </el-menu-item>
+            <el-menu-item index="2">
               <i class="el-icon-user-solid"/>
               <span slot="title" @click="toUser">我的信息</span>
             </el-menu-item>
-            <el-menu-item index="2">
-              <i class="el-icon-document"></i>
-              <span slot="title">我的文章</span>
-            </el-menu-item>
             <el-menu-item index="3">
-              <i class="el-icon-folder"></i>
-              <span slot="title">我的文件</span>
+              <i class="el-icon-document"></i>
+              <span slot="title" @click="toArticle">我的文章</span>
             </el-menu-item>
             <el-menu-item index="4">
+              <i class="el-icon-folder"></i>
+              <span slot="title" @click="toFile">我的文件</span>
+            </el-menu-item>
+            <el-menu-item index="5">
               <i class="el-icon-switch-button"></i>
               <span slot="title" @click="exit">退出登录</span>
             </el-menu-item>
@@ -66,13 +70,21 @@ export default {
     }
   },
   methods: {
-    toUser() {
+    toIndex() {
+      this.$router.push('/').catch(res => console.log(res));
+      common.MeConfig.isDrawer = false;
+    }, toUser() {
       this.$router.push('/user').catch(res => console.log(res));
+      common.MeConfig.isDrawer = false;
+    }, toArticle() {
+      this.$router.push('/myArticle').catch(res => console.log(res));
+      common.MeConfig.isDrawer = false;
+    }, toFile() {
+      this.$router.push('/myFile').catch(res => console.log(res));
       common.MeConfig.isDrawer = false;
     }, exit() {
       common.User.reset()
-      this.$router.push('/').catch(res => console.log(res));
-      common.MeConfig.isDrawer = false
+      this.toIndex()
     }
   }
 }

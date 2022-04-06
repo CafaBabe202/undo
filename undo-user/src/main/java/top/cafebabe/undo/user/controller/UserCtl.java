@@ -8,7 +8,7 @@ import top.cafebabe.undo.common.util.MessageUtil;
 import top.cafebabe.undo.common.util.RequestUtil;
 import top.cafebabe.undo.common.util.TokenUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
-import top.cafebabe.undo.user.form.GetDetailForm;
+import top.cafebabe.undo.user.form.GetPublicDetailForm;
 import top.cafebabe.undo.user.form.LoginForm;
 import top.cafebabe.undo.user.form.RegisterForm;
 import top.cafebabe.undo.user.form.SetForm;
@@ -115,7 +115,7 @@ public class UserCtl {
 
     // 获取多个用户的公开资料
     @PostMapping("/getDetail")
-    public ResponseMessage postGetDetail(@RequestBody GetDetailForm form) {
+    public ResponseMessage postGetDetail(@RequestBody GetPublicDetailForm form) {
         return form.getIds().size() > 20 ?
                 MessageUtil.fail("数据过大") : MessageUtil.ok(sysUserSer.getSysUserPublicDetail(form.getIds()));
     }
