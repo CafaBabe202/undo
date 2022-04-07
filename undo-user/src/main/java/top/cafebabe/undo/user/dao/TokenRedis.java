@@ -58,4 +58,6 @@ public class TokenRedis {
         String s = key.get(AppConfig.REDIS_TOKEN_VALUE_USER_KEY);
         return s == null ? null : StringUtil.pareJson(s, LoginUser.class);
     }
+
+
 }

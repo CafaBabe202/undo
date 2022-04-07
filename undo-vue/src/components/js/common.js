@@ -17,8 +17,10 @@ const User = {
 }
 
 const UserArticle = {
+  allClazz: [],
+  articles: [],
   allNumber: 0,
-  allLike: 0
+  allLike: 0,
 }
 
 const LoginDialogConfig = {

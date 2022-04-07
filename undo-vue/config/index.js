@@ -7,7 +7,6 @@ const path = require('path')
 module.exports = {
   dev: {
 
-    // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
@@ -15,7 +14,11 @@ module.exports = {
         target: 'http://127.0.0.1:8090',
         changeOrigin: true,
         pathRewrite: {'^/userApi': ''}
-      }
+      }, '/articleApi': {
+        target: 'http://127.0.0.1:8091',
+        changeOrigin: true,
+        pathRewrite: {'^/articleApi': ''}
+      },
     },
 
     // Various Dev Server settings

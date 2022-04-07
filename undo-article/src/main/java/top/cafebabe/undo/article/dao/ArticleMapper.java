@@ -33,7 +33,7 @@ public interface ArticleMapper {
 
     List<Article> getArticleByUser(int userId, boolean isPublic);
 
-    List<Article> getArticleByClazzId(int clazzId, boolean isPublic);
+    List<Article> getArticleByClazzId(int userId, int clazzId, boolean isPublic);
 
     List<Article> getArticleByTitleLike(String likeTitle, boolean isPublic);
 }

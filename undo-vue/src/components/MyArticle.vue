@@ -7,7 +7,7 @@
           <span>所有分类</span>
           <el-button style="float: right; padding: 3px 0" type="text">添加分类</el-button>
         </div>
-        <div v-for="o in this.clazz" :key="o.id" class="myArticle-clazzs-item">
+        <div v-for="o in this.article.allClazz" :key="o.id" class="myArticle-clazzs-item">
           <i class="el-icon-collection"/>
           <span>{{ o.name }}</span>
         </div>
@@ -47,7 +47,7 @@
 
     <!-- 中间的文章 -->
     <div class="myArticle-show-article">
-      <div v-for="article in this.articles" class="myArticle-article-card">
+      <div v-for="article in this.article.articles" class="myArticle-article-card">
         <p class="myArticle-article-card-title">
           <span>{{ article.title }}</span>
           <i class="el-icon-edit"/>
@@ -71,72 +71,16 @@
 </template>
 
 <script>
+import common from "./js/common";
+
 export default {
   name: "MyArticle",
   data() {
     return {
-      clazz: [
-        {id: 0, name: "Java基础学习笔记"},
-        {id: 1, name: "Mysql成神之路"},
-        {id: 2, name: "JVM相关"},
-        {id: 3, name: "大厂面试体总结"}
-      ], articles: [
-        {
-          title: "MySQL笔记",
-          summary: "MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记MySQL笔记",
-          like: 10,
-          visit: 10,
-          updateTime: "2022-02-02",
-          public: false,
-          clazzName: "JVM相关"
-        },
-        {
-          title: "MySQL笔记",
-          summary: "demo",
-          like: 10,
-          visit: 10,
-          updateTime: "2022-02-02",
-          public: true,
-          clazzName: "JVM相关"
-        },
-        {
-          title: "MySQL笔记",
-          summary: "demo",
-          like: 10,
-          visit: 10,
-          updateTime: "2022-02-02",
-          public: false,
-          clazzName: "JVM相关"
-        },
-        {
-          title: "MySQL笔记",
-          summary: "demo",
-          like: 10,
-          visit: 10,
-          updateTime: "2022-02-02",
-          public: true,
-          clazzName: "JVM相关"
-        },
-        {
-          title: "MySQL笔记",
-          summary: "demo",
-          like: 10,
-          visit: 10,
-          updateTime: "2022-02-02",
-          public: true,
-          clazzName: "JVM相关"
-        },
-        {
-          title: "MySQL笔记",
-          summary: "demo",
-          like: 10,
-          visit: 10,
-          updateTime: "2022-02-02",
-          public: false,
-          clazzName: "JVM相关"
-        }
-      ]
+      article:common.UserArticle
     }
+  }, methods: {}, mounted() {
+  }, watch: {
   }
 }
 </script>
@@ -153,6 +97,7 @@ export default {
   float: left;
   margin-top: 30px;
   margin-left: 10%;
+  margin-bottom: 30px;
   user-select: none;
 }
 

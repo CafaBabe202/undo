@@ -31,8 +31,8 @@ public class MessageUtil {
         return responseMessage;
     }
 
-    public static ResponseMessage tokenInvalid(Object data) {
-        ResponseMessage responseMessage = create(data);
+    public static ResponseMessage tokenInvalid() {
+        ResponseMessage responseMessage = create("");
         responseMessage.setStatus(ResponseMessage.STATUS_TOKEN_INVALID);
         return responseMessage;
     }
@@ -49,6 +49,7 @@ public class MessageUtil {
         return responseMessage;
     }
 
+    // 创建一个消息对象。
     private static ResponseMessage create(Object data) {
         ResponseMessage res = new ResponseMessage();
         res.setTimeStamp(CurrentUtil.now());

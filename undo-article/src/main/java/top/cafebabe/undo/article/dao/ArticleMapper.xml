@@ -18,7 +18,7 @@
     </resultMap>
 
     <insert id="add" parameterType="top.cafebabe.undo.article.bean.Article" useGeneratedKeys="true" keyProperty="id">
-        insert into article(id, user_id, summary, title, records_id, clazz_id, update_time, create_time,is_private)
+        insert into article(id, user_id, summary, title, records_id, clazz_id, update_time, create_time, is_private)
             value (#{id},#{userId},#{summary},#{title},#{recordsId},#{clazzId},#{updateTime},#{createTime},#{isPrivate});
     </insert>
 
@@ -90,7 +90,7 @@
             parameterType="top.cafebabe.undo.article.bean.Article">
         select *
         from article
-        where clazz_id = #{clazzId}
+        where clazz_id = #{clazzId} and user_id = #{userId}
         <if test="!#{isPublic}">and is_private = 1</if>
     </select>
 

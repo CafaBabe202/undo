@@ -4,6 +4,7 @@ import router from './router';
 import localStore from "./components/js/LocalStore";
 import {Message} from "element-ui";
 import common from "./components/js/common";
+import ajax from "./components/js/ajax";
 
 Vue.prototype.$message = Message
 Vue.config.productionTip = false
@@ -17,8 +18,16 @@ new Vue({
     return {
       user: common.User
     }
-  },
-  mounted() {
+  }, methods: {
+    refreshUser() {
+      if (common.User.isLogin) {
+        ajax.getMyDetail()
+        ajax.getMyArticleClazz()
+      } else {
+        common.User.reset()
+      }
+    },
+  }, mounted() {
     localStore.loadUser()
   },
   watch: {
@@ -26,6 +35,7 @@ new Vue({
       deep: true,
       handler: function (val) {
         localStore.storeUser()
+        this.refreshUser()
       }
     }
   }

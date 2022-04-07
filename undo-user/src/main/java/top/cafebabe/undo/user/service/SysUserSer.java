@@ -1,19 +1,16 @@
 package top.cafebabe.undo.user.service;
 
 import org.springframework.stereotype.Service;
-import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.common.util.CurrentUtil;
 import top.cafebabe.undo.common.util.TokenUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
 import top.cafebabe.undo.user.dao.SysUserMapper;
-import top.cafebabe.undo.user.dao.TokenRedis;
 import top.cafebabe.undo.user.util.ClassConverter;
 import top.cafebabe.undo.user.util.Md5Util;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +24,8 @@ public class SysUserSer {
 
     final SysUserMapper userMapper;
 
-    final TokenRedis tokenRedis;
-
-    public SysUserSer(SysUserMapper userMapper, TokenRedis tokenRedis) {
+    public SysUserSer(SysUserMapper userMapper) {
         this.userMapper = userMapper;
-        this.tokenRedis = tokenRedis;
     }
 
     /**
@@ -42,8 +36,6 @@ public class SysUserSer {
      * @return 是否创建成功。
      */
     public boolean register(SysUser user) {
-        if (userMapper.getByUsername(user.getUsername()) != null)
-            return false;
         user.setCreateTime(new Timestamp(CurrentUtil.now()));
         user.setAvatar(AppConfig.DEFAULT_USER_AVATAR);
         user.setSign(AppConfig.DEFAULT_USER_SIGN);
@@ -58,16 +50,17 @@ public class SysUserSer {
      * @return 返回登录的用户对象，但是已经抹除了密码，防止后边的编写错误造成密码泄漏。
      */
     public SysUser checkPassword(String email, String password) {
-        SysUser byUserId = userMapper.getByUserEmail(email);
-        if (byUserId != null && byUserId.getPassword().equals(password)) {
-            byUserId.setPassword("");
-            return byUserId;
-        }
-        return null;
+        SysUser user = userMapper.getByUserEmail(email);
+
+        if (user == null || !user.getPassword().equals(password))
+            return null;
+
+        user.setPassword("");
+        return user;
     }
 
     /**
-     * 判断制定的邮箱是否存在。
+     * 判断给定的邮箱是否存在。
      *
      * @param email 邮箱。
      * @return 存在：true；不存在：false。
@@ -86,48 +79,23 @@ public class SysUserSer {
         return userMapper.checkUsername(username) == 1;
     }
 
-    /**
-     * 通过反射更新 Redis 缓存中的用户数据。
-     *
-     * @param token  用户的 Token。
-     * @param field  更新的字段。
-     * @param newVal 新的值。
-     * @return 是否更新成功。
-     */
-    private boolean updateRedisUser(String token, String field, String newVal) {
-        int id = TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY);
-        LoginUser user = tokenRedis.getUser(id);
-        try {
-            Field declaredField = user.getClass().getDeclaredField(field);
-            declaredField.setAccessible(true);
-            declaredField.set(user, newVal);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return tokenRedis.putToken(token, user);
-    }
-
     // 设置用户名
     public boolean setUsername(String token, String username) {
-        return updateRedisUser(token, "username", username) &&
-                userMapper.setUsername(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), username) == 1;
+        return userMapper.setUsername(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), username) == 1;
     }
 
     // 设置邮箱
     public boolean setEmail(String token, String email) {
-        return updateRedisUser(token, "email", email) &&
-                userMapper.setEmail(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), email) == 1;
+        return userMapper.setEmail(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), email) == 1;
     }
 
     // 设置签名
     public boolean setSign(String token, String sign) {
-        return updateRedisUser(token, "sign", sign) &&
-                userMapper.setSign(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), sign) == 1;
+        return userMapper.setSign(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), sign) == 1;
     }
 
     // 设置头像
-    public boolean setAvatar(String token, byte[] avatar) {
+    public String setAvatar(String token, byte[] avatar) {
         int id = TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY);
         Md5Util md5Util = new Md5Util();
         md5Util.update(avatar, 0, avatar.length);
@@ -139,47 +107,19 @@ public class SysUserSer {
             os.close();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
 
         String url = AppConfig.AVATAR_BASE_URL + md5;
-        return updateRedisUser(token, "avatar", url) && userMapper.setAvatar(id, url) == 1;
+        if (userMapper.setAvatar(id, url) == 1)
+            return url;
+
+        return null;
     }
 
     // 设置密码
     public boolean setPassword(int id, String password) {
         return userMapper.setPassword(id, password) == 1;
-    }
-
-    /**
-     * 向 redis 中添加一个 Token。
-     *
-     * @param user 用户对象。
-     * @param ip   用户的 ip。
-     * @return 创建并保存的 Token，如果保存失败将返回 null。
-     */
-    public String saveToken(SysUser user, String ip) {
-        LoginUser loginUser = ClassConverter.toLoginUser(user);
-        loginUser.setLoginTime(CurrentUtil.now());
-        loginUser.setIp(ip);
-        String loginToken = TokenUtil.createLoginToken(user.getId(), ip, AppConfig.TOKEN_KEY);
-        return tokenRedis.putToken(loginToken, loginUser) ? loginToken : null;
-    }
-
-    /**
-     * 获取用户信息。
-     *
-     * @param token token。
-     * @return Map 形式的用户信息。
-     */
-    public Map<String, String> userDetail(String token) {
-        LoginUser user = tokenRedis.getUser(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY));
-        if (user == null) return null;
-        Map<String, String> userMap = ClassConverter.objectToMap(user);
-        userMap.remove("loginTime");
-        userMap.remove("ip");
-        userMap.remove("userAgent");
-        return userMap;
     }
 
     /**

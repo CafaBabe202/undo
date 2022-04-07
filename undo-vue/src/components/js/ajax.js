@@ -8,7 +8,10 @@ const apis = {
   loginUrl: "/userApi/user/login",
   getMyDetailUrl: "/userApi/user/getMyDetail.token",
   updateUser: "/userApi/user/set.token",
-  uploadAvatar: "/userApi/user/uploadAvatar.token"
+  uploadAvatar: "/userApi/user/uploadAvatar.token",
+
+  getMyArticleClazz: "/articleApi/clazz/getAllClazz",
+  getMyArticles: "/articleApi/article/getArticles.token"
 }
 
 const getMyDetail = function () {
@@ -96,7 +99,7 @@ const uploadAvatar = function (file) {
     return
   }
   let data = new FormData()
-  data.append('file',file)
+  data.append('file', file)
   axios.post(
     apis.uploadAvatar,
     data,
@@ -120,6 +123,43 @@ const uploadAvatar = function (file) {
   })
 }
 
+const getMyArticleClazz = function () {
+  axios.get(
+    apis.getMyArticleClazz + "/" + common.User.id
+  ).then(res => {
+    res = res.data
+    if (res.status === 200) {
+      common.UserArticle.allClazz = res.data
+      getArticles(common.UserArticle.allClazz[0].id)
+    } else if (res.status === 401) {
+      Vue.use(Message.error("Token 失效，请重新登录"))
+      common.User.reset()
+    }
+  }).catch(res => {
+    console.log(res)
+  });
+}
+
+const getArticles = function (clazzId) {
+  axios.get(
+    apis.getMyArticles + "/" + clazzId,
+    {
+      headers: {
+        token: common.User.token
+      }
+    }
+  ).then(res => {
+    res = res.data
+    if (res.status === 200) {
+      common.UserArticle.articles = res.data
+    } else if (res.data === 401) {
+      Vue.use(Message.error("Token 失效，请重新登录"))
+      common.User.reset()
+    }
+  }).catch(res => {
+    Vue.use(Message.error("错误"))
+  })
+}
 export default {
-  register, login, update, uploadAvatar
+  register, login, update, uploadAvatar, getMyDetail, getMyArticleClazz
 }

@@ -83,4 +83,8 @@ public class ArticleService {
         if (!recordsDao.putRecord(article.getRecordsId(), new Record(summary, content.getId()))) return false; // 添加更新记录
         return articleMapper.setUpdateTime(articleId, new Timestamp(CurrentUtil.now())) == 1; // 更新更新时间
     }
+
+    public List<Article> getArticlesByClazz(int userId, int clazzId) {
+        return articleMapper.getArticleByClazzId(userId, clazzId, false);
+    }
 }

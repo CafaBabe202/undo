@@ -1,11 +1,11 @@
-package top.cafebabe.undo.user.Compent;
+package top.cafebabe.undo.user.compent;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 /**
  * @author cafababe
  */
-@Repository
+@Component
 public class AppPermissionCtl {
     public boolean verifyPermission(String app, Permission permission) {
         return true;

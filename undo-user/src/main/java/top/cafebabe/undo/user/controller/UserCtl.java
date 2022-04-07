@@ -1,23 +1,21 @@
 package top.cafebabe.undo.user.controller;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.common.util.MessageUtil;
 import top.cafebabe.undo.common.util.RequestUtil;
-import top.cafebabe.undo.common.util.TokenUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
 import top.cafebabe.undo.user.form.GetPublicDetailForm;
 import top.cafebabe.undo.user.form.LoginForm;
 import top.cafebabe.undo.user.form.RegisterForm;
 import top.cafebabe.undo.user.form.SetForm;
+import top.cafebabe.undo.user.service.LoginUserSer;
 import top.cafebabe.undo.user.service.SysUserSer;
 import top.cafebabe.undo.user.util.Checker;
 import top.cafebabe.undo.user.util.ClassConverter;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
 import java.util.Map;
 
 /**
@@ -30,9 +28,11 @@ import java.util.Map;
 public class UserCtl {
 
     final SysUserSer sysUserSer;
+    final LoginUserSer loginUserSer;
 
-    public UserCtl(SysUserSer sysUserSer) {
+    public UserCtl(SysUserSer sysUserSer, LoginUserSer loginUserSer) {
         this.sysUserSer = sysUserSer;
+        this.loginUserSer = loginUserSer;
     }
 
     // 用户注册
@@ -52,18 +52,13 @@ public class UserCtl {
     public ResponseMessage login(@RequestBody LoginForm form, HttpServletRequest request) {
         if (!Checker.LoginForm(form))
             return MessageUtil.fail("参数异常");
+
         SysUser sysUser = sysUserSer.checkPassword(form.getEmail(), form.getPassword());
         if (sysUser == null)
-            return MessageUtil.fail("用户名或密码错误");
-        String token = sysUserSer.saveToken(sysUser, RequestUtil.getIp(request));
-        return token == null ? MessageUtil.error("服务器异常") : MessageUtil.ok(token);
-    }
+            return MessageUtil.fail("邮箱或密码错误");
 
-    // 获取自己的用户信息
-    @GetMapping("/getMyDetail.token")
-    public ResponseMessage getMyDetail(HttpServletRequest request) {
-        Map<String, String> user = sysUserSer.userDetail(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER));
-        return user == null ? MessageUtil.fail("Token过期") : MessageUtil.ok(user);
+        String token = loginUserSer.saveToken(sysUser, RequestUtil.getIp(request));
+        return token == null ? MessageUtil.error("服务器异常") : MessageUtil.ok(token);
     }
 
     // 设置有用户信息。
@@ -71,39 +66,26 @@ public class UserCtl {
     public ResponseMessage set(@RequestBody SetForm form, HttpServletRequest request) {
         if (!Checker.setForm(form)) return MessageUtil.fail("参数异常");
         String token = request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER);
-        boolean res = false;
+        boolean res = loginUserSer.updateRedisUser(token, form.getField(), form.getNewVal());
         switch (form.getField()) {
             case "username":
-                res = sysUserSer.setUsername(token, form.getNewVal());
-                break;
-            case "password":
-                res = sysUserSer.setPassword(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY), form.getNewVal());
+                res &= sysUserSer.setUsername(token, form.getNewVal());
                 break;
             case "email":
-                res = sysUserSer.setEmail(token, form.getNewVal());
+                res &= sysUserSer.setEmail(token, form.getNewVal());
                 break;
             case "sign":
-                res = sysUserSer.setSign(token, form.getNewVal());
+                res &= sysUserSer.setSign(token, form.getNewVal());
                 break;
         }
         return res ? MessageUtil.ok("设置成功！") : MessageUtil.error("设置失败！");
     }
 
-    //上传头像
-    @PostMapping("/uploadAvatar.token")
-    public ResponseMessage setAvatar(@RequestParam("file") MultipartFile multipartFile, HttpServletRequest request) {
-        String token = request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER);
-        try {
-            InputStream inputStream = multipartFile.getInputStream();
-            byte[] bytes = inputStream.readAllBytes();
-            if (bytes.length > AppConfig.AVATAR_SIZE)
-                return MessageUtil.fail("文件过大");
-
-            return sysUserSer.setAvatar(token, bytes) ? MessageUtil.ok("设置成功！") : MessageUtil.fail("设置失败！");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return MessageUtil.error("未知错误！");
+    // 获取自己的用户信息
+    @GetMapping("/getMyDetail.token")
+    public ResponseMessage getMyDetail(HttpServletRequest request) {
+        Map<String, String> user = loginUserSer.userDetail(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER));
+        return user == null ? MessageUtil.fail("Token过期") : MessageUtil.ok(user);
     }
 
     // 获取用户的公开资料

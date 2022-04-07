@@ -1,19 +1,19 @@
 package top.cafebabe.undo.article.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import top.cafebabe.undo.article.bean.AppConfig;
 import top.cafebabe.undo.article.bean.Article;
 import top.cafebabe.undo.article.bean.Content;
 import top.cafebabe.undo.article.dao.ContentDao;
 import top.cafebabe.undo.article.dao.RecordsDao;
 import top.cafebabe.undo.article.service.ArticleService;
+import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.util.CurrentUtil;
 import top.cafebabe.undo.common.util.MessageUtil;
 
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 
 /**
@@ -23,42 +23,28 @@ import java.sql.Timestamp;
 @RequestMapping("/article")
 public class ArticleCtl {
 
-    @Autowired
-    ArticleService articleService;
-    @Autowired
-    RecordsDao recordsDao;
-    @Autowired
-    ContentDao contentDao;
+    final ArticleService articleService;
 
-    @PostMapping("/add")
-    public ResponseMessage addArticle() {
-        Article article = new Article();
-        article.setTitle("Demo");
-        article.setSummary("demodemo");
-        article.setCreateTime(new Timestamp(CurrentUtil.now()));
-        article.setUpdateTime(new Timestamp(CurrentUtil.now()));
-        article.setUserId(1);
-        article.setClazzId(1);
-        article.setPrivate(false);
-        articleService.addArticle(article, "demoContent");
-        return MessageUtil.ok(article.getId());
+    public ArticleCtl(ArticleService articleService) {
+        this.articleService = articleService;
     }
 
-    @PostMapping("/update")
-    public ResponseMessage test() {
-        Content content = new Content("UPDate");
-        return articleService.updateContent(16, "DEmo", content) ? MessageUtil.ok("OK") : MessageUtil.fail("NO");
-    }
+    @GetMapping("/getArticles.token/{clazzId}")
+    public ResponseMessage getArticles(@PathVariable String clazzId, HttpSession session) {
+        try {
+            int id = Integer.parseInt(clazzId);
+            LoginUser loginUser;
+            Object attribute = session.getAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION);
+            if (!(attribute instanceof LoginUser)) {
+                return MessageUtil.fail("未知错误");
+            }
+            loginUser = (LoginUser) attribute;
 
-    @PostMapping("/delete")
-    public ResponseMessage delete() {
-        return articleService.deleteArticle(16) ? MessageUtil.ok("OK") : MessageUtil.fail("NO");
-    }
+            return MessageUtil.ok(articleService.getArticlesByClazz(loginUser.getId(), id));
+        } catch (Exception e) {
+            return MessageUtil.ok("变量错误");
+        }
 
-    @GetMapping("/d")
-    public ResponseMessage d(String id) {
-        contentDao.deleteContent(id);
-        return MessageUtil.ok("OK");
     }
 
 }
