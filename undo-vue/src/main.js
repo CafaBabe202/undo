@@ -16,7 +16,7 @@ new Vue({
   template: '<App/>',
   data() {
     return {
-      user: common.User
+      user: common.User,
     }
   }, methods: {
     refreshUser() {
@@ -29,13 +29,14 @@ new Vue({
     },
   }, mounted() {
     localStore.loadUser()
-  },
-  watch: {
+  }, watch: {
     user: {
       deep: true,
       handler: function (val) {
         localStore.storeUser()
-        this.refreshUser()
+        if (!common.User.isLogin) {
+          this.$router.push("/").catch(res => console.log(res))
+        }
       }
     }
   }

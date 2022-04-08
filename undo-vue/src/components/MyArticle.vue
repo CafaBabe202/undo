@@ -8,7 +8,7 @@
           <el-button style="float: right; padding: 3px 0" type="text">添加分类</el-button>
         </div>
         <div v-for="o in this.article.allClazz" :key="o.id" class="myArticle-clazzs-item">
-          <i class="el-icon-collection"/>
+          <i class="el-icon-collection i-color"/>
           <span>{{ o.name }}</span>
         </div>
       </el-card>
@@ -16,33 +16,35 @@
       <el-descriptions class="myArticle-summary-statistics" title="" :column="1" size="mini" border>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-collection"></i>
-            分类数
+            <i class="el-icon-collection i-color"></i>分类数
           </template>
-          10
+          {{ this.article.statistics.clazzNum }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-document"></i>
-            文章数
+            <i class="el-icon-document i-color"></i>文章数
           </template>
-          10
+          {{ this.article.statistics.number }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-view"></i>
-            浏览量
+            <i class="el-icon-view i-color"></i>浏览量
           </template>
-          100
+          {{ this.article.statistics.visit }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-lollipop"></i>
-            喜欢数
+            <i class="el-icon-lollipop i-color"></i>喜欢数
           </template>
-          1000
+          {{ this.article.statistics.like }}
         </el-descriptions-item>
       </el-descriptions>
+
+      <el-button class="myArticle-summary-add" type="primary">
+        <i class="el-icon-edit"/>
+        添加文章
+      </el-button>
+
     </div>
 
     <!-- 中间的文章 -->
@@ -52,15 +54,17 @@
           <span>{{ article.title }}</span>
           <i class="el-icon-edit"/>
           <i class="el-icon-share"/>
-          <i class="el-icon-sunny" v-show="article.public"/>
-          <i class="el-icon-cloudy" v-show="!article.public"/>
+          <span @click="changePrivate(article.id)">
+          <i class="el-icon-sunny" v-show="!article.private"/>
+          <i class="el-icon-cloudy" v-show="article.private"/>
+          </span>
         </p>
         <p class="myArticle-article-card-summary">{{ article.summary }}</p>
         <ul>
-          <li><i class="el-icon-lollipop"/>点赞：{{ article.like }}</li>
-          <li><i class="el-icon-view"/>浏览量：{{ article.visit }}</li>
-          <li><i class="el-icon-refresh-right"/>更新时间：{{ article.updateTime }}</li>
-          <li><i class="el-icon-collection"/>分类：{{ article.clazzName }}</li>
+          <li><i class="el-icon-lollipop i-color"/>点赞：{{ article.like }}</li>
+          <li><i class="el-icon-view i-color"/>浏览量：{{ article.visit }}</li>
+          <li><i class="el-icon-collection i-color"/>分类：{{ article.clazzName }}</li>
+          <li><i class="el-icon-refresh-right i-color"/>更新时间：{{ article.updateTime }}</li>
         </ul>
       </div>
     </div>
@@ -72,20 +76,40 @@
 
 <script>
 import common from "./js/common";
+import ajax from "./js/ajax";
 
 export default {
   name: "MyArticle",
   data() {
     return {
-      article:common.UserArticle
+      user: common.User,
+      article: common.UserArticle
     }
-  }, methods: {}, mounted() {
+  }, methods: {
+    changePrivate(id) {
+      ajax.changeArticlePrivate(id)
+    }
+  }, mounted() {
   }, watch: {
+    user: {
+      deep: true,
+      handler() {
+        ajax.getArticleClazz()
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+i {
+  margin-right: 10px;
+}
+
+i:hover, .i-color {
+  color: rgba(64, 158, 255, 1);
+}
+
 .myArticle-box {
   width: 100%;
   margin-top: 10px;
@@ -103,6 +127,12 @@ export default {
 
 .myArticle-summary-statistics {
   margin-top: 30px;
+  border-radius: 5px;
+}
+
+.myArticle-summary-add {
+  width: 100%;
+  margin-top: 30px;
 }
 
 .myArticle-show-article {
@@ -116,20 +146,20 @@ export default {
   background-color: white;
   margin-bottom: 30px;
   border-radius: 5px;
-  border: rgb(222, 222, 222) solid 2px;
+  border: rgba(198, 226, 255, 1) solid 2px;
 }
 
 .myArticle-article-card:hover {
   transition: 0.5s;
   background-color: #f9f9f9;
-  box-shadow: 3px 3px 10px #bebebe;
+  box-shadow: 3px 3px 10px rgba(198, 226, 255, 1);
 }
 
 .myArticle-article-card-title {
   margin: 0;
   padding-top: 7px;
   padding-bottom: 7px;
-  padding-left: 10px;
+  padding-left: 30px;
   font-size: 20px;
 }
 
@@ -146,8 +176,8 @@ export default {
   text-indent: 30px;
   letter-spacing: 1px;
   line-height: 25px;
-  border-top: rgb(222, 222, 222) solid 1px;
-  border-bottom: rgb(222, 222, 222) solid 2px;
+  border-top: rgba(198, 226, 255, 1) solid 2px;
+  border-bottom: rgba(198, 226, 255, 1) solid 2px;
 }
 
 .myArticle-article-card ul {
@@ -170,7 +200,6 @@ export default {
   display: inline-block;
   cursor: pointer;
   font-size: 14px;
-  margin-left: 5px;
   margin-bottom: 10px;
 }
 </style>

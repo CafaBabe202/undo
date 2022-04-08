@@ -8,10 +8,12 @@ const apis = {
   loginUrl: "/userApi/user/login",
   getMyDetailUrl: "/userApi/user/getMyDetail.token",
   updateUser: "/userApi/user/set.token",
-  uploadAvatar: "/userApi/user/uploadAvatar.token",
+  uploadAvatar: "/userApi/avatar/uploadAvatar.token",
 
   getMyArticleClazz: "/articleApi/clazz/getAllClazz",
-  getMyArticles: "/articleApi/article/getArticles.token"
+  getMyArticleStatistics: "/articleApi/article/getStatistics.token",
+  getMyArticles: "/articleApi/article/getArticles.token",
+  changeArticlePrivate: "/articleApi/article/changePrivate.token"
 }
 
 const getMyDetail = function () {
@@ -123,13 +125,40 @@ const uploadAvatar = function (file) {
   })
 }
 
-const getMyArticleClazz = function () {
+const getArticleStatistics = function () {
   axios.get(
-    apis.getMyArticleClazz + "/" + common.User.id
+    apis.getMyArticleStatistics,
+    {
+      headers: {
+        token: common.User.token
+      }
+    }
   ).then(res => {
     res = res.data
     if (res.status === 200) {
+      common.UserArticle.statistics = res.data
+    } else if (res.status === 401) {
+      Vue.use(Message.error("Token 失效，请重新登录"))
+      common.User.reset()
+    }
+    console.log(res)
+  })
+}
+
+const getArticleClazz = function () {
+  axios.get(
+    apis.getMyArticleClazz + "/" + common.User.id,
+    {
+      headers: {
+        token: common.User.token
+      }
+    }
+  ).then(res => {
+    res = res.data
+    console.log(res)
+    if (res.status === 200) {
       common.UserArticle.allClazz = res.data
+      getArticleStatistics()
       getArticles(common.UserArticle.allClazz[0].id)
     } else if (res.status === 401) {
       Vue.use(Message.error("Token 失效，请重新登录"))
@@ -152,7 +181,7 @@ const getArticles = function (clazzId) {
     res = res.data
     if (res.status === 200) {
       common.UserArticle.articles = res.data
-    } else if (res.data === 401) {
+    } else if (res.status === 401) {
       Vue.use(Message.error("Token 失效，请重新登录"))
       common.User.reset()
     }
@@ -160,6 +189,28 @@ const getArticles = function (clazzId) {
     Vue.use(Message.error("错误"))
   })
 }
+
+const changeArticlePrivate = function (id) {
+  axios.post(
+    apis.changeArticlePrivate + "/" + id,
+    {}, {
+      headers: {
+        token: common.User.token
+      }
+    }
+  ).then(res => {
+    res = res.data
+    if (res.status === 200) {
+      for (let a in common.UserArticle.articles)
+        if (common.UserArticle.articles[a].id === id)
+          common.UserArticle.articles[a].private = !common.UserArticle.articles[a].private
+    } else if (res.status === 401) {
+      Vue.use(Message.error("Token 失效，请重新登录"))
+      common.User.reset()
+    }
+  })
+}
+
 export default {
-  register, login, update, uploadAvatar, getMyDetail, getMyArticleClazz
+  register, login, update, uploadAvatar, getMyDetail, getArticleClazz, changeArticlePrivate,
 }

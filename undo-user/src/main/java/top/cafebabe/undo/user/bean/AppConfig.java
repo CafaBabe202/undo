@@ -33,6 +33,6 @@ public class AppConfig {
     public static final int SIGN_LEN = 64; // 用户签名长度
 
     // 基础路径配置
-    public static final String AVATAR_BASE_URL = "/userApi/avatar/";
+    public static final String AVATAR_BASE_URL = "/userApi/avatar/get/";
     public static final String LOCAL_AVATAR_DIR = "/home/zh/图片/undo/"; // 用户上传的头像的保存位置
 }

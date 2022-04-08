@@ -12,8 +12,9 @@
         <result property="like" column="like"/>
         <result property="visit" column="visit"/>
         <result property="clazzId" column="clazz_id"/>
+        <result property="clazzName" column="clazz_name"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="createTime" column="creat_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="isPrivate" column="is_private"/>
     </resultMap>
 
@@ -52,10 +53,11 @@
         where id = #{articleId}
     </update>
 
-    <update id="setPrivate">
+    <update id="changePrivate">
         update article
-        set is_private = #{isPrivate}
+        set is_private = !is_private
         where id = #{articleId}
+          and user_id = #{userId}
     </update>
 
     <update id="setSummary">
@@ -63,6 +65,16 @@
         set summary = #{summary}
         where id = #{articleId}
     </update>
+
+    <select id="getStatistics" resultType="map">
+        select count(id) as number, sum(`like`) as `like`, sum(visit) as visit
+        from article
+        where user_id = #{userId}
+        <if test="clazzId > 0">
+            and clazz_id = #{clazzId}
+        </if>
+        group by user_id
+    </select>
 
     <select id="getArticleAuthor">
         select userId
@@ -88,9 +100,9 @@
 
     <select id="getArticleByClazzId" resultMap="AllArticle" resultType="list"
             parameterType="top.cafebabe.undo.article.bean.Article">
-        select *
-        from article
-        where clazz_id = #{clazzId} and user_id = #{userId}
+        select a.* , c.name as clazz_name
+        from article as a left join clazz as c on a.clazz_id = c.id
+        where a.clazz_id = #{clazzId} and a.user_id = #{userId}
         <if test="!#{isPublic}">and is_private = 1</if>
     </select>
 

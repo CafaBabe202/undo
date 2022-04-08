@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import top.cafebabe.undo.article.bean.Article;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,9 +24,11 @@ public interface ArticleMapper {
 
     int setUpdateTime(int articleId, Timestamp updateTime);
 
-    int setPrivate(int articleId, boolean isPrivate);
+    int changePrivate(int userId, int articleId);
 
     int setSummary(int articleId, String summary);
+
+    HashMap<String, Integer> getStatistics(int userId, int clazzId);
 
     int getArticleAuthor(int articleId);
 

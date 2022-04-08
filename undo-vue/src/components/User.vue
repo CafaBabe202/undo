@@ -67,14 +67,14 @@ export default {
     }
   }, methods: {
     edit(field) {
-      this.nowEdit.field = field;
+      this.nowEdit.field = field
     }, submit() {
       if (this.nowEdit.field === 'username') {
-        this.nowEdit.newVal = this.user.username;
+        this.nowEdit.newVal = this.user.username
       } else if (this.nowEdit.field === 'email') {
-        this.nowEdit.newVal = this.user.email;
+        this.nowEdit.newVal = this.user.email
       } else if (this.nowEdit.field === 'sign') {
-        this.nowEdit.newVal = this.user.sign;
+        this.nowEdit.newVal = this.user.sign
       }
       ajax.update()
       this.nowEdit.field = ""

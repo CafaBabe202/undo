@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import top.cafebabe.undo.article.bean.Clazz;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cafababe

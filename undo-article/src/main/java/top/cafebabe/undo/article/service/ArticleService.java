@@ -12,6 +12,7 @@ import top.cafebabe.undo.common.util.CurrentUtil;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cafababe
@@ -37,14 +38,20 @@ public class ArticleService {
      * @return 是否添加成功。
      */
     public boolean addArticle(Article article, String con) {
+        article.setCreateTime(new Timestamp(CurrentUtil.now()));
+        article.setUpdateTime(new Timestamp(CurrentUtil.now()));
+
         Records records = new Records();
         article.setRecordsId(records.getId().toString());
+
         Content content = new Content(con);
         recordsDao.createRecords(records); // 添加记录集合。
-        boolean res = (articleMapper.add(article) != 1) && updateContent(article.getId(), "init", content); // 添加文章元数据、文章内容实体。
+
+        boolean res = (articleMapper.add(article) == 1) && updateContent(article.getId(), "init", content); // 添加文章元数据、文章内容实体。
         if (!res) { // 出现问题回滚
             articleMapper.deleteById(article.getId());
-            contentDao.deleteContent(content.getId().toString());
+            deleteRecords(records.getId().toString());
+            return false;
         }
         return true;
     }
@@ -55,17 +62,12 @@ public class ArticleService {
      * @param articleId 文章的 ID。
      * @return 是否成功删除。
      */
-    public boolean deleteArticle(int articleId) {
+    public boolean deleteArticle(int userId, int articleId) {
         Article article = articleMapper.getArticleById(articleId, true);
-        if (article == null || articleMapper.deleteById(articleId) != 1) return false; // 如果没有这篇文章或者说删除的不只有一个，就是有问题，就失败
-
-        List<Records> recordsList = recordsDao.getRecords(article.getRecordsId());
-        if (recordsList.size() != 1) return false;
-        List<Record> records = recordsList.get(0).getRecords();
-        for (Record record : records) // 逐条删除实体内容
-            contentDao.deleteContent(record.getContentId().toString());
-        recordsDao.deleteRecords(article.getRecordsId()); // 删除记录集合
-        return true;
+        if (article == null || article.getUserId() != userId)
+            return false;
+        // 如果没有这篇文章或者说删除的不只有一个，就是有问题，就失败
+        return articleMapper.deleteById(articleId) == 1 && deleteRecords(article.getRecordsId());
     }
 
     /**
@@ -84,7 +86,32 @@ public class ArticleService {
         return articleMapper.setUpdateTime(articleId, new Timestamp(CurrentUtil.now())) == 1; // 更新更新时间
     }
 
+    public boolean changePrivate(int userId, int clazzId) {
+        return articleMapper.changePrivate(userId, clazzId) == 1;
+    }
+
+    /**
+     * 获取某人某分类下的所有文章。
+     *
+     * @param userId  用户 ID。
+     * @param clazzId 分类 ID。
+     * @return 该分类下的所有文章。
+     */
     public List<Article> getArticlesByClazz(int userId, int clazzId) {
         return articleMapper.getArticleByClazzId(userId, clazzId, false);
+    }
+
+    public Map<String, Integer> getStatistics(int userId, int clazzId) {
+        return articleMapper.getStatistics(userId, clazzId);
+    }
+
+    private boolean deleteRecords(String id) {
+        List<Records> recordsList = recordsDao.getRecords(id);
+        if (recordsList.size() != 1) return false;
+        List<Record> records = recordsList.get(0).getRecords();
+        for (Record record : records) // 逐条删除实体内容
+            contentDao.deleteContent(record.getContentId().toString());
+        recordsDao.deleteRecords(id); // 删除记录集合
+        return true;
     }
 }

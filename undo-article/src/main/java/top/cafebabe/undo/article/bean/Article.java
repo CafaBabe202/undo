@@ -18,6 +18,7 @@ public class Article {
     private int like;
     private int visit;
     private int clazzId;
+    private String clazzName;
     private Timestamp updateTime;
     private Timestamp createTime;
     private boolean isPrivate;
