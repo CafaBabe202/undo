@@ -29,6 +29,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/**/*");
 
         registry.addInterceptor(tokenInterceptor)
+                .addPathPatterns("/**/*.token")
                 .addPathPatterns("/**/*.token/**/*");
 
         registry.addInterceptor(innerAppInterceptor)

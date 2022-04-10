@@ -18,12 +18,14 @@
         delete
         from clazz
         where id = #{clazzId}
+          and user_id = #{userId}
     </delete>
 
     <update id="setName">
         update clazz
         set name = #{name}
         where id = #{clazzId}
+          and user_id = #{userId}
     </update>
 
     <select id="getClazzByUserId" resultMap="AllClazz" resultType="list"

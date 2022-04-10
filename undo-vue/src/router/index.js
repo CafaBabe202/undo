@@ -6,6 +6,7 @@ import User from '../components/User'
 import MyArticle from '../components/MyArticle'
 import ShowArticle from '../components/ShowArticle'
 import MyFile from '../components/MyFile'
+import EditArticle from '../components/EditArticle'
 
 Vue.use(Router)
 
@@ -15,7 +16,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: Index,
+      component: Index
     }, {
       path: "/user",
       name: "user",
@@ -27,11 +28,19 @@ export default new Router({
     }, {
       path: "/showArticle/:id/",
       name: "showArticle",
-      component: ShowArticle,
+      component: ShowArticle
     }, {
       path: "/myFile",
       name: "myFile",
       component: MyFile
+    }, {
+      path: "/editArticle/:id/",
+      name: "editArticle",
+      component: EditArticle
+    },{
+      path: "/editArticle",
+      name: "editArticle",
+      component: EditArticle
     }
   ]
 })

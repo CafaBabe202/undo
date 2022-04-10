@@ -84,8 +84,8 @@ public class UserCtl {
     // 获取自己的用户信息
     @GetMapping("/getMyDetail.token")
     public ResponseMessage getMyDetail(HttpServletRequest request) {
-        Map<String, String> user = loginUserSer.userDetail(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER));
-        return user == null ? MessageUtil.fail("Token过期") : MessageUtil.ok(user);
+        Map<String, String> user = loginUserSer.userGetDetail(request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER));
+        return user == null ? MessageUtil.tokenInvalid() : MessageUtil.ok(user);
     }
 
     // 获取用户的公开资料

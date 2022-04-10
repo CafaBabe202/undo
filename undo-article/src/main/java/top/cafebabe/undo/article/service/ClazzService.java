@@ -22,6 +22,14 @@ public class ClazzService {
         return this.clazzMapper.add(clazz) == 1;
     }
 
+    public boolean deleteClazz(int userId, int clazzId) {
+        return clazzMapper.deleteById(userId, clazzId) == 1;
+    }
+
+    public boolean rename(int userId, int clazzId, String name) {
+        return clazzMapper.setName(userId, clazzId, name) == 1;
+    }
+
     public List<Clazz> getAllClazz(int userId) {
         return this.clazzMapper.getClazzByUserId(userId);
     }

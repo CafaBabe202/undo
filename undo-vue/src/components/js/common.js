@@ -24,7 +24,7 @@ const UserArticle = {
     like: 0,
     number: 0,
     visit: 0,
-  }
+  }, nowClazzId: 0
 }
 
 const LoginDialogConfig = {
@@ -85,6 +85,24 @@ const UserNowEdit = {
   newVal: ""
 }
 
+const ClazzNowEdit = {
+  id: "",
+  newVal: ""
+}
+
+const ArticleNowEdit = {
+  id: "",
+  title: "",
+  summary: "",
+  content: "",
+  clazzId: "",
+  isPrivate: "",
+  reset() {
+    this.id = null
+    this.id = this.title = this.summary = this.content = this.clazzId = this.isPrivate = ""
+  }
+}
+
 export default {
   MeConfig,
   LoginDialogConfig,
@@ -94,5 +112,7 @@ export default {
   LoginForm,
   RegisterForm,
   RegisterFormRules,
-  UserNowEdit
+  UserNowEdit,
+  ClazzNowEdit,
+  ArticleNowEdit
 }

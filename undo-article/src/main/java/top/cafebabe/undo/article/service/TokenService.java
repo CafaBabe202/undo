@@ -22,7 +22,7 @@ public class TokenService {
         if (get == null) return null;
 
         ResponseMessage message = StringUtil.pareJson(get, ResponseMessage.class);
-        if (message.getStatus() != ResponseMessage.STATUS_OK) return null;
+        if (message == null || message.getStatus() != ResponseMessage.STATUS_OK) return null;
 
         return StringUtil.pareJson(StringUtil.toJson(message.getData()), LoginUser.class);
     }

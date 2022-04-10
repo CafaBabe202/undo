@@ -13,9 +13,9 @@ import java.util.Map;
 public interface ClazzMapper {
     int add(Clazz clazz);
 
-    int deleteById(int clazzId);
+    int deleteById(int userId, int clazzId);
 
-    int setName(int clazzId, String name);
+    int setName(int userId, int clazzId, String name);
 
     List<Clazz> getClazzByUserId(int userId);
 

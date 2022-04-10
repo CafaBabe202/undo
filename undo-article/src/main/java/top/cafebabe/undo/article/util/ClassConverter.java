@@ -2,8 +2,8 @@ package top.cafebabe.undo.article.util;
 
 import top.cafebabe.undo.article.bean.Article;
 import top.cafebabe.undo.article.bean.Clazz;
-import top.cafebabe.undo.article.form.AddArticleForm;
 import top.cafebabe.undo.article.form.AddClazzForm;
+import top.cafebabe.undo.article.form.EditArticleForm;
 
 /**
  * @author cafababe
@@ -16,7 +16,7 @@ public class ClassConverter {
         return clazz;
     }
 
-    public static Article toArticle(AddArticleForm form) {
+    public static Article toArticle(EditArticleForm form) {
         Article article = new Article();
 
         article.setTitle(form.getTitle());

@@ -5,9 +5,11 @@
       <el-card class="myArticle-summary-clazzs" shadow="hover">
         <div slot="header" class="clearfix">
           <span>所有分类</span>
-          <el-button style="float: right; padding: 3px 0" type="text">添加分类</el-button>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="addClazz">添加分类</el-button>
         </div>
-        <div v-for="o in this.article.allClazz" :key="o.id" class="myArticle-clazzs-item">
+        <div v-for="o in this.article.allClazz" :key="o.id" @click="toClazz(o.id)"
+             @dblclick="editClazzName(o.id,o.name)"
+             class="myArticle-clazzs-item">
           <i class="el-icon-collection i-color"/>
           <span>{{ o.name }}</span>
         </div>
@@ -40,7 +42,7 @@
         </el-descriptions-item>
       </el-descriptions>
 
-      <el-button class="myArticle-summary-add" type="primary">
+      <el-button class="myArticle-summary-add" type="primary" @click="addArticle">
         <i class="el-icon-edit"/>
         添加文章
       </el-button>
@@ -52,8 +54,9 @@
       <div v-for="article in this.article.articles" class="myArticle-article-card">
         <p class="myArticle-article-card-title">
           <span>{{ article.title }}</span>
-          <i class="el-icon-edit"/>
-          <i class="el-icon-share"/>
+          <i class="el-icon-edit" @click="editArticle(article.id)"/>
+          <i class="el-icon-delete" @click="deleteArticle(article.id)"/>
+          <i class="el-icon-share" @click="shareArticle(article.id)"/>
           <span @click="changePrivate(article.id)">
           <i class="el-icon-sunny" v-show="!article.private"/>
           <i class="el-icon-cloudy" v-show="article.private"/>
@@ -71,33 +74,80 @@
 
     <!-- clear float -->
     <div style="clear: both"></div>
+
+    <!-- 修改分类信息的 Dialog -->
+    <div>
+      <el-dialog title="修改分类信息" :visible.sync="editClazzNameDialog" width="30%" center>
+        <span><input v-model="nowEditClazz.newVal" class="myArticle-input-clazz-name"/></span>
+        <span slot="footer" class="dialog-footer">
+          <template>
+            <el-popconfirm title="你确定删除该分类吗？" @confirm="deleteClazz">
+              <el-button slot="reference">删除</el-button>
+            </el-popconfirm>
+          </template>
+          <el-button style="margin-left: 50px" type="primary" @click="renameClazz">确 定</el-button>
+        </span>
+      </el-dialog>
+    </div>
+
   </div>
 </template>
 
 <script>
 import common from "./js/common";
 import ajax from "./js/ajax";
+import Vue from "vue";
+import VueClipboard from 'vue-clipboard2';
+import {Message} from "element-ui";
+
+Vue.use(VueClipboard)
 
 export default {
   name: "MyArticle",
   data() {
     return {
       user: common.User,
-      article: common.UserArticle
+      article: common.UserArticle,
+      editClazzNameDialog: false,
+      nowEditClazz: common.ClazzNowEdit
     }
   }, methods: {
     changePrivate(id) {
       ajax.changeArticlePrivate(id)
-    }
+    }, addClazz() {
+      ajax.addClazz()
+    }, toClazz(id) {
+      common.UserArticle.nowClazzId = id
+      ajax.getArticles(id)
+    }, editClazzName(id, name) {
+      this.nowEditClazz.id = id
+      this.nowEditClazz.newVal = name
+      this.editClazzNameDialog = true
+    }, deleteClazz() {
+      ajax.deleteClazz()
+      this.editClazzNameDialog = false
+    }, renameClazz() {
+      ajax.renameClazz()
+      this.editClazzNameDialog = false;
+    }, shareArticle(id) {
+      this.$copyText("http://127.0.0.1:8080/showArticle/" + id)
+      Vue.use(Message.success("文章链接已添加到剪切板"))
+    }, addArticle() {
+      this.$router.push("/editArticle").catch(res => console.log(res))
+    }, deleteArticle(id) {
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        ajax.deleteArticle(id)
+      });
+    }, editArticle(id) {
+      this.$router.push("/editArticle/" + id)
+    },
   }, mounted() {
-  }, watch: {
-    user: {
-      deep: true,
-      handler() {
-        ajax.getArticleClazz()
-      }
-    }
-  }
+    setTimeout(ajax.refreshArticle, 50)
+  }, watch: {}
 }
 </script>
 
@@ -114,6 +164,16 @@ i:hover, .i-color {
   width: 100%;
   margin-top: 10px;
   background-image: url("/static/bg.png");
+}
+
+.myArticle-input-clazz-name {
+  width: 60%;
+  height: 30px;
+  font-size: 15px;
+  border: black solid 1px;
+  border-radius: 5px;
+  outline: none;
+  margin-left: 20%
 }
 
 .myArticle-summary {
@@ -161,6 +221,7 @@ i:hover, .i-color {
   padding-bottom: 7px;
   padding-left: 30px;
   font-size: 20px;
+  cursor: pointer;
 }
 
 .myArticle-article-card-title i {

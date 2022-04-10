@@ -18,17 +18,9 @@ new Vue({
     return {
       user: common.User,
     }
-  }, methods: {
-    refreshUser() {
-      if (common.User.isLogin) {
-        ajax.getMyDetail()
-        ajax.getMyArticleClazz()
-      } else {
-        common.User.reset()
-      }
-    },
-  }, mounted() {
+  }, methods: {}, mounted() {
     localStore.loadUser()
+    ajax.refreshUser()
   }, watch: {
     user: {
       deep: true,

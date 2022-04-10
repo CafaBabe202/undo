@@ -39,11 +39,15 @@
           </tr>
           <tr>
             <td class="user-detail-table-label">文章</td>
-            <td>{{ userArticle.allNumber }}</td>
+            <td>{{ userArticle.statistics.number }}</td>
           </tr>
           <tr>
             <td class="user-detail-table-label">获赞</td>
-            <td>{{ userArticle.allLike }}</td>
+            <td>{{ userArticle.statistics.like }}</td>
+          </tr>
+          <tr>
+            <td class="user-detail-table-label">浏览量</td>
+            <td>{{ userArticle.statistics.visit }}</td>
           </tr>
         </table>
       </div>

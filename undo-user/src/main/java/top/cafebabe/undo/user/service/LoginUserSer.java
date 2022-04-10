@@ -78,7 +78,7 @@ public class LoginUserSer {
      * @param token token。
      * @return Map 形式的用户信息。
      */
-    public Map<String, String> userDetail(String token) {
+    public Map<String, String> userGetDetail(String token) {
         LoginUser user = getUseByToken(token);
         if (user == null) return null;
         Map<String, String> userMap = ClassConverter.objectToMap(user);

@@ -6,7 +6,8 @@ import lombok.Data;
  * @author cafababe
  */
 @Data
-public class AddArticleForm {
+public class EditArticleForm {
+    private String id;
     private String title;
     private String summary;
     private String content;

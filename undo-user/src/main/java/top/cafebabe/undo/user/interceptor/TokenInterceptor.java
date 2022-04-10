@@ -3,6 +3,7 @@ package top.cafebabe.undo.user.interceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import top.cafebabe.undo.common.util.Logger;
 import top.cafebabe.undo.common.util.MessageUtil;
 import top.cafebabe.undo.common.util.StringUtil;
 import top.cafebabe.undo.common.util.TokenUtil;
@@ -25,6 +26,8 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String token = request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER);
+
+        Logger.logger(token);
 
         if (token != null && token.equals(tokenRedis.getToken(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY))))
             return true;

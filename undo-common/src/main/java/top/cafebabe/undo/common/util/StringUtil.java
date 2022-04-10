@@ -55,6 +55,12 @@ public class StringUtil {
     }
 
     public static <T> T pareJson(String json, Class<T> clazz) {
-        return gson.fromJson(json, clazz);
+        try {
+            return gson.fromJson(json, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(json);
+            return null;
+        }
     }
 }
