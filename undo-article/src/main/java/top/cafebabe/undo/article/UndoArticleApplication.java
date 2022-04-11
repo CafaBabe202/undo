@@ -10,7 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
         "top.cafebabe.undo.article.controller",
         "top.cafebabe.undo.article.service",
         "top.cafebabe.undo.article.config",
-        "top.cafebabe.undo.article.interceptor"
+        "top.cafebabe.undo.article.interceptor",
+        "top.cafebabe.undo.article.component"
 })
 public class UndoArticleApplication {
 

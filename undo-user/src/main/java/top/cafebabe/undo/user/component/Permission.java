@@ -1,4 +1,4 @@
-package top.cafebabe.undo.user.compent;
+package top.cafebabe.undo.user.component;
 
 /**
  * @author cafababe

@@ -94,12 +94,13 @@ const ArticleNowEdit = {
   id: "",
   title: "",
   summary: "",
+  updateSummary: "",
   content: "",
   clazzId: "",
   isPrivate: "",
   reset() {
-    this.id = null
-    this.id = this.title = this.summary = this.content = this.clazzId = this.isPrivate = ""
+    this.id = undefined
+    this.title = this.summary = this.updateSummary = this.content = this.clazzId = this.isPrivate = ""
   }
 }
 

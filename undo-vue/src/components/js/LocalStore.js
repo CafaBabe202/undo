@@ -9,7 +9,6 @@ const loadUser = function () {
   for(let f in user) {
     common.User[f] = user[f]
   }
-
 }
 
 export default {

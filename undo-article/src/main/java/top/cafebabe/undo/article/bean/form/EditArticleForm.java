@@ -1,4 +1,4 @@
-package top.cafebabe.undo.article.form;
+package top.cafebabe.undo.article.bean.form;
 
 import lombok.Data;
 
@@ -7,9 +7,10 @@ import lombok.Data;
  */
 @Data
 public class EditArticleForm {
-    private String id;
+    private int id;
     private String title;
     private String summary;
+    private String updateSummary;
     private String content;
     private int clazzId;
     private boolean isPrivate;

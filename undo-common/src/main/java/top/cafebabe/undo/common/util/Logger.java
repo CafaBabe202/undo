@@ -11,6 +11,9 @@ public class Logger {
     private static final Log log = LogFactory.get();
 
     public static void logger(Object data) {
-        log.log(Level.INFO, StringUtil.toJson(data));
+        if (data instanceof String)
+            log.log(Level.INFO, data.toString());
+        else
+            log.log(Level.INFO, StringUtil.toJson(data));
     }
 }

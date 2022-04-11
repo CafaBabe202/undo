@@ -9,6 +9,8 @@
         </option>
       </select>
       <textarea v-model="nowEdit.summary" class="editor-summary" maxlength="256"/>
+      <textarea v-model="nowEdit.updateSummary" class="editor-update-summary" v-show="nowEdit.id>0"
+                maxlength="256"/>
       <mavon-editor class="editor" v-model="nowEdit.content" :ishljs="true" @save="submitArticle"/>
       <el-button type="primary" class="editor-save" @click="submitArticle">保存</el-button>
     </div>
@@ -34,10 +36,14 @@ export default {
   }, methods: {
     submitArticle() {
       ajax.editArticle()
+    }, getArticleForEdit() {
+      ajax.getArticleForEdit(this.nowEdit.id)
     }
   }, mounted() {
-    setTimeout(ajax.getArticleClazz, 50)
     this.nowEdit.id = this.$route.params.id
+    setTimeout(ajax.getArticleClazz, 50)
+    if (this.nowEdit.id !== undefined)
+      setTimeout(this.getArticleForEdit, 50)
   }
 }
 </script>
@@ -78,7 +84,7 @@ export default {
 }
 
 
-.editor-summary {
+.editor-summary, .editor-update-summary {
   width: 99%;
   height: 80px;
   outline: none;

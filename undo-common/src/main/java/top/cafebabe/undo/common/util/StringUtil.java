@@ -58,8 +58,6 @@ public class StringUtil {
         try {
             return gson.fromJson(json, clazz);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(json);
             return null;
         }
     }

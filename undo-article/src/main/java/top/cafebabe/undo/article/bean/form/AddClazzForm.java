@@ -1,4 +1,4 @@
-package top.cafebabe.undo.article.form;
+package top.cafebabe.undo.article.bean.form;
 
 import lombok.Data;
 

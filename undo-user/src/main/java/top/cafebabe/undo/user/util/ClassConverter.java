@@ -2,7 +2,7 @@ package top.cafebabe.undo.user.util;
 
 import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.SysUser;
-import top.cafebabe.undo.user.form.RegisterForm;
+import top.cafebabe.undo.user.bean.form.RegisterForm;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

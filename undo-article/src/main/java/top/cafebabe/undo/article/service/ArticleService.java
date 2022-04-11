@@ -11,6 +11,7 @@ import top.cafebabe.undo.article.dao.RecordsDao;
 import top.cafebabe.undo.common.util.CurrentUtil;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,8 +48,9 @@ public class ArticleService {
         Content content = new Content(con);
         recordsDao.createRecords(records); // 添加记录集合。
 
-        boolean res = (articleMapper.add(article) == 1) && updateContent(article.getId(), "init", content); // 添加文章元数据、文章内容实体。
-        if (!res) { // 出现问题回滚
+        contentDao.addContent(content); // 向内容集合添加数据
+        if (articleMapper.add(article) != 1
+                || !recordsDao.putRecord(article.getRecordsId(), new Record("init", content.getId()))) { // 出现问题回滚
             articleMapper.deleteById(article.getId());
             deleteRecords(records.getId().toString());
             return false;
@@ -71,23 +73,57 @@ public class ArticleService {
     }
 
     /**
-     * 更新内容。
+     * 更新文章
      *
-     * @param articleId 更新的文章 ID。
-     * @param summary   更新的摘要。
-     * @param content   新的内容。
-     * @return 是否更新成功。
+     * @param newArticle 新的文章
+     * @param summary    更新说明
+     * @param content    新的正文
+     * @return 是否更新成功
      */
-    public boolean updateContent(int articleId, String summary, Content content) {
-        Article article = articleMapper.getArticleById(articleId, true);
+    public boolean updateArticle(Article newArticle, String summary, Content content) {
+        Article article = articleMapper.getArticleById(newArticle.getId(), true);
         if (article == null) return false; // 如果没有该文章肯定是失败
-        contentDao.addContent(content);
-        if (!recordsDao.putRecord(article.getRecordsId(), new Record(summary, content.getId()))) return false; // 添加更新记录
-        return articleMapper.setUpdateTime(articleId, new Timestamp(CurrentUtil.now())) == 1; // 更新更新时间
+        contentDao.addContent(content); // 向内容集合添加数据
+        if (!recordsDao.putRecord(article.getRecordsId(), new Record(summary, content.getId())))
+            return false; // 向更新记录添加数据
+        newArticle.setUpdateTime(new Timestamp(CurrentUtil.now()));
+        return articleMapper.update(newArticle) == 1; // 更新 MySQL 中的数据
     }
 
+    /**
+     * 设置访问级别。
+     *
+     * @param userId  用户 ID。
+     * @param clazzId 文章 ID。
+     * @return 是否更新成功。
+     */
     public boolean changePrivate(int userId, int clazzId) {
         return articleMapper.changePrivate(userId, clazzId) == 1;
+    }
+
+    /**
+     * 获取文章
+     *
+     * @param userId    用户 ID。
+     * @param articleId 文章 ID。
+     * @return 找到的文章，如果不存在，返回 null。
+     */
+    public Article getMyArticle(int userId, int articleId) {
+        Article article = articleMapper.getArticleById(articleId, true);
+        return article.getUserId() == userId ? article : null;
+    }
+
+    /**
+     * 获取某一记录 ID 的最新文章。
+     *
+     * @param contentId 记录 ID。
+     * @return 最新的内容。
+     */
+    public Content getLastContent(String contentId) {
+        Records records = recordsDao.getRecords(contentId);
+        List<Record> rs = records.getRecords();
+        Record record = rs.get(rs.size() - 1);
+        return contentDao.getContent(record.getContentId().toString());
     }
 
     /**
@@ -97,18 +133,32 @@ public class ArticleService {
      * @param clazzId 分类 ID。
      * @return 该分类下的所有文章。
      */
-    public List<Article> getArticlesByClazz(int userId, int clazzId) {
-        return articleMapper.getArticleByClazzId(userId, clazzId, false);
+    public List<Article> getMyArticlesByClazz(int userId, int clazzId) {
+        return articleMapper.getArticleByClazzId(userId, clazzId, true);
     }
 
-    public Map<String, Integer> getStatistics(int userId, int clazzId) {
-        return articleMapper.getStatistics(userId, clazzId);
+    /**
+     * 获取用户某一分类的统计信息。 如果 ID <= 0 ，则统计本人所有分类的信息。
+     *
+     * @param userId  用户 ID。
+     * @param clazzId 分类 ID。
+     * @return 返回统计信息。
+     */
+    public Map<String, Long> getStatistics(int userId, int clazzId) {
+        HashMap<String, Long> statistics = articleMapper.getStatistics(userId, clazzId);
+        if (statistics == null) {
+            statistics = new HashMap<>();
+            statistics.put("number", 0L);
+            statistics.put("like", 0L);
+            statistics.put("visit", 0L);
+        }
+        return statistics;
     }
 
     private boolean deleteRecords(String id) {
-        List<Records> recordsList = recordsDao.getRecords(id);
-        if (recordsList.size() != 1) return false;
-        List<Record> records = recordsList.get(0).getRecords();
+        Records rs = recordsDao.getRecords(id);
+        if (rs == null) return false;
+        List<Record> records = rs.getRecords();
         for (Record record : records) // 逐条删除实体内容
             contentDao.deleteContent(record.getContentId().toString());
         recordsDao.deleteRecords(id); // 删除记录集合

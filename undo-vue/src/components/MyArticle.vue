@@ -53,7 +53,7 @@
     <div class="myArticle-show-article">
       <div v-for="article in this.article.articles" class="myArticle-article-card">
         <p class="myArticle-article-card-title">
-          <span>{{ article.title }}</span>
+          <span @click="showArticle(article.id)">{{ article.title }}</span>
           <i class="el-icon-edit" @click="editArticle(article.id)"/>
           <i class="el-icon-delete" @click="deleteArticle(article.id)"/>
           <i class="el-icon-share" @click="shareArticle(article.id)"/>
@@ -117,8 +117,9 @@ export default {
     }, addClazz() {
       ajax.addClazz()
     }, toClazz(id) {
-      common.UserArticle.nowClazzId = id
-      ajax.getArticles(id)
+      if (common.UserArticle.nowClazzId !== id) {
+        ajax.getArticles(id)
+      }
     }, editClazzName(id, name) {
       this.nowEditClazz.id = id
       this.nowEditClazz.newVal = name
@@ -133,6 +134,7 @@ export default {
       this.$copyText("http://127.0.0.1:8080/showArticle/" + id)
       Vue.use(Message.success("文章链接已添加到剪切板"))
     }, addArticle() {
+      common.ArticleNowEdit.reset()
       this.$router.push("/editArticle").catch(res => console.log(res))
     }, deleteArticle(id) {
       this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
@@ -143,8 +145,11 @@ export default {
         ajax.deleteArticle(id)
       });
     }, editArticle(id) {
-      this.$router.push("/editArticle/" + id)
+      this.$router.push("/editArticle/" + id).catch(data => console.log(data))
+    }, showArticle(id) {
+      this.$router.push("/showArticle/" + id).catch(data => console.log(data))
     },
+
   }, mounted() {
     setTimeout(ajax.refreshArticle, 50)
   }, watch: {}

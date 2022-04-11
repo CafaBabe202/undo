@@ -2,9 +2,11 @@ package top.cafebabe.undo.article.controller;
 
 import org.springframework.web.bind.annotation.*;
 import top.cafebabe.undo.article.bean.AppConfig;
+import top.cafebabe.undo.article.bean.Article;
 import top.cafebabe.undo.article.bean.Clazz;
-import top.cafebabe.undo.article.form.AddClazzForm;
-import top.cafebabe.undo.article.form.RenameClazzForm;
+import top.cafebabe.undo.article.bean.form.AddClazzForm;
+import top.cafebabe.undo.article.bean.form.RenameClazzForm;
+import top.cafebabe.undo.article.service.ArticleService;
 import top.cafebabe.undo.article.service.ClazzService;
 import top.cafebabe.undo.article.service.TokenService;
 import top.cafebabe.undo.article.util.Checker;
@@ -15,6 +17,8 @@ import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.util.MessageUtil;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author cafababe
@@ -25,10 +29,12 @@ public class ClazzCtl {
 
     final TokenService tokenService;
     final ClazzService clazzService;
+    final ArticleService articleService;
 
-    public ClazzCtl(TokenService tokenService, ClazzService clazzService) {
+    public ClazzCtl(TokenService tokenService, ClazzService clazzService, ArticleService articleService) {
         this.tokenService = tokenService;
         this.clazzService = clazzService;
+        this.articleService = articleService;
     }
 
     @PostMapping("/add.token")
@@ -47,10 +53,16 @@ public class ClazzCtl {
     @PostMapping("/delete.token/{id}")
     public ResponseMessage delete(@PathVariable String id, HttpSession session) {
         LoginUser loginUser = SessionUtil.getLoginUser(session);
+
         if (loginUser == null)
             return MessageUtil.error("变量错误");
+
         try {
-            return clazzService.deleteClazz(loginUser.getId(), Integer.parseInt(id)) ?
+            int i = Integer.parseInt(id);
+            if (articleService.getStatistics(loginUser.getId(), i).get("number") > Integer.parseInt("0"))
+                return MessageUtil.fail("分类不为空");
+
+            return clazzService.deleteClazz(loginUser.getId(), i) ?
                     MessageUtil.ok("删除成功") : MessageUtil.fail("删除失败");
         } catch (NumberFormatException e) {
             e.printStackTrace();

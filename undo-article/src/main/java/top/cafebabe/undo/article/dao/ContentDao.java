@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import top.cafebabe.undo.article.bean.Content;
 
+import java.util.List;
+
 /**
  * @author cafababe
  * 操作文章的实际的实体内容。
@@ -38,5 +40,11 @@ public class ContentDao {
     public void deleteContent(String contentId) {
         Criteria criteria = Criteria.where("_id").is(contentId);
         mongoTemplate.remove(new Query(criteria), CONTENT_COLLECTION_NAME);
+    }
+
+    public Content getContent(String contentId) {
+        Criteria criteria = Criteria.where("_id").is(contentId);
+        List<Content> contents = mongoTemplate.find(new Query(criteria), Content.class);
+        return contents.size() == 1 ? contents.get(0) : null;
     }
 }

@@ -30,6 +30,10 @@ public class ClazzService {
         return clazzMapper.setName(userId, clazzId, name) == 1;
     }
 
+    public boolean existClazz(int id) {
+        return clazzMapper.getClazzName(id) != null;
+    }
+
     public List<Clazz> getAllClazz(int userId) {
         return this.clazzMapper.getClazzByUserId(userId);
     }

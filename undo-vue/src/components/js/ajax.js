@@ -19,6 +19,7 @@ const apis = {
   getMyArticleClazz: "/articleApi/clazz/getAllClazz",
   getMyArticleStatistics: "/articleApi/article/getStatistics.token",
   getMyArticles: "/articleApi/article/getArticles.token",
+  getMyArticle: "/articleApi/article/getMyArticle.token",
   changeArticlePrivate: "/articleApi/article/changePrivate.token",
 
   addClazz: "/articleApi/clazz/add.token",
@@ -29,9 +30,8 @@ const apis = {
 //获取用户信息的方法
 const getMyDetail = function () {
   GET(apis.getMyDetailUrl, null, data => {
-    for (let f in data) {
+    for (let f in data)
       common.User[f] = data[f]
-    }
     getArticleStatistics()
   })
 }
@@ -111,16 +111,18 @@ const editArticle = function () {
   }
   POST(apis.editArticle, common.ArticleNowEdit, data => {
     Vue.use(Message.success(data))
-    common.ArticleNowEdit.reset()
     window.location.href = "/myArticle";
+    common.ArticleNowEdit.reset()
   }, data => {
     Vue.use(Message.error(data))
   })
 }
 
+// 删除文章
 const deleteArticle = function (id) {
   POST(apis.deleteArticle + "/" + id, null, data => {
     Vue.use(Message.success(data))
+    common.UserArticle.statistics.number--
     getArticles(common.UserArticle.nowClazzId)
   }, data => {
     Vue.use((Message.error(data)))
@@ -138,7 +140,9 @@ const getArticleClazz = function (refreshArticle) {
 
 // 获取自己的某个分类的所有分类，如果 clazzId 为 -1 ，获取所有文章
 const getArticles = function (clazzId) {
+  console.log(common.UserArticle)
   GET(apis.getMyArticles + "/" + clazzId, null, res => {
+    common.UserArticle.nowClazzId = clazzId
     common.UserArticle.articles = res
   }, null)
 }
@@ -152,6 +156,19 @@ const changeArticlePrivate = function (id) {
   }, null)
 }
 
+// 编辑前获取文章现有内容
+const getArticleForEdit = function (id) {
+  GET(apis.getMyArticle + "/" + id, null, data => {
+    common.ArticleNowEdit.clazzId = data.clazzId
+    common.ArticleNowEdit.title = data.title
+    common.ArticleNowEdit.summary = data.summary
+    common.ArticleNowEdit.content = data.content
+  }, data => {
+    Vue.use(Message.error(data))
+  })
+}
+
+// 添加文章分类
 const addClazz = function () {
   POST(apis.addClazz, {name: "未命名"}, data => {
     Vue.use(Message.success("添加成功"))
@@ -162,6 +179,7 @@ const addClazz = function () {
   })
 }
 
+// 删除分类
 const deleteClazz = function () {
   POST(apis.deleteClazz + "/" + common.ClazzNowEdit.id, null, data => {
     Vue.use(Message.success(data))
@@ -172,6 +190,7 @@ const deleteClazz = function () {
   })
 }
 
+// 重命名分类
 const renameClazz = function () {
   POST(apis.renameClazz, common.ClazzNowEdit, data => {
     Vue.use(Message.success(data))
@@ -181,11 +200,13 @@ const renameClazz = function () {
   })
 }
 
+// 刷新文章统计信息、分类列表、第一分类下的文章内容
 const refreshArticle = function () {
   getArticleStatistics()
   getArticleClazz(true)
 }
 
+// 刷新用户信息
 const refreshUser = function () {
   getMyDetail()
 }
@@ -249,6 +270,7 @@ export default {
   getArticles,
   getArticleClazz,
   changeArticlePrivate,
+  getArticleForEdit,
   addClazz,
   deleteArticle,
   deleteClazz,

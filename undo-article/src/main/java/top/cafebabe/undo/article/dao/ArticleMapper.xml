@@ -19,8 +19,8 @@
     </resultMap>
 
     <insert id="add" parameterType="top.cafebabe.undo.article.bean.Article" useGeneratedKeys="true" keyProperty="id">
-        insert into article(id, user_id, summary, title, records_id, clazz_id, update_time, create_time, is_private)
-            value (#{id},#{userId},#{summary},#{title},#{recordsId},#{clazzId},#{updateTime},#{createTime},#{isPrivate});
+        insert into article(user_id, summary, title, records_id, clazz_id, update_time, create_time, is_private)
+            value (#{userId},#{summary},#{title},#{recordsId},#{clazzId},#{updateTime},#{createTime},#{isPrivate});
     </insert>
 
     <delete id="deleteById">
@@ -41,18 +41,6 @@
         where id = #{articleId}
     </update>
 
-    <update id="setClazz">
-        update article
-        set clazz_id = #{clazzId}
-        where id = #{articleId}
-    </update>
-
-    <update id="setUpdateTime">
-        update article
-        set update_time = #{updateTime}
-        where id = #{articleId}
-    </update>
-
     <update id="changePrivate">
         update article
         set is_private = !is_private
@@ -60,10 +48,14 @@
           and user_id = #{userId}
     </update>
 
-    <update id="setSummary">
+    <update id="update">
         update article
-        set summary = #{summary}
-        where id = #{articleId}
+        set title      = #{title},
+            clazz_id=#{clazzId},
+            summary=#{summary},
+            update_time=#{updateTime}
+        where user_id = #{userId}
+          and id = #{id}
     </update>
 
     <select id="getStatistics" resultType="map">
@@ -87,7 +79,7 @@
         select *
         from article
         where id = #{articleId}
-        <if test="!#{isPublic}">and is_private = 1</if>
+        <if test="!#{isPrivate}">and is_private = 0</if>
     </select>
 
     <select id="getArticleByUser" resultMap="AllArticle" resultType="list"
@@ -95,7 +87,7 @@
         select *
         from article
         where user_id = #{userId}
-        <if test="!#{isPublic}">and is_private = 1</if>
+        <if test="!#{isPrivate}">and is_private = 0</if>
     </select>
 
     <select id="getArticleByClazzId" resultMap="AllArticle" resultType="list"
@@ -103,7 +95,7 @@
         select a.* , c.name as clazz_name
         from article as a left join clazz as c on a.clazz_id = c.id
         where a.clazz_id = #{clazzId} and a.user_id = #{userId}
-        <if test="!#{isPublic}">and is_private = 1</if>
+        <if test="!#{isPrivate}">and is_private = 0</if>
     </select>
 
     <select id="getArticleByTitleLike" resultMap="AllArticle" resultType="list"
@@ -111,6 +103,6 @@
         select *
         from article
         where title like %#{likeTitle}%
-        <if test="!#{isPublic}">and is_private = 1</if>
+        <if test="!#{isPrivate}">and is_private = 0</if>
     </select>
 </mapper>

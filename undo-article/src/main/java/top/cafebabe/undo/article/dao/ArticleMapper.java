@@ -20,23 +20,19 @@ public interface ArticleMapper {
 
     int visit(int articleId);
 
-    int setClazz(int articleId, int clazzId);
-
-    int setUpdateTime(int articleId, Timestamp updateTime);
+    int update(Article article);
 
     int changePrivate(int userId, int articleId);
 
-    int setSummary(int articleId, String summary);
-
-    HashMap<String, Integer> getStatistics(int userId, int clazzId);
+    HashMap<String, Long> getStatistics(int userId, int clazzId);
 
     int getArticleAuthor(int articleId);
 
-    Article getArticleById(int articleId, boolean isPublic);
+    Article getArticleById(int articleId, boolean isPrivate);
 
-    List<Article> getArticleByUser(int userId, boolean isPublic);
+    List<Article> getArticleByUser(int userId, boolean isPrivate);
 
-    List<Article> getArticleByClazzId(int userId, int clazzId, boolean isPublic);
+    List<Article> getArticleByClazzId(int userId, int clazzId, boolean isPrivate);
 
-    List<Article> getArticleByTitleLike(String likeTitle, boolean isPublic);
+    List<Article> getArticleByTitleLike(String likeTitle, boolean isPrivate);
 }

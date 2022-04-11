@@ -27,8 +27,6 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String token = request.getHeader(AppConfig.TOKEN_NAME_IN_HEADER);
 
-        Logger.logger(token);
-
         if (token != null && token.equals(tokenRedis.getToken(TokenUtil.getLoginTokenId(token, AppConfig.TOKEN_KEY))))
             return true;
 

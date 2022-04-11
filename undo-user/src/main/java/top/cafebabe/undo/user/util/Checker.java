@@ -2,9 +2,9 @@ package top.cafebabe.undo.user.util;
 
 import top.cafebabe.undo.common.util.StringUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
-import top.cafebabe.undo.user.form.LoginForm;
-import top.cafebabe.undo.user.form.RegisterForm;
-import top.cafebabe.undo.user.form.SetForm;
+import top.cafebabe.undo.user.bean.form.LoginForm;
+import top.cafebabe.undo.user.bean.form.RegisterForm;
+import top.cafebabe.undo.user.bean.form.SetForm;
 
 /**
  * @author cafababe

@@ -67,8 +67,9 @@ public class RecordsDao {
      * @param recordsId 记录的 ID。
      * @return 存放记录的列表。
      */
-    public List<Records> getRecords(String recordsId) {
+    public Records getRecords(String recordsId) {
         Criteria criteria = Criteria.where("_id").is(recordsId);
-        return mongoTemplate.find(new Query(criteria), Records.class, RECORDS_COLLECTION_NAME);
+        List<Records> records = mongoTemplate.find(new Query(criteria), Records.class, RECORDS_COLLECTION_NAME);
+        return records.size() == 1 ? records.get(0) : null;
     }
 }

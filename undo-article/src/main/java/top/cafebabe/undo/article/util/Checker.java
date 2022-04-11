@@ -1,9 +1,9 @@
 package top.cafebabe.undo.article.util;
 
 import top.cafebabe.undo.article.bean.AppConfig;
-import top.cafebabe.undo.article.form.AddClazzForm;
-import top.cafebabe.undo.article.form.EditArticleForm;
-import top.cafebabe.undo.article.form.RenameClazzForm;
+import top.cafebabe.undo.article.bean.form.AddClazzForm;
+import top.cafebabe.undo.article.bean.form.EditArticleForm;
+import top.cafebabe.undo.article.bean.form.RenameClazzForm;
 
 /**
  * @author cafababe
