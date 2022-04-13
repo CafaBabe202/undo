@@ -3,14 +3,13 @@ import common from "./common";
 import Vue from "vue";
 import {Message} from "element-ui";
 
-/**
- * 所有的 Api 接口地址
- * @type {{changeArticlePrivate: string, registerUrl: string, uploadAvatar: string, getMyArticleClazz: string, loginUrl: string, getMyArticles: string, getMyDetailUrl: string, getMyArticleStatistics: string, updateUser: string}}
- */
+// 所有的 Api 接口地址
 const apis = {
-  registerUrl: "/userApi/user/register",
-  loginUrl: "/userApi/user/login",
-  getMyDetailUrl: "/userApi/user/getMyDetail.token",
+  register: "/userApi/user/register",
+  login: "/userApi/user/login",
+  getMyDetail: "/userApi/user/getMyDetail.token",
+  getUserDetail: "/userApi/user/getDetail",
+  getUsersDetail: "/userApi/user/getDetail",
   updateUser: "/userApi/user/set.token",
   uploadAvatar: "/userApi/avatar/uploadAvatar.token",
 
@@ -20,25 +19,64 @@ const apis = {
   getMyArticleStatistics: "/articleApi/article/getStatistics.token",
   getMyArticles: "/articleApi/article/getArticles.token",
   getMyArticle: "/articleApi/article/getMyArticle.token",
+  getArticle: "/articleApi/article/getArticle.tok",
+  getArticleRecords: "/articleApi/article/getRecords.tok",
   changeArticlePrivate: "/articleApi/article/changePrivate.token",
-
+  getUserRank: "/articleApi/article/getUserRank",
+  getVisitRank: "/articleApi/article/getVisitRank",
+  likeArticle: "/articleApi/article/like",
   addClazz: "/articleApi/clazz/add.token",
   deleteClazz: "/articleApi/clazz/delete.token",
   renameClazz: "/articleApi/clazz/rename.token",
 }
 
-//获取用户信息的方法
+//获取自己信息的方法
 const getMyDetail = function () {
-  GET(apis.getMyDetailUrl, null, data => {
+  GET(apis.getMyDetail, null, data => {
     for (let f in data)
       common.User[f] = data[f]
     getArticleStatistics()
   })
 }
 
+// 获取一个用户的信息
+const getUserDetail = function (id) {
+  GET(apis.getUserDetail + "/" + id, null, data => {
+    common.ArticleNowShow.user = data
+  }, data => {
+    console.log(data)
+  })
+}
+
+// 批量获取用户信息
+const getUsersDetail = function (userRank, ids) {
+  POST(apis.getUsersDetail, {ids: ids}, data => {
+
+    let userRankMap = {}
+    for (let u in userRank)
+      userRankMap[userRank[u].userId] = userRank[u]
+
+    let userDetailMap = {}
+    for (let u in data)
+      userDetailMap[data[u].id] = data[u]
+
+    let rank = []
+    for (let index in userRankMap) {
+      let nowId = userDetailMap[index].id
+      for (let fi in userDetailMap[nowId]) {
+        userRankMap[nowId][fi] = userDetailMap[nowId][fi]
+      }
+      rank.push(userRankMap[nowId])
+    }
+    common.Rank.userRank = rank
+  }, data => {
+    console.log(data)
+  })
+}
+
 //注册接口
 const register = function () {
-  POST(apis.registerUrl, common.RegisterForm, data => {
+  POST(apis.register, common.RegisterForm, data => {
     common.LoginForm.email = common.RegisterForm.email
     common.LoginForm.password = common.RegisterForm.password
     login()
@@ -49,7 +87,7 @@ const register = function () {
 
 // 登录
 const login = function () {
-  POST(apis.loginUrl, common.LoginForm, data => {
+  POST(apis.login, common.LoginForm, data => {
     Vue.use(Message.success("登录成功！"))
     common.LoginDialogConfig.isDialog = false
     common.User.token = data
@@ -104,6 +142,7 @@ const getArticleStatistics = function () {
   })
 }
 
+// 编辑或添加文章
 const editArticle = function () {
   if (common.ArticleNowEdit.id === undefined || common.ArticleNowEdit.id === "") {
     common.ArticleNowEdit.id = -1
@@ -111,7 +150,7 @@ const editArticle = function () {
   }
   POST(apis.editArticle, common.ArticleNowEdit, data => {
     Vue.use(Message.success(data))
-    window.location.href = "/myArticle";
+    window.location.href = "/myArticle"
     common.ArticleNowEdit.reset()
   }, data => {
     Vue.use(Message.error(data))
@@ -140,7 +179,6 @@ const getArticleClazz = function (refreshArticle) {
 
 // 获取自己的某个分类的所有分类，如果 clazzId 为 -1 ，获取所有文章
 const getArticles = function (clazzId) {
-  console.log(common.UserArticle)
   GET(apis.getMyArticles + "/" + clazzId, null, res => {
     common.UserArticle.nowClazzId = clazzId
     common.UserArticle.articles = res
@@ -156,6 +194,10 @@ const changeArticlePrivate = function (id) {
   }, null)
 }
 
+const likeArticle = function (id) {
+  GET(apis.likeArticle, {id: id}, null, null)
+}
+
 // 编辑前获取文章现有内容
 const getArticleForEdit = function (id) {
   GET(apis.getMyArticle + "/" + id, null, data => {
@@ -165,6 +207,59 @@ const getArticleForEdit = function (id) {
     common.ArticleNowEdit.content = data.content
   }, data => {
     Vue.use(Message.error(data))
+  })
+}
+
+// 获取展示的文章
+const getArticleForShow = function (id, version) {
+  let date = null
+  if (version !== null)
+    date = {v: version}
+  GET(apis.getArticle + "/" + id, date, data => {
+
+    for (let f in data)
+      common.ArticleNowShow[f] = data[f]
+
+    for (let r in common.ArticleNowShow.records) {
+      common.ArticleNowShow.records[r].color = common.ArticleNowShow.records[r].versionId === version ? "#409eff" : ""
+    }
+    getUserDetail(data.userId)
+
+  }, data => {
+    console.log(data)
+  })
+}
+
+// 获取文章的更新记录
+const getArticleRecords = function (id, callback) {
+  GET(apis.getArticleRecords + "/" + id, null, data => {
+    common.ArticleNowShow.records = data
+    common.ArticleNowShow.records.reverse()
+    if (callback !== null)
+      callback()
+  }, data => {
+    console.log(data)
+  })
+}
+
+// 获取用户排行榜
+const getUserRank = function () {
+  GET(apis.getUserRank, null, data => {
+    let ids = []
+    for (let u in data)
+      ids.push(data[u].userId)
+    getUsersDetail(data, ids)
+  }, data => {
+    console.log(data)
+  })
+}
+
+// 获取文章排行榜
+const getVisitRank = function () {
+  GET(apis.getVisitRank, null, data => {
+    common.Rank.visitRank = data
+  }, data => {
+    console.log(data)
   })
 }
 
@@ -229,6 +324,8 @@ const GET = function (url, data, ok, error) {
     } else if (res.status === 401) {
       Vue.use(Message.error("Token 失效，请重新登录"))
       common.User.reset()
+    } else if (res.status === 402) {
+      Vue.use(Message.error("权限被拒绝"))
     } else if (res.status >= 500) {
       Vue.use(Message.error("服务器开小差"))
     }
@@ -252,6 +349,8 @@ const POST = function (url, data, ok, error) {
     } else if (res.status === 401) {
       Vue.use(Message.error("Token 失效，请重新登录"))
       common.User.reset()
+    } else if (res.status === 402) {
+      Vue.use(Message.error("权限被拒绝"))
     } else if (res.status >= 500) {
       Vue.use(Message.error("服务器开小差"))
     }
@@ -270,9 +369,14 @@ export default {
   getArticles,
   getArticleClazz,
   changeArticlePrivate,
+  likeArticle,
+  getArticleForShow,
+  getArticleRecords,
   getArticleForEdit,
   addClazz,
   deleteArticle,
+  getUserRank,
+  getVisitRank,
   deleteClazz,
   renameClazz,
   refreshUser,

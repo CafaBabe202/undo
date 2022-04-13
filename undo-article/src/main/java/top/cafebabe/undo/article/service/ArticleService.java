@@ -1,16 +1,14 @@
 package top.cafebabe.undo.article.service;
 
 import org.springframework.stereotype.Service;
-import top.cafebabe.undo.article.bean.Article;
-import top.cafebabe.undo.article.bean.Content;
-import top.cafebabe.undo.article.bean.Record;
-import top.cafebabe.undo.article.bean.Records;
+import top.cafebabe.undo.article.bean.*;
 import top.cafebabe.undo.article.dao.ArticleMapper;
 import top.cafebabe.undo.article.dao.ContentDao;
 import top.cafebabe.undo.article.dao.RecordsDao;
 import top.cafebabe.undo.common.util.CurrentUtil;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +100,7 @@ public class ArticleService {
     }
 
     /**
-     * 获取文章
+     * 获取某人自己的文章
      *
      * @param userId    用户 ID。
      * @param articleId 文章 ID。
@@ -110,20 +108,45 @@ public class ArticleService {
      */
     public Article getMyArticle(int userId, int articleId) {
         Article article = articleMapper.getArticleById(articleId, true);
-        return article.getUserId() == userId ? article : null;
+        return (article != null && article.getUserId() == userId) ? article : null;
+    }
+
+    /**
+     * 获取文章
+     *
+     * @param articleId 文章 ID。
+     * @return 找到的文章，如果不存在，返回 null
+     */
+    public Article getArticle(int articleId) {
+        return articleMapper.getArticleById(articleId, true);
     }
 
     /**
      * 获取某一记录 ID 的最新文章。
      *
-     * @param contentId 记录 ID。
+     * @param recordsId 记录 ID。
      * @return 最新的内容。
      */
-    public Content getLastContent(String contentId) {
-        Records records = recordsDao.getRecords(contentId);
+    public Content getLastContent(String recordsId) {
+        Records records = recordsDao.getRecords(recordsId);
+        if (records == null) return null;
         List<Record> rs = records.getRecords();
         Record record = rs.get(rs.size() - 1);
         return contentDao.getContent(record.getContentId().toString());
+    }
+
+    public Records getRecords(String recordsId) {
+        return recordsDao.getRecords(recordsId);
+    }
+
+    /**
+     * 获取某一 Id 的正文。
+     *
+     * @param contentId id。
+     * @return 正文。
+     */
+    public Content getContent(String contentId) {
+        return contentDao.getContent(contentId);
     }
 
     /**
@@ -135,6 +158,26 @@ public class ArticleService {
      */
     public List<Article> getMyArticlesByClazz(int userId, int clazzId) {
         return articleMapper.getArticleByClazzId(userId, clazzId, true);
+    }
+
+    /**
+     * 获取获赞数量前 10 的用户信息。
+     *
+     * @return 排名榜。
+     */
+    public List<UserRank> getUserRank() {
+        List<UserRank> articleLikeTop = articleMapper.getUserLikeTop();
+        return articleLikeTop == null ? new ArrayList<>() : articleLikeTop;
+    }
+
+    /**
+     * 获取访问量排行榜
+     *
+     * @return 排行榜
+     */
+    public List<Article> getVisitRank() {
+        List<Article> articleVisitTop = articleMapper.getArticleVisitTop();
+        return articleVisitTop == null ? new ArrayList<>() : articleVisitTop;
     }
 
     /**
@@ -153,6 +196,14 @@ public class ArticleService {
             statistics.put("visit", 0L);
         }
         return statistics;
+    }
+
+    public boolean visit(int articleId) {
+        return this.articleMapper.visit(articleId) == 1;
+    }
+
+    public boolean like(int articleId) {
+        return this.articleMapper.like(articleId) == 1;
     }
 
     private boolean deleteRecords(String id) {

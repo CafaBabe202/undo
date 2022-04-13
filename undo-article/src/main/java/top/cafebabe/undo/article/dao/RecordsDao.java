@@ -70,6 +70,10 @@ public class RecordsDao {
     public Records getRecords(String recordsId) {
         Criteria criteria = Criteria.where("_id").is(recordsId);
         List<Records> records = mongoTemplate.find(new Query(criteria), Records.class, RECORDS_COLLECTION_NAME);
-        return records.size() == 1 ? records.get(0) : null;
+        if (records.size() != 1)
+            return null;
+        Records rs = records.get(0);
+        rs.sort();
+        return rs;
     }
 }

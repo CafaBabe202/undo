@@ -5,8 +5,8 @@
         <MyAvatar/>
       </div>
       <div class="search_inner">
-        <el-input placeholder="请输入内容" class="search_input" clearable/>
-        <el-button class="search_button" type="primary" >搜 索</el-button>
+        <el-input placeholder="请输入内容" v-model="search.input" class="search_input" clearable/>
+        <el-button class="search_button" type="primary" @click="doSearch">搜 索</el-button>
       </div>
     </div>
   </div>
@@ -15,37 +15,51 @@
 <script>
 
 import MyAvatar from "./MyAvatar";
+import common from "./js/common";
 
 export default {
   name: "AppHeader",
-  components: {MyAvatar}
+  components: {MyAvatar},
+  data() {
+    return {
+      search:common.Searcher,
+    }
+  },methods:{
+    doSearch(){
+      this.$router.push("/search").catch(data=>console.log(data))
+    }
+  }
 }
 </script>
 
 <style>
-.avatar{
+.avatar {
   float: left;
   display: inline-block;
   padding-top: 10px;
   padding-left: 15px;
 }
+
 .search {
   height: 70px;
   background-color: #EFF0F1;
 }
-.search_inner{
+
+.search_inner {
   float: left;
   width: 40%;
   height: 100%;
   padding-top: 15px;
   margin-left: 30%;
 }
-.search_input{
+
+.search_input {
   border-radius: 0;
   width: 70%;
   float: left;
 }
-.search_button{
+
+.search_button {
   width: 20%;
   float: right;
 }

@@ -31,9 +31,20 @@ public class MessageUtil {
         return responseMessage;
     }
 
+    /**
+     * 创建一个由于 Token 失效而失败的消息
+     *
+     * @return ResponseMessage
+     */
     public static ResponseMessage tokenInvalid() {
         ResponseMessage responseMessage = create("");
         responseMessage.setStatus(ResponseMessage.STATUS_TOKEN_INVALID);
+        return responseMessage;
+    }
+
+    public static ResponseMessage permissionDenied() {
+        ResponseMessage responseMessage = create("");
+        responseMessage.setStatus(ResponseMessage.PERMISSION_DENIED);
         return responseMessage;
     }
 

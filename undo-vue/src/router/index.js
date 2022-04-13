@@ -18,6 +18,10 @@ export default new Router({
       name: 'index',
       component: Index
     }, {
+      path: '/search',
+      name: 'search',
+      component: Index
+    }, {
       path: "/user",
       name: "user",
       component: User

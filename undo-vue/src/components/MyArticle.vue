@@ -67,7 +67,7 @@
           <li><i class="el-icon-lollipop i-color"/>点赞：{{ article.like }}</li>
           <li><i class="el-icon-view i-color"/>浏览量：{{ article.visit }}</li>
           <li><i class="el-icon-collection i-color"/>分类：{{ article.clazzName }}</li>
-          <li><i class="el-icon-refresh-right i-color"/>更新时间：{{ article.updateTime }}</li>
+          <li><i class="el-icon-refresh-right i-color"/>更新时间：{{ article.updateTime.substr(0,10) }}</li>
         </ul>
       </div>
     </div>
@@ -178,7 +178,8 @@ i:hover, .i-color {
   border: black solid 1px;
   border-radius: 5px;
   outline: none;
-  margin-left: 20%
+  margin-left: 20%;
+  box-shadow: #ececec 0 0 10px;
 }
 
 .myArticle-summary {
@@ -193,6 +194,7 @@ i:hover, .i-color {
 .myArticle-summary-statistics {
   margin-top: 30px;
   border-radius: 5px;
+  box-shadow: #d5d5d5 0 0 10px;
 }
 
 .myArticle-summary-add {
@@ -224,7 +226,7 @@ i:hover, .i-color {
   margin: 0;
   padding-top: 7px;
   padding-bottom: 7px;
-  padding-left: 30px;
+  padding-left: 10px;
   font-size: 20px;
   cursor: pointer;
 }

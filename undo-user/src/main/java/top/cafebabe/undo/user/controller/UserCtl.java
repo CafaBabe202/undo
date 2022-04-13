@@ -98,6 +98,9 @@ public class UserCtl {
     // 获取多个用户的公开资料
     @PostMapping("/getDetail")
     public ResponseMessage postGetDetail(@RequestBody GetPublicDetailForm form) {
+        if (!Checker.GetPublicDetailForm(form))
+            return MessageUtil.fail("数据异常");
+
         return form.getIds().size() > 20 ?
                 MessageUtil.fail("数据过大") : MessageUtil.ok(sysUserSer.getSysUserPublicDetail(form.getIds()));
     }

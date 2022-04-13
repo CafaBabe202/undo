@@ -114,6 +114,7 @@ public class ArticleCtl {
         }
     }
 
+    // 获取自己的文章
     @GetMapping("/getMyArticle.token/{articleId}")
     public ResponseMessage getMyArticle(@PathVariable String articleId, HttpSession session) {
         LoginUser loginUser = SessionUtil.getLoginUser(session);
@@ -125,6 +126,67 @@ public class ArticleCtl {
                     MessageUtil.fail("变量错误") : MessageUtil.ok(ClassConverter.showArticle(article, articleService.getLastContent(article.getRecordsId())));
         } catch (NumberFormatException e) {
             return MessageUtil.fail("变量错误");
+        }
+    }
+
+    // 登录或者没登录获取文章
+    @GetMapping("/getArticle.tok/{articleId}")
+    public ResponseMessage getArticle(
+            @PathVariable String articleId,
+            @RequestParam(value = "v", defaultValue = "init") String version,
+            HttpSession session
+    ) {
+        LoginUser loginUser = SessionUtil.getLoginUser(session);
+        Article article;
+        try {
+            if ((article = articleService.getArticle(Integer.parseInt(articleId))) == null)
+                return MessageUtil.fail("数据异常");
+        } catch (Exception e) {
+            return MessageUtil.fail("数据异常");
+        }
+        Content content = "init".equals(version) ? articleService.getLastContent(article.getRecordsId()) : articleService.getContent(version);
+        if (content == null)
+            return MessageUtil.fail("数据异常");
+
+        if (!article.isPrivate() || (loginUser != null && article.getUserId() == loginUser.getId())) {
+            articleService.visit(article.getId());
+            return MessageUtil.ok(ClassConverter.showArticle(article, content));
+        } else {
+            return MessageUtil.permissionDenied();
+        }
+    }
+
+    //  获取文章更新记录
+    @GetMapping("/getRecords.tok/{articleId}")
+    public ResponseMessage getArticleRecords(@PathVariable String articleId, HttpSession session) {
+        LoginUser loginUser = SessionUtil.getLoginUser(session);
+        Article article;
+        try {
+            if ((article = articleService.getArticle(Integer.parseInt(articleId))) == null)
+                return MessageUtil.fail("数据异常");
+        } catch (Exception e) {
+            return MessageUtil.fail("数据异常");
+        }
+        return !article.isPrivate() || (loginUser != null && article.getUserId() == loginUser.getId()) ?
+                MessageUtil.ok(ClassConverter.showRecords(articleService.getRecords(article.getRecordsId()))) : MessageUtil.permissionDenied();
+    }
+
+    @GetMapping("/getVisitRank")
+    public ResponseMessage getVisitRank() {
+        return MessageUtil.ok(articleService.getVisitRank());
+    }
+
+    @GetMapping("/getUserRank")
+    public ResponseMessage getUserRank() {
+        return MessageUtil.ok(articleService.getUserRank());
+    }
+
+    @GetMapping("/like")
+    public ResponseMessage like(@RequestParam(value = "id", defaultValue = "-1") String id) {
+        try {
+            return articleService.like(Integer.parseInt(id)) ? MessageUtil.ok("点赞成功") : MessageUtil.fail("数据异常");
+        } catch (Exception e) {
+            return MessageUtil.fail("数据异常");
         }
     }
 }

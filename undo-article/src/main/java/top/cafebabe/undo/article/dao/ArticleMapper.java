@@ -2,10 +2,12 @@ package top.cafebabe.undo.article.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import top.cafebabe.undo.article.bean.Article;
+import top.cafebabe.undo.article.bean.UserRank;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author cafababe
@@ -35,4 +37,8 @@ public interface ArticleMapper {
     List<Article> getArticleByClazzId(int userId, int clazzId, boolean isPrivate);
 
     List<Article> getArticleByTitleLike(String likeTitle, boolean isPrivate);
+
+    List<UserRank> getUserLikeTop();
+
+    List<Article> getArticleVisitTop();
 }

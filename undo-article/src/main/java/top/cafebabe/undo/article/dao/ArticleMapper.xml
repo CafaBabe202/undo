@@ -18,6 +18,13 @@
         <result property="isPrivate" column="is_private"/>
     </resultMap>
 
+    <resultMap id="userRank" type="top.cafebabe.undo.article.bean.UserRank">
+        <result property="userId" column="user_id"/>
+        <result property="number" column="number"/>
+        <result property="visit" column="visit"/>
+        <result property="like" column="like"/>
+    </resultMap>
+
     <insert id="add" parameterType="top.cafebabe.undo.article.bean.Article" useGeneratedKeys="true" keyProperty="id">
         insert into article(user_id, summary, title, records_id, clazz_id, update_time, create_time, is_private)
             value (#{userId},#{summary},#{title},#{recordsId},#{clazzId},#{updateTime},#{createTime},#{isPrivate});
@@ -104,5 +111,23 @@
         from article
         where title like %#{likeTitle}%
         <if test="!#{isPrivate}">and is_private = 0</if>
+    </select>
+
+    <select id="getUserLikeTop" resultMap="userRank" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.UserRank">
+        select user_id, count(id) as number, sum(visit) as visit, sum(`like`) as `like`
+        from article
+        where is_private = 0
+        group by user_id
+        order by `like` desc
+    </select>
+
+    <select id="getArticleVisitTop" resultMap="AllArticle" resultType="list"
+            parameterType="top.cafebabe.undo.article.bean.Article">
+        select a.*, c.name as clazz_name
+        from article as a
+                 left join clazz c on a.clazz_id = c.id
+        where is_private = 0
+        order by visit desc
     </select>
 </mapper>

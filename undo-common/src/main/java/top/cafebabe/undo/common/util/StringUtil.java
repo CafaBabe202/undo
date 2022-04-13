@@ -4,6 +4,9 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author cafababe
  * 各种字符串的基础工具。
@@ -11,6 +14,7 @@ import com.google.gson.Gson;
 public class StringUtil {
 
     private static final Gson gson = new Gson();
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 判断一个字符串是否是一个合法的 ipv4 地址。
@@ -60,5 +64,9 @@ public class StringUtil {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static String formatData(long time) {
+        return simpleDateFormat.format(new Date(time));
     }
 }

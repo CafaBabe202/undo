@@ -2,9 +2,12 @@ package top.cafebabe.undo.user.util;
 
 import top.cafebabe.undo.common.util.StringUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
+import top.cafebabe.undo.user.bean.form.GetPublicDetailForm;
 import top.cafebabe.undo.user.bean.form.LoginForm;
 import top.cafebabe.undo.user.bean.form.RegisterForm;
 import top.cafebabe.undo.user.bean.form.SetForm;
+
+import java.util.Iterator;
 
 /**
  * @author cafababe
@@ -53,5 +56,15 @@ public class Checker {
 
     public static boolean checkSign(String sign) {
         return !StringUtil.hasBlank(sign) && sign.length() <= AppConfig.SIGN_LEN;
+    }
+
+    public static boolean GetPublicDetailForm(GetPublicDetailForm form) {
+        if (form == null || form.getIds() == null || form.getIds().size() == 0)
+            return false;
+        for (Integer integer : form.getIds())
+            if (integer == null)
+                return false;
+        return true;
+
     }
 }

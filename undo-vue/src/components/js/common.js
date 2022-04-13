@@ -80,6 +80,10 @@ const RegisterFormRules = {
   ]
 }
 
+const Searcher = {
+  input:"",
+}
+
 const UserNowEdit = {
   field: "",
   newVal: ""
@@ -104,16 +108,58 @@ const ArticleNowEdit = {
   }
 }
 
+const ArticleNowShow = {
+  summary: "",
+  like: "",
+  createTime: "",
+  clazzId: "",
+  updateTime: "",
+  id: "",
+  visit: "",
+  title: "",
+  userId: "",
+  clazzName: "",
+  content: "",
+  records: "",
+  user: {
+    sign: "",
+    id: "",
+    avatar: "",
+    username: ""
+  },
+  reset() {
+    this.summary = this.like = this.createTime = this.updateTime = this.id = this.visit = this.title = this.userId = this.clazzName = this.content = ""
+  }
+}
+
+const Rank = {
+  visitRank: [
+    {
+      id: "",
+      userId: "",
+      title: "",
+      summary: "",
+      like: "",
+      visit: "",
+      clazzName: "",
+      updateTime: "",
+    }],
+  userRank: []
+}
+
 export default {
   MeConfig,
   LoginDialogConfig,
   LoginFromRules,
   User,
+  Searcher,
   UserArticle,
   LoginForm,
   RegisterForm,
   RegisterFormRules,
   UserNowEdit,
   ClazzNowEdit,
-  ArticleNowEdit
+  ArticleNowEdit,
+  ArticleNowShow,
+  Rank
 }
