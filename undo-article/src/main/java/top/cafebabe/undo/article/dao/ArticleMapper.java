@@ -36,7 +36,7 @@ public interface ArticleMapper {
 
     List<Article> getArticleByClazzId(int userId, int clazzId, boolean isPrivate);
 
-    List<Article> getArticleByTitleLike(String likeTitle, boolean isPrivate);
+    List<Article> getArticleByTitleLike(String likeTitle, int from, int size, boolean isPrivate);
 
     List<UserRank> getUserLikeTop();
 

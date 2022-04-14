@@ -81,7 +81,10 @@ const RegisterFormRules = {
 }
 
 const Searcher = {
-  input:"",
+  input: "",
+  hasMore: false,
+  nowPage: 1,
+  reading: false
 }
 
 const UserNowEdit = {
@@ -109,42 +112,27 @@ const ArticleNowEdit = {
 }
 
 const ArticleNowShow = {
-  summary: "",
-  like: "",
-  createTime: "",
-  clazzId: "",
-  updateTime: "",
-  id: "",
-  visit: "",
-  title: "",
-  userId: "",
-  clazzName: "",
-  content: "",
-  records: "",
   user: {
     sign: "",
     id: "",
     avatar: "",
-    username: ""
+    username: "",
+    reset() {
+      this.sign = this.id = this.avatar = this.username = ""
+    }
   },
   reset() {
-    this.summary = this.like = this.createTime = this.updateTime = this.id = this.visit = this.title = this.userId = this.clazzName = this.content = ""
+    for (let a in this) {
+      if (a !== "reset") {
+        this[a] = ""
+      }
+    }
   }
 }
 
-const Rank = {
-  visitRank: [
-    {
-      id: "",
-      userId: "",
-      title: "",
-      summary: "",
-      like: "",
-      visit: "",
-      clazzName: "",
-      updateTime: "",
-    }],
-  userRank: []
+const Index = {
+  visitRank: [],
+  userRank: [],
 }
 
 export default {
@@ -161,5 +149,5 @@ export default {
   ClazzNowEdit,
   ArticleNowEdit,
   ArticleNowShow,
-  Rank
+  Index
 }

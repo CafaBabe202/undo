@@ -109,8 +109,9 @@
             parameterType="top.cafebabe.undo.article.bean.Article">
         select *
         from article
-        where title like %#{likeTitle}%
+        where title like "%"#{likeTitle}"%"
         <if test="!#{isPrivate}">and is_private = 0</if>
+        limit #{from},#{size}
     </select>
 
     <select id="getUserLikeTop" resultMap="userRank" resultType="list"

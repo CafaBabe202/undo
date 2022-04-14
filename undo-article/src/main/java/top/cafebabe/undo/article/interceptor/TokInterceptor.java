@@ -6,10 +6,7 @@ import top.cafebabe.undo.article.bean.AppConfig;
 import top.cafebabe.undo.article.service.TokenService;
 import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.util.CurrentUtil;
-import top.cafebabe.undo.common.util.MessageUtil;
-import top.cafebabe.undo.common.util.StringUtil;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,9 +35,13 @@ public class TokInterceptor implements HandlerInterceptor {
 
         if (token != null // token 不为空
                 && token.equals(nowToken) // 与之前的相等
-                && loginUser != null // loginUser 依旧有效
+                && loginUser != null // 存在 loginUser
                 && (CurrentUtil.now() - refreshTime) < AppConfig.SESSION_TIMEOUT * 1000 // 没过期
         ) return true;
+
+        if ("".equals(nowToken) || nowToken == null || !nowToken.equals(token)) {
+            session.setAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION, null);
+        }
 
         // 通过 token 获取 loginUser 成功，设置 Session
         if (null != (loginUser = tokenService.getLoginUser(token))) {

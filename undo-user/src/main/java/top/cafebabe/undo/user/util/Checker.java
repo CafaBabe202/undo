@@ -25,6 +25,8 @@ public class Checker {
     }
 
     public static boolean setForm(SetForm form) {
+        if (form == null || form.getField() == null || form.getNewVal() == null)
+            return false;
         switch (form.getField()) {
             case "username":
                 return Checker.checkUsername(form.getNewVal());

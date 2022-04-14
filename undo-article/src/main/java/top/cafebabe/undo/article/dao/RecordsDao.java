@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import top.cafebabe.undo.article.bean.AppConfig;
 import top.cafebabe.undo.article.bean.Record;
 import top.cafebabe.undo.article.bean.Records;
 
@@ -20,8 +21,6 @@ public class RecordsDao {
 
     final MongoTemplate mongoTemplate;
 
-    private static final String RECORDS_COLLECTION_NAME = "record";
-
     public RecordsDao(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
@@ -32,7 +31,7 @@ public class RecordsDao {
      * @param records 需要添加的集合。
      */
     public void createRecords(Records records) {
-        Records insert = mongoTemplate.insert(records, RECORDS_COLLECTION_NAME);
+        mongoTemplate.insert(records, AppConfig.RECORDS_COLLECTION_NAME);
     }
 
     /**
@@ -42,7 +41,7 @@ public class RecordsDao {
      */
     public void deleteRecords(String recordId) {
         Criteria criteria = Criteria.where("_id").is(recordId);
-        mongoTemplate.remove(new Query(criteria), RECORDS_COLLECTION_NAME);
+        mongoTemplate.remove(new Query(criteria), AppConfig.RECORDS_COLLECTION_NAME);
     }
 
     /**
@@ -55,10 +54,10 @@ public class RecordsDao {
     public boolean putRecord(String recordsId, Record record) {
         Criteria criteria = Criteria.where("_id").is(recordsId);
         Query query = new Query(criteria);
-        if (mongoTemplate.find(query, Records.class, RECORDS_COLLECTION_NAME).size() != 1) return false;
+        if (mongoTemplate.find(query, Records.class, AppConfig.RECORDS_COLLECTION_NAME).size() != 1) return false;
         Update update = new Update();
         update.push("records").atPosition(1).value(record);
-        return mongoTemplate.updateFirst(query, update, RECORDS_COLLECTION_NAME).getModifiedCount() == 1;
+        return mongoTemplate.updateFirst(query, update, AppConfig.RECORDS_COLLECTION_NAME).getModifiedCount() == 1;
     }
 
     /**
@@ -69,7 +68,7 @@ public class RecordsDao {
      */
     public Records getRecords(String recordsId) {
         Criteria criteria = Criteria.where("_id").is(recordsId);
-        List<Records> records = mongoTemplate.find(new Query(criteria), Records.class, RECORDS_COLLECTION_NAME);
+        List<Records> records = mongoTemplate.find(new Query(criteria), Records.class, AppConfig.RECORDS_COLLECTION_NAME);
         if (records.size() != 1)
             return null;
         Records rs = records.get(0);

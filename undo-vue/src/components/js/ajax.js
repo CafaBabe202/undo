@@ -21,6 +21,7 @@ const apis = {
   getMyArticle: "/articleApi/article/getMyArticle.token",
   getArticle: "/articleApi/article/getArticle.tok",
   getArticleRecords: "/articleApi/article/getRecords.tok",
+  search: "/articleApi/article/search",
   changeArticlePrivate: "/articleApi/article/changePrivate.token",
   getUserRank: "/articleApi/article/getUserRank",
   getVisitRank: "/articleApi/article/getVisitRank",
@@ -68,7 +69,7 @@ const getUsersDetail = function (userRank, ids) {
       }
       rank.push(userRankMap[nowId])
     }
-    common.Rank.userRank = rank
+    common.Index.userRank = rank
   }, data => {
     console.log(data)
   })
@@ -185,6 +186,16 @@ const getArticles = function (clazzId) {
   }, null)
 }
 
+const search = function (title, page) {
+  GET(apis.search, {title: title, p: page}, data => {
+    for (let a in data)
+      common.Index.visitRank.push(data[a])
+    common.Searcher.hasMore = data.length !== 0
+  }, data => {
+    console.log(data)
+  })
+}
+
 // 改变文章的访问权限
 const changeArticlePrivate = function (id) {
   POST(apis.changeArticlePrivate + "/" + id, null, data => {
@@ -220,8 +231,12 @@ const getArticleForShow = function (id, version) {
     for (let f in data)
       common.ArticleNowShow[f] = data[f]
 
-    for (let r in common.ArticleNowShow.records) {
-      common.ArticleNowShow.records[r].color = common.ArticleNowShow.records[r].versionId === version ? "#409eff" : ""
+    if (version === null) {
+      common.ArticleNowShow.records[0].color = "#409eff"
+    } else {
+      for (let r in common.ArticleNowShow.records) {
+        common.ArticleNowShow.records[r].color = common.ArticleNowShow.records[r].versionId === version ? "#409eff" : ""
+      }
     }
     getUserDetail(data.userId)
 
@@ -236,7 +251,7 @@ const getArticleRecords = function (id, callback) {
     common.ArticleNowShow.records = data
     common.ArticleNowShow.records.reverse()
     if (callback !== null)
-      callback()
+      callback(data)
   }, data => {
     console.log(data)
   })
@@ -257,7 +272,7 @@ const getUserRank = function () {
 // 获取文章排行榜
 const getVisitRank = function () {
   GET(apis.getVisitRank, null, data => {
-    common.Rank.visitRank = data
+    common.Index.visitRank = data
   }, data => {
     console.log(data)
   })
@@ -372,6 +387,7 @@ export default {
   likeArticle,
   getArticleForShow,
   getArticleRecords,
+  search,
   getArticleForEdit,
   addClazz,
   deleteArticle,

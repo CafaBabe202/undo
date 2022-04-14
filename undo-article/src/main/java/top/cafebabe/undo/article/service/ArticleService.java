@@ -8,10 +8,7 @@ import top.cafebabe.undo.article.dao.RecordsDao;
 import top.cafebabe.undo.common.util.CurrentUtil;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author cafababe
@@ -19,9 +16,9 @@ import java.util.Map;
 @Service
 public class ArticleService {
 
-    private final ArticleMapper articleMapper;
-    private final ContentDao contentDao;
     final RecordsDao recordsDao;
+    private final ContentDao contentDao;
+    private final ArticleMapper articleMapper;
 
     public ArticleService(ArticleMapper articleMapper, ContentDao contentDao, RecordsDao recordsDao) {
         this.articleMapper = articleMapper;
@@ -44,13 +41,14 @@ public class ArticleService {
         article.setRecordsId(records.getId().toString());
 
         Content content = new Content(con);
-        recordsDao.createRecords(records); // 添加记录集合。
-
         contentDao.addContent(content); // 向内容集合添加数据
+
+        recordsDao.createRecords(records); // 添加记录集合。
         if (articleMapper.add(article) != 1
                 || !recordsDao.putRecord(article.getRecordsId(), new Record("init", content.getId()))) { // 出现问题回滚
             articleMapper.deleteById(article.getId());
             deleteRecords(records.getId().toString());
+            contentDao.deleteContent(content.getId().toString());
             return false;
         }
         return true;
@@ -75,12 +73,13 @@ public class ArticleService {
      *
      * @param newArticle 新的文章
      * @param summary    更新说明
-     * @param content    新的正文
+     * @param con        新的正文
      * @return 是否更新成功
      */
-    public boolean updateArticle(Article newArticle, String summary, Content content) {
+    public boolean updateArticle(Article newArticle, String summary, String con) {
         Article article = articleMapper.getArticleById(newArticle.getId(), true);
         if (article == null) return false; // 如果没有该文章肯定是失败
+        Content content = new Content(con);
         contentDao.addContent(content); // 向内容集合添加数据
         if (!recordsDao.putRecord(article.getRecordsId(), new Record(summary, content.getId())))
             return false; // 向更新记录添加数据
@@ -100,7 +99,7 @@ public class ArticleService {
     }
 
     /**
-     * 获取某人自己的文章
+     * 获取某人自己的一篇文章。
      *
      * @param userId    用户 ID。
      * @param articleId 文章 ID。
@@ -112,7 +111,7 @@ public class ArticleService {
     }
 
     /**
-     * 获取文章
+     * 获取文章，不一定是不是自己的。
      *
      * @param articleId 文章 ID。
      * @return 找到的文章，如果不存在，返回 null
@@ -122,21 +121,32 @@ public class ArticleService {
     }
 
     /**
-     * 获取某一记录 ID 的最新文章。
+     * 获取文章的最新正文，如果 isPrivate 为 false 将过滤掉所有为审核的正文内容。
      *
      * @param recordsId 记录 ID。
-     * @return 最新的内容。
+     * @param isPrivate 是否是作者自己查看。
+     * @return 返回正文内容。
      */
-    public Content getLastContent(String recordsId) {
-        Records records = recordsDao.getRecords(recordsId);
-        if (records == null) return null;
+    public Content getLastContent(String recordsId, boolean isPrivate) {
+        Records records = this.getRecords(recordsId, isPrivate);
+        if (records == null || records.getRecords().isEmpty()) return null;
         List<Record> rs = records.getRecords();
         Record record = rs.get(rs.size() - 1);
         return contentDao.getContent(record.getContentId().toString());
     }
 
-    public Records getRecords(String recordsId) {
-        return recordsDao.getRecords(recordsId);
+    /**
+     * 获取文章的更新记录，如果 isPrivate 为 false 将过滤掉所有为审核的记录。
+     *
+     * @param recordsId 更新记录
+     * @param isPrivate 是否是作者自己查看。
+     * @return 更新记录。
+     */
+    public Records getRecords(String recordsId, boolean isPrivate) {
+        Records records = recordsDao.getRecords(recordsId);
+        if (!isPrivate)
+            records.getRecords().removeIf(record -> !contentDao.isReview(record.getContentId().toString()));
+        return records;
     }
 
     /**
@@ -145,8 +155,11 @@ public class ArticleService {
      * @param contentId id。
      * @return 正文。
      */
-    public Content getContent(String contentId) {
-        return contentDao.getContent(contentId);
+    public Content getContent(String contentId, boolean isPrivate) {
+        Content content = contentDao.getContent(contentId);
+        if (!isPrivate)
+            return content.isReview() ? content : null;
+        return content;
     }
 
     /**
@@ -158,6 +171,14 @@ public class ArticleService {
      */
     public List<Article> getMyArticlesByClazz(int userId, int clazzId) {
         return articleMapper.getArticleByClazzId(userId, clazzId, true);
+    }
+
+    public List<Article> search(String title, int page) {
+        return articleMapper.getArticleByTitleLike(
+                title,
+                (page - 1) * AppConfig.SEARCH_PAGE_SIZE,
+                page * AppConfig.SEARCH_PAGE_SIZE,
+                false);
     }
 
     /**
@@ -206,6 +227,12 @@ public class ArticleService {
         return this.articleMapper.like(articleId) == 1;
     }
 
+    /**
+     * 删除文章更新记录。
+     *
+     * @param id 记录的 ID。
+     * @return 是否成功删除。
+     */
     private boolean deleteRecords(String id) {
         Records rs = recordsDao.getRecords(id);
         if (rs == null) return false;

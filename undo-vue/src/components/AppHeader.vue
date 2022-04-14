@@ -22,11 +22,12 @@ export default {
   components: {MyAvatar},
   data() {
     return {
-      search:common.Searcher,
+      search: common.Searcher,
     }
-  },methods:{
-    doSearch(){
-      this.$router.push("/search").catch(data=>console.log(data))
+  }, methods: {
+    doSearch() {
+      common.Index.visitRank = []
+      window.location.href = "/search?title=" + this.search.input
     }
   }
 }

@@ -18,6 +18,10 @@ module.exports = {
         target: 'http://127.0.0.1:8091',
         changeOrigin: true,
         pathRewrite: {'^/articleApi': ''}
+      },'/fileApi': {
+        target: 'http://127.0.0.1:8092',
+        changeOrigin: true,
+        pathRewrite: {'^/fileApi': ''}
       },
     },
 

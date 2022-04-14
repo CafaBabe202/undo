@@ -58,6 +58,8 @@
 <script>
 import common from "./js/common";
 import ajax from "./js/ajax";
+import Vue from "vue";
+import {Message} from "element-ui";
 import $ from 'jquery'
 
 export default {
@@ -95,7 +97,12 @@ export default {
     }
   }, mounted() {
     common.ArticleNowShow.reset()
-    ajax.getArticleRecords(this.id, () => {
+    ajax.getArticleRecords(this.id, (data) => {
+      if (data.length === 0) {
+        Vue.use(Message.error("该文章我没有被审核"))
+        this.$router.back()
+        return
+      }
       ajax.getArticleForShow(this.id, null)
     })
   }

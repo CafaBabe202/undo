@@ -27,4 +27,10 @@ public class AppConfig {
     // 字段检查配置
     public static final int CLAZZ_NAME_LEN = 32;
 
+    // 数据库配置
+    public static final String RECORDS_COLLECTION_NAME = "record";
+
+    // 搜索配置
+    public static final int SEARCH_PAGE_SIZE = 1;
+
 }

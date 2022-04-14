@@ -6,7 +6,7 @@
         <div slot="header" class="clearfix">
           <span><b>用户排名榜</b></span>
         </div>
-        <div v-for="u in this.rank.userRank" :key="u.id" class="index-user-rank-card">
+        <div v-for="u in this.index.userRank" :key="u.id" class="index-user-rank-card">
           <el-avatar :src="u.avatar" class="user-card-avatar" :size="60" shape="square"></el-avatar>
           <span class="index-user-rank-card-title"><b>{{ u.username }}</b></span><br/>
           <span class="index-user-rank-card-label"><i class="el-icon-document i-color"/>&nbsp;{{ u.number }}</span>
@@ -18,7 +18,7 @@
 
     <!-- 中间的排行榜 -->
     <div class="index-visit-rank">
-      <div v-for="article in this.rank.visitRank" class="index-article-card">
+      <div v-for="article in this.index.visitRank" class="index-article-card">
         <p class="index-article-card-title">
           <span @click="showArticle(article.id)">{{ article.title }}</span>
           <i class="el-icon-share" @click="shareArticle(article.id)"/>
@@ -30,6 +30,11 @@
           <li><i class="el-icon-collection i-color"/>分类：{{ article.clazzName }}</li>
           <li><i class="el-icon-refresh-right i-color"/>更新时间：{{ article.updateTime.substr(0, 10) }}</li>
         </ul>
+      </div>
+      <div v-show="this.$route.path==='/search'"
+           style="width: 100%;height: 30px;line-height: 30px;text-align: center;color: rgb(64, 158, 255);cursor: pointer;user-select: none">
+        <span v-show="this.search.hasMore" @click="more">点击加载更多</span>
+        <span v-show="!this.search.hasMore">没有更多了</span>
       </div>
     </div>
 
@@ -47,20 +52,43 @@ export default {
   name: 'Index',
   data() {
     return {
-      rank: common.Rank,
-      search: common.Searcher
+      index: common.Index,
+      search: common.Searcher,
     }
   },
   methods: {
     showArticle(id) {
+      this.search.reading = true
       this.$router.push("/showArticle/" + id).catch(data => console.log(data))
     }, shareArticle(id) {
       this.$copyText("http://127.0.0.1:8080/showArticle/" + id)
       Vue.use(Message.success("文章链接已添加到剪切板"))
+    }, doSearch(research) {
+      if (!this.search.reading) {
+        if (research)
+          this.search.nowPage = 1
+        this.search.input = this.$route.query.title
+        ajax.search(this.$route.query.title, this.search.nowPage)
+        this.search.nowPage += 1
+      }
+    }, more() {
+      this.search.reading = false
+      this.doSearch(false)
     }
   }, mounted() {
     ajax.getUserRank()
-    ajax.getVisitRank()
+    if (this.$route.path === "/") {
+      ajax.getVisitRank()
+    } else if (this.$route.path === "/search") {
+      this.doSearch(true)
+    }
+  }, watch: {
+    $route: {
+      deep: true,
+      handler() {
+        this.doSearch(true)
+      }
+    }
   }
 }
 </script>
@@ -69,13 +97,14 @@ export default {
   width: 100%;
   margin-top: 10px;
   padding-top: 10px;
+  padding-bottom: 30px;
   background-image: url("/static/bg.png");
 }
 
 .index-user-rank {
   width: 20%;
   float: left;
-  margin-left: 30px;
+  margin-left: 10%;
 }
 
 .index-user-rank-card {

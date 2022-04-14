@@ -17,6 +17,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/undo-user/pom.xml" />
         <option value="$PROJECT_DIR$/undo-article/pom.xml" />
+        <option value="$PROJECT_DIR$/undo-file/pom.xml" />
       </list>
     </option>
   </component>

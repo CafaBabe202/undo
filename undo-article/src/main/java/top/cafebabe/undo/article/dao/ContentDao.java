@@ -42,9 +42,27 @@ public class ContentDao {
         mongoTemplate.remove(new Query(criteria), CONTENT_COLLECTION_NAME);
     }
 
+    /**
+     * 获取文章。
+     *
+     * @param contentId 文章 ID。
+     * @return 文章内容
+     */
     public Content getContent(String contentId) {
         Criteria criteria = Criteria.where("_id").is(contentId);
         List<Content> contents = mongoTemplate.find(new Query(criteria), Content.class);
         return contents.size() == 1 ? contents.get(0) : null;
+    }
+
+    /**
+     * 判断一个正文是不是被审核过。
+     *
+     * @param contentId 正文 ID。
+     * @return 审核过返回 true，不存在或未审核返回 false。
+     */
+    public boolean isReview(String contentId) {
+        Criteria criteria = Criteria.where("_id").is(contentId).and("isPrivate").is(true);
+        List<Content> contents = mongoTemplate.find(new Query(criteria), Content.class);
+        return !contents.isEmpty();
     }
 }

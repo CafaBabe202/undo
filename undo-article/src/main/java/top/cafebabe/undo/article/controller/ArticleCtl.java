@@ -49,7 +49,7 @@ public class ArticleCtl {
             return articleService.addArticle(article, form.getContent()) ?
                     MessageUtil.ok("添加成功") : MessageUtil.error("添加失败");
         else
-            return articleService.updateArticle(article, form.getUpdateSummary(), new Content(form.getContent())) ?
+            return articleService.updateArticle(article, form.getUpdateSummary(), form.getContent()) ?
                     MessageUtil.ok("更新成功") : MessageUtil.error("更新失败");
     }
 
@@ -123,9 +123,20 @@ public class ArticleCtl {
         try {
             Article article = articleService.getMyArticle(loginUser.getId(), Integer.parseInt(articleId));
             return article == null ?
-                    MessageUtil.fail("变量错误") : MessageUtil.ok(ClassConverter.showArticle(article, articleService.getLastContent(article.getRecordsId())));
+                    MessageUtil.fail("变量错误") : MessageUtil.ok(ClassConverter.showArticle(article, articleService.getLastContent(article.getRecordsId(), true)));
         } catch (NumberFormatException e) {
             return MessageUtil.fail("变量错误");
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseMessage search(
+            @RequestParam(value = "title", defaultValue = "") String title,
+            @RequestParam(value = "p", defaultValue = "1") String page) {
+        try {
+            return MessageUtil.ok(articleService.search(title, Integer.parseInt(page)));
+        } catch (Exception e) {
+            return MessageUtil.fail("数据异常");
         }
     }
 
@@ -144,11 +155,13 @@ public class ArticleCtl {
         } catch (Exception e) {
             return MessageUtil.fail("数据异常");
         }
-        Content content = "init".equals(version) ? articleService.getLastContent(article.getRecordsId()) : articleService.getContent(version);
+
+        boolean isPrivate = loginUser != null && article.getUserId() == loginUser.getId();
+        Content content = "init".equals(version) ? articleService.getLastContent(article.getRecordsId(), isPrivate) : articleService.getContent(version, isPrivate);
         if (content == null)
             return MessageUtil.fail("数据异常");
 
-        if (!article.isPrivate() || (loginUser != null && article.getUserId() == loginUser.getId())) {
+        if (!article.isPrivate() || isPrivate) {
             articleService.visit(article.getId());
             return MessageUtil.ok(ClassConverter.showArticle(article, content));
         } else {
@@ -167,8 +180,10 @@ public class ArticleCtl {
         } catch (Exception e) {
             return MessageUtil.fail("数据异常");
         }
-        return !article.isPrivate() || (loginUser != null && article.getUserId() == loginUser.getId()) ?
-                MessageUtil.ok(ClassConverter.showRecords(articleService.getRecords(article.getRecordsId()))) : MessageUtil.permissionDenied();
+
+        boolean isPrivate = loginUser != null && article.getUserId() == loginUser.getId();
+        return !article.isPrivate() || isPrivate ?
+                MessageUtil.ok(ClassConverter.showRecords(articleService.getRecords(article.getRecordsId(), isPrivate))) : MessageUtil.permissionDenied();
     }
 
     @GetMapping("/getVisitRank")
