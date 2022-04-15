@@ -150,7 +150,7 @@ public class ArticleService {
     }
 
     /**
-     * 获取某一 Id 的正文。
+     * 获取某一 id 的正文。
      *
      * @param contentId id。
      * @return 正文。

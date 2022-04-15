@@ -23,6 +23,7 @@ public class AppConfig {
     public static final String LOGIN_USER_KEY_IN_SESSION = "loginUser";
     public static final String USER_TOKEN_KEY_IN_SESSION = "Token";
     public static final String USER_TOKEN_REFRESH_TIME_KEY_IN_SESSION = "refreshTime";
+    public static final String ADMIN_LOGIN_TOKEN_KEY_IN_SESSION = "admin";
 
     // 字段检查配置
     public static final int CLAZZ_NAME_LEN = 32;

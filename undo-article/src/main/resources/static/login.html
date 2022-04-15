@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>审核登录</title>
+    <script type="text/javascript" src="js/jQuery.js"></script>
+    <script type="text/javascript" src="js/ajax.js"></script>
+    <script type="text/javascript" src="js/message.js"></script>
+</head>
+<body>
+<h1>欢迎来到 undo 审核系统</h1>
+<table>
+    <tr>
+        <td>帐号：</td>
+        <td style="text-align: left;padding-top: 20px;"><input type="text" id="id"/></td>
+    </tr>
+    <tr>
+        <td style="width: 30%">密码：</td>
+        <td style="text-align: left"><input type="password" id="password"/></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <button id="login">登录</button>
+        </td>
+    </tr>
+</table>
+</body>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    html {
+        background-image: url("img/bg.png");
+        user-select: none;
+    }
+
+    h1 {
+        width: 100%;
+        text-align: center;
+        margin-top: 150px;
+    }
+
+    table {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #bebebe;
+        width: 24%;
+        height: 200px;
+        margin-top: 100px;
+        margin-left: 38%;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    input {
+        padding-left: 5px;
+        width: 80%;
+        font-size: 20px;
+        height: 30px;
+        outline: none;
+        border-radius: 3px;
+        border: rgb(160, 207, 255) solid 1px;
+    }
+
+    button {
+        height: 50px;
+        font-size: 20px;
+        width: 40%;
+        border: none;
+        background-color: rgb(64, 158, 255);
+        border-radius: 3px;
+    }
+</style>
+<script>
+    $(function () {
+        $("#login").click(() => {
+            POST("/review/login",{id:"id",password:"pass"},(data)=>{
+                message.ok("登录成功！")
+                setTimeout(function (){
+                    window.location.href="/review.html"
+                },1000)
+            },(data)=>{
+                message.fail("登录失败")
+            })
+        })
+    })
+</script>
+</html>

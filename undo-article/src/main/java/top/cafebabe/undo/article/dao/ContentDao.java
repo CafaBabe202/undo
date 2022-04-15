@@ -1,8 +1,10 @@
 package top.cafebabe.undo.article.dao;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import top.cafebabe.undo.article.bean.Content;
 
@@ -61,8 +63,36 @@ public class ContentDao {
      * @return 审核过返回 true，不存在或未审核返回 false。
      */
     public boolean isReview(String contentId) {
-        Criteria criteria = Criteria.where("_id").is(contentId).and("isPrivate").is(true);
+        Criteria criteria = Criteria.where("_id").is(contentId).and("isReview").is(Content.REVIEW_PASS);
         List<Content> contents = mongoTemplate.find(new Query(criteria), Content.class);
         return !contents.isEmpty();
+    }
+
+    public Content getOneNotReview() {
+        Criteria criteria = Criteria.where("isReview").is(Content.NOT_REVIEW);
+        Query query = new Query(criteria);
+        query.with(PageRequest.of(0, 1));
+        List<Content> contents = mongoTemplate.find(query, Content.class);
+        return contents.size() == 0 ? null : contents.get(0);
+    }
+
+    public boolean pass(String id) {
+        return setReview(id, Content.REVIEW_PASS);
+    }
+
+    public boolean denied(String id) {
+        return setReview(id, Content.REVIEW_DENIED);
+    }
+
+    public long getNotReviewNumber() {
+        Criteria criteria = Criteria.where("isReview").is(Content.NOT_REVIEW);
+        return mongoTemplate.count(new Query(criteria), CONTENT_COLLECTION_NAME);
+    }
+
+    private boolean setReview(String id, int newVal) {
+        Criteria criteria = Criteria.where("_id").is(id);
+        Update update = new Update();
+        update.set("isReview", newVal);
+        return mongoTemplate.updateFirst(new Query(criteria), update, Content.class).getModifiedCount() == 1;
     }
 }

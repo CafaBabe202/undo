@@ -108,16 +108,6 @@ public class MongodbMemory implements Memory {
     }
 
     @Override
-    public long blockGc() {
-        return this.block.deleteMany(Filters.lte("count", 0)).getDeletedCount();
-    }
-
-    @Override
-    public long fileGc() {
-        return this.file.deleteMany(Filters.lte("count", 0)).getDeletedCount();
-    }
-
-    @Override
     public boolean setBlockCount(String md5, long count) {
         this.block.updateOne(Filters.eq("_id", md5), new Document("$set", new Document("count", count))).getModifiedCount();
         return this.getBlockCount(md5) == count;

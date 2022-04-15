@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>审核</title>
+    <script src="js/jQuery.js"></script>
+    <script src="js/message.js"></script>
+    <script src="js/ajax.js"></script>
+    <script src="js/marked.js"></script>
+</head>
+<body>
+<table>
+    <tr>
+        <td>
+            <div class="statistics">待审核：<span id="wait"></span></div>
+        </td>
+    </tr>
+    <tr style="height: 90%">
+        <td style="vertical-align: top">
+            <div id="content"></div>
+        </td>
+    </tr>
+    <tr style="height: 10%">
+        <td>
+            <button style="background-color: rgb(245, 108, 108)" id="denied">拒绝</button>
+            <button style="background-color:rgb(64, 158, 255) " id="pass">通过</button>
+        </td>
+    </tr>
+</table>
+</body>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+
+    table {
+        width: 80%;
+        height: 100%;
+        margin-left: 10%;
+
+    }
+
+    td {
+        text-align: center;
+    }
+
+    .statistics {
+        margin-top: 30px;
+        height: 50px;
+        line-height: 50px;
+        background-color: rgb(217, 236, 255);
+        box-shadow: 0 0 10px #bebebe;
+        border-radius: 5px;
+    }
+
+    #content {
+        text-align: left;
+        padding: 20px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #bebebe;
+        background-color: #FAF9DE;
+    }
+
+    button {
+        width: 100px;
+        height: 50px;
+        border: none;
+        border-radius: 5px;
+        margin-left: 20px;
+        margin-bottom: 30px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    let nowContent = {}
+    const next = function () {
+        GET("/review/get", null, (data) => {
+            $("#wait").text(data.wait)
+            nowContent = data.content
+            $("#content").html(marked.parse(nowContent.content))
+            $(document).s
+        })
+    }
+    const pass = function () {
+        GET("/review/pass/" + nowContent.id, null, (data) => {
+            message.ok("操作成功")
+            next()
+        }, (dta) => {
+            message.fail("操作失败")
+            next()
+        })
+    }
+
+    const denied = function () {
+        GET("/review/denied/" + nowContent.id, null, (data) => {
+            message.ok("操作成功")
+            next()
+        }, (dta) => {
+            message.fail("操作失败")
+            next()
+        })
+    }
+
+    $(function () {
+        next()
+        $("#pass").click(pass)
+        $("#denied").click(denied)
+    })
+</script>
+</html>

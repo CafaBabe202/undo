@@ -9,7 +9,8 @@ import top.cafebabe.fileManager.exception.NotFileException;
 /**
  * Memory 是分块存储的存储器，支持对每一个块文件的访问和文件的访问。
  * Memory 只对块的完整性负责，并不对文件的完整性负责，FileManager 有权对每一个块进行添加和删除操作，即使破坏文件完整性也是允许的。
- * 在进行删除块的操作时，Memory 并不进行文件依赖的检查，也就说由于 FileManager 的逻辑问题，可能导致文件的完整性被破坏。
+ * 在进行删除的操作时，Memory 并不进行文件依赖的检查，不论该文件或者块有没有被其他文件或块引用，都将删除成功。
+ * 由于 FileManager 的逻辑问题，可能导致文件完整性被破坏，对此，Memory 并不进行校验或约束。
  *
  * @author cafababe
  */
@@ -115,18 +116,4 @@ public interface Memory {
      * @return 存在返回 true，否则返回 false。
      */
     boolean existFile(String md5);
-
-    /**
-     * 删除所有引用数为 0 的 块。
-     *
-     * @return 删除的个数。
-     */
-    long blockGc();
-
-    /**
-     * 删除所有引用数为 0 的文件。
-     *
-     * @return 删除的个数。
-     */
-    long fileGc();
 }

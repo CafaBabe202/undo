@@ -54,6 +54,14 @@ public class ClassConverter {
         return res;
     }
 
+    public static Map<String, String> showContent(Content content) {
+        if (content == null) return new HashMap<>();
+        Map<String, String> res = new HashMap<>();
+        res.put("id", content.getId().toString());
+        res.put("content", content.getContent());
+        return res;
+    }
+
     private static Map<String, String> objectToMap(Object obj) {
         Map<String, String> res = new HashMap<>();
         Field[] declaredFields = obj.getClass().getDeclaredFields();
