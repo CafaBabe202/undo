@@ -4,6 +4,7 @@ import org.bson.Document;
 import org.bson.types.Binary;
 import top.cafebabe.fileManager.bean.Block;
 import top.cafebabe.fileManager.bean.BlockFile;
+import top.cafebabe.fileManager.bean.TempBlockFile;
 
 /**
  * @author cafababe
@@ -24,7 +25,17 @@ public class DocumentUtils {
         document.append("_id", blockFile.getMd5());
         document.append("content", blockFile.getContent());
         document.append("size", blockFile.getSize());
-        document.append("count",blockFile.getCount());
+        document.append("count", blockFile.getCount());
+        return document;
+    }
+
+    public static Document toDocument(TempBlockFile file) {
+        Document document = new Document();
+        document.append("_id", file.getId());
+        document.append("size", file.getSize());
+        document.append("createTime", file.getCreateTime());
+        document.append("lastUpdateTime", file.getLastUpdateTime());
+        document.append("content", file.getContent());
         return document;
     }
 
@@ -44,5 +55,15 @@ public class DocumentUtils {
         res.setContent(document.getList("content", String.class));
         res.setSize(document.getLong("size"));
         return res;
+    }
+
+    public static TempBlockFile toTempBlockFile(Document document) {
+        TempBlockFile tempBlockFile = new TempBlockFile();
+        tempBlockFile.setId(document.getObjectId("_id"));
+        tempBlockFile.setSize(document.getLong("size"));
+        tempBlockFile.setCreateTime(document.getLong("createTime"));
+        tempBlockFile.setLastUpdateTime(document.getLong("lastUpdateTime"));
+        tempBlockFile.setContent(document.getList("content", String.class));
+        return tempBlockFile;
     }
 }

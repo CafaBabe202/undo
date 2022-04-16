@@ -29,6 +29,6 @@ public class FileManagerConfig {
         MongodbMemory memory = new MongodbMemory(this.host, this.port, this.username, this.password, this.dbName);
         SimpleSplitterFactory splitterFactory = new SimpleSplitterFactory(this.blockSize);
         SimpleIntegratorFactory integratorFactory = new SimpleIntegratorFactory();
-        return new SimpleFileManager(memory, splitterFactory, integratorFactory, true);
+        return new SimpleFileManager(memory, splitterFactory, integratorFactory);
     }
 }
