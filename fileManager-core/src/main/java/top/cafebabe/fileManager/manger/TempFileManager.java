@@ -1,4 +1,4 @@
-package top.cafebabe.fileManager.manger.splitter;
+package top.cafebabe.fileManager.manger;
 
 import top.cafebabe.fileManager.bean.Block;
 import top.cafebabe.fileManager.bean.BlockFile;
@@ -6,6 +6,7 @@ import top.cafebabe.fileManager.bean.TempBlockFile;
 import top.cafebabe.fileManager.manger.SimpleFileManager;
 import top.cafebabe.fileManager.manger.integrator.IntegratorFactory;
 import top.cafebabe.fileManager.manger.memory.TempMongoMemory;
+import top.cafebabe.fileManager.manger.splitter.SplitterFactory;
 import top.cafebabe.fileManager.utils.Md5Util;
 
 import java.util.Map;
@@ -70,6 +71,7 @@ public class TempFileManager extends SimpleFileManager {
                 blockFile.setContent(file.getContent());
                 this.tempMongoMemory.addFile(blockFile);
                 this.tempMongoMemory.removeTempFile(file.getId().toString());
+                this.md5Utils.remove(file.getId().toString());
             } else {
                 return false;
             }

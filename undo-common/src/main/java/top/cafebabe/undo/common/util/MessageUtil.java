@@ -37,13 +37,13 @@ public class MessageUtil {
      * @return ResponseMessage
      */
     public static ResponseMessage tokenInvalid() {
-        ResponseMessage responseMessage = create("");
+        ResponseMessage responseMessage = create(null);
         responseMessage.setStatus(ResponseMessage.STATUS_TOKEN_INVALID);
         return responseMessage;
     }
 
     public static ResponseMessage permissionDenied() {
-        ResponseMessage responseMessage = create("");
+        ResponseMessage responseMessage = create(null);
         responseMessage.setStatus(ResponseMessage.PERMISSION_DENIED);
         return responseMessage;
     }
@@ -57,6 +57,18 @@ public class MessageUtil {
     public static ResponseMessage error(Object data) {
         ResponseMessage responseMessage = create(data);
         responseMessage.setStatus(ResponseMessage.STATUS_ERROR);
+        return responseMessage;
+    }
+
+    public static ResponseMessage goOn(Object data) {
+        ResponseMessage responseMessage = create(data);
+        responseMessage.setStatus(ResponseMessage.STATUS_GO_ON);
+        return responseMessage;
+    }
+
+    public static ResponseMessage done() {
+        ResponseMessage responseMessage = create(null);
+        responseMessage.setStatus(ResponseMessage.STATUS_DONE);
         return responseMessage;
     }
 

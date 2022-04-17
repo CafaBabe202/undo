@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     upload(file) {
-      fileUpload.md5CheckAndAdd(file.file)
+      fileUpload.upload(file.file)
     }
   }
 }

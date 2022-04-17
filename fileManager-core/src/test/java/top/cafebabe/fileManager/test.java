@@ -9,16 +9,11 @@ import top.cafebabe.fileManager.manger.integrator.SimpleIntegratorFactory;
 import top.cafebabe.fileManager.manger.memory.Memory;
 import top.cafebabe.fileManager.manger.memory.TempMongoMemory;
 import top.cafebabe.fileManager.manger.splitter.SimpleSplitterFactory;
-import top.cafebabe.fileManager.manger.splitter.SplitterFactory;
 import top.cafebabe.fileManager.manger.memory.MongodbMemory;
-import top.cafebabe.fileManager.manger.splitter.TempFileManager;
+import top.cafebabe.fileManager.manger.TempFileManager;
 import top.cafebabe.fileManager.utils.Md5Util;
 
 import java.io.*;
-import java.lang.reflect.Field;
-import java.security.MessageDigest;
-import java.security.Provider;
-import java.util.Arrays;
 
 /**
  * @author cafababe
@@ -52,7 +47,7 @@ public class test {
 
     @Test
     public void get() throws Exception {
-        Integrator file = this.simpleFileManager.get("22c0e20ff3f4d1c340c307deb5d14c91");
+        Integrator file = this.simpleFileManager.get("32c21b068e2cb08adb53aedb42405986");
         OutputStream os = new FileOutputStream(this.path);
         while (file.hasNext()) {
             os.write(file.next());

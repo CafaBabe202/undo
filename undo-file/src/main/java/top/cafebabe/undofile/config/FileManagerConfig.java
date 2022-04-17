@@ -3,12 +3,11 @@ package top.cafebabe.undofile.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import top.cafebabe.fileManager.manger.SimpleFileManager;
 import top.cafebabe.fileManager.manger.integrator.SimpleIntegratorFactory;
-import top.cafebabe.fileManager.manger.memory.MongodbMemory;
+import top.cafebabe.fileManager.manger.memory.TempMongoMemory;
 import top.cafebabe.fileManager.manger.splitter.SimpleSplitterFactory;
+import top.cafebabe.fileManager.manger.TempFileManager;
 
 /**
  * @author cafababe
@@ -25,10 +24,10 @@ public class FileManagerConfig {
     private int blockSize;
 
     @Bean
-    public SimpleFileManager simpleFileManager() {
-        MongodbMemory memory = new MongodbMemory(this.host, this.port, this.username, this.password, this.dbName);
+    public TempFileManager tempFileManager() {
+        TempMongoMemory memory = new TempMongoMemory(this.host, this.port, this.username, this.password, this.dbName);
         SimpleSplitterFactory splitterFactory = new SimpleSplitterFactory(this.blockSize);
         SimpleIntegratorFactory integratorFactory = new SimpleIntegratorFactory();
-        return new SimpleFileManager(memory, splitterFactory, integratorFactory);
+        return new TempFileManager(memory, splitterFactory, integratorFactory);
     }
 }
