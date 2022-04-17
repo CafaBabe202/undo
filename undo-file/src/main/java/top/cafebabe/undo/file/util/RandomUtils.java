@@ -1,4 +1,4 @@
-package top.cafebabe.undofile.util;
+package top.cafebabe.undo.file.util;
 
 import java.util.UUID;
 

@@ -1,0 +1,72 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.cafebabe.undo.file.dao.UserFileMapper">
+    <resultMap id="AllFile" type="top.cafebabe.undo.file.bean.UserFile">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="size" property="size"/>
+        <result column="md5" property="md5"/>
+        <result column="create_time" property="createTime"/>
+        <result column="is_private" property="isPrivate"/>
+        <result column="is_review" property="isReview"/>
+    </resultMap>
+
+    <insert id="add" parameterType="top.cafebabe.undo.file.bean.UserFile">
+        insert into `file`(`user_id`, `name`, `size`, `md5`, `create_time`)
+            value (#{userId},#{name},#{size},#{md5},#{createTime})
+    </insert>
+
+    <delete id="delete">
+        delete
+        from `file`
+        where user_id = #{userId}
+          and id = #{id}
+    </delete>
+
+    <update id="review">
+        update `file`
+        set `is_review` = true
+        where `id` = #{id}
+    </update>
+
+    <update id="changePrivate">
+        update `file`
+        set `is_private` = !is_private
+        where `user_id` = #{userId}
+          and `id` = #{id}
+    </update>
+
+    <update id="rename">
+        update `file`
+        set `name` = #{name}
+        where user_id = #{userId}
+          and id = #{id}
+    </update>
+
+    <select id="getFile" resultMap="AllFile">
+        select *
+        from `file`
+        where user_id = #{userId}
+          and id = #{id}
+    </select>
+    <select id="getOneNotReview" resultMap="AllFile">
+        select *
+        from `file`
+        where `is_review` = false limit 0,1
+    </select>
+
+    <select id="getAllFile" resultMap="AllFile" resultType="list">
+        select *
+        from `file`
+        where `user_id` = #{userId}
+    </select>
+
+    <select id="getNotReviewNumber">
+        select count(id)
+        from `file`
+        where `is_review` = false
+    </select>
+</mapper>

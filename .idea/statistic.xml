@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/undo-vue/node_modules" />
         <option value="$PROJECT_DIR$/undo-vue/src/assets" />
         <option value="$PROJECT_DIR$/undo-vue/src/router" />
+        <option value="$PROJECT_DIR$/undo-article/src/main/resources/static" />
       </list>
     </option>
   </component>

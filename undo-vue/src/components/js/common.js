@@ -135,6 +135,36 @@ const Index = {
   userRank: [],
 }
 
+const File = {
+  fileList: [{
+    id: "1",
+    name: "a.jpg",
+    size: "1234",
+    uploadTime: "asfdasf",
+  }, {
+    id: "2",
+    name: "a.jpg",
+    size: "1234",
+    uploadTime: "asfdasf",
+  }, {
+    id: "3",
+    name: "a.jpg",
+    size: "1234",
+    uploadTime: "asfdasf",
+  }, {
+    id: "1233",
+    name: "a.jpg",
+    size: "1234",
+    uploadTime: "asfdasf",
+  }]
+}
+
+const nowRenameFile = {
+  id: "",
+  name: ""
+}
+
+
 export default {
   MeConfig,
   LoginDialogConfig,
@@ -149,5 +179,6 @@ export default {
   ClazzNowEdit,
   ArticleNowEdit,
   ArticleNowShow,
-  Index
+  File,
+  Index,nowRenameFile
 }

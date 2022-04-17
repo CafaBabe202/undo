@@ -1,4 +1,4 @@
-package top.cafebabe.undofile.bean;
+package top.cafebabe.undo.file.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
