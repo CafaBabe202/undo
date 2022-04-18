@@ -94,17 +94,20 @@ export default {
       ajax.likeArticle(this.article.id)
     }, toVersion(id) {
       ajax.getArticleForShow(this.id, id)
+    }, refresh() {
+      ajax.getArticleRecords(this.id, (data) => {
+        if (data.length === 0) {
+          Vue.use(Message.error("该文章我没有被审核"))
+          this.$router.back()
+          return
+        }
+        ajax.getArticleForShow(this.id, null)
+      })
     }
+
   }, mounted() {
     common.ArticleNowShow.reset()
-    ajax.getArticleRecords(this.id, (data) => {
-      if (data.length === 0) {
-        Vue.use(Message.error("该文章我没有被审核"))
-        this.$router.back()
-        return
-      }
-      ajax.getArticleForShow(this.id, null)
-    })
+    setTimeout(this.refresh, 100)
   }
 }
 </script>

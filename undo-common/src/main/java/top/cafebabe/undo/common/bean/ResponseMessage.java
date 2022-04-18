@@ -17,6 +17,7 @@ public class ResponseMessage {
     public static final int STATUS_FAIL = 400;
     public static final int STATUS_TOKEN_INVALID = 401;
     public static final int PERMISSION_DENIED = 402;
+    public static final int CORS_ERROR = 403;
 
     public static final int STATUS_ERROR = 500;
 

@@ -20,8 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    TokenRedis tokenRedis;
+    final TokenRedis tokenRedis;
+
+    public TokenInterceptor(TokenRedis tokenRedis) {
+        this.tokenRedis = tokenRedis;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {

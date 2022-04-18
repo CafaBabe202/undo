@@ -7,6 +7,6 @@ import lombok.Data;
  */
 @Data
 public class RenameForm {
-    private int id;
+    private String id;
     private String newVal;
 }

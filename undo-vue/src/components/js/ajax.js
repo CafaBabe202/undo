@@ -29,6 +29,12 @@ const apis = {
   addClazz: "/articleApi/clazz/add.token",
   deleteClazz: "/articleApi/clazz/delete.token",
   renameClazz: "/articleApi/clazz/rename.token",
+
+  deleteFile: "/fileApi/file/delete.token",
+  renameFile: "/fileApi/file/rename.token",
+  getAllFile: "/fileApi/file/getAllFile.token",
+  downFile: "/fileApi/down.tokCors/",
+  changeFilePrivate: "/fileApi/file/changePrivate.token",
 }
 
 //获取自己信息的方法
@@ -321,6 +327,56 @@ const refreshUser = function () {
   getMyDetail()
 }
 
+// 删除文件
+const deleteFile = function (id) {
+  GET(apis.deleteFile + "/" + id, null, (data) => {
+    Vue.use(Message.success(data))
+    getFileList()
+  }, (data) => {
+    Vue.use(Message.error(data))
+  })
+}
+
+// 重命名文件
+const renameFile = function () {
+  POST(apis.renameFile, {
+    id: common.nowRenameFile.id,
+    newVal: common.nowRenameFile.name
+  }, (data) => {
+    getFileList()
+    Vue.use(Message.success(data))
+    common.nowRenameFile.reset()
+  }, (data) => {
+    Vue.use(Message.error(data))
+    common.nowRenameFile.reset()
+  })
+}
+
+const changeFilePrivate = function (id) {
+  POST(apis.changeFilePrivate + "/" + id, null, (data) => {
+    for (let f in common.File.fileList) {
+      if(common.File.fileList[f].id === id)
+        common.File.fileList[f].private = !common.File.fileList[f].private
+    }
+  }, null)
+}
+
+// 获取文件列表
+const getFileList = function () {
+  GET(apis.getAllFile, null, (data) => {
+    common.File.fileList = data
+  }, (data) => {
+    console.log(data)
+  })
+}
+
+// 下载文件
+const down = function (id, name) {
+  GET(apis.downFile + "/" + id, null, (data) => {
+    window.location.href = "/fileApi/download/" + name + "?downId=" + data
+  }, null)
+}
+
 const GET = function (url, data, ok, error) {
   axios.get(
     url, {
@@ -396,5 +452,10 @@ export default {
   deleteClazz,
   renameClazz,
   refreshUser,
-  refreshArticle
+  refreshArticle,
+  deleteFile,
+  renameFile,
+  changeFilePrivate,
+  getFileList,
+  down
 }

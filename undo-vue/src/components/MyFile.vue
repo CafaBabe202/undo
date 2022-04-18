@@ -9,12 +9,17 @@
           <input v-model="nowRenameFile.name" @blur="submit" :id="file.id"
                  style="height: 100%;border: none;font-size: 25px;outline: none"/>
         </span>
-        <span class="file-size">大小：{{ file.size }}</span>
-        <span class="file-uploadTime">时间：{{ file.uploadTime }}</span>
         <div style="float: right;line-height: 50px;height: 100%;">
-          <i class="el-icon-delete"/>
-          <i class="el-icon-share"/>
+          <span @click="changePrivate(file.id)">
+          <i class="el-icon-sunny" v-show="!file.private"/>
+          <i class="el-icon-cloudy" v-show="file.private"/>
+          </span>
+          <i class="el-icon-download" @click="down(file.id,file.name)"/>
+          <i class="el-icon-delete" @click="deleteFile(file.id)"/>
+          <i class="el-icon-share" @click="share(file.id)"/>
         </div>
+        <span class="file-size">大小：{{ file.size }}</span>
+        <span class="file-uploadTime">时间：{{ file.createTime }}</span>
       </div>
     </div>
     <div class="file-upload-box" style="text-align: center">
@@ -36,6 +41,9 @@
 <script>
 import fileUpload from "./js/fileUpload";
 import common from "./js/common";
+import ajax from "./js/ajax";
+import {Message} from "element-ui";
+import Vue from "vue";
 
 export default {
   name: "MyFile",
@@ -52,24 +60,33 @@ export default {
       this.nowRenameFile.id = id
       this.nowRenameFile.name = name
     }, submit() {
-      this.nowRenameFile.id = ""
-      this.nowRenameFile.name = ""
-    },
-    upload(file) {
+      ajax.renameFile()
+    }, changePrivate(id) {
+      ajax.changeFilePrivate(id)
+    }, share(id) {
+      this.$copyText("http://undo.vip:8080/fileApi/get.cors/" + id)
+      Vue.use(Message.success("文件链接已添加到剪切板"))
+    }, upload(file) {
       this.setUploadStatus(0)
       fileUpload.upload(file.file, (per) => {
         this.setUploadStatus(per)
       })
-    },
-    setUploadStatus(percentage) {
+    }, setUploadStatus(percentage) {
       this.percentage = percentage
       if (percentage === 100) {
-        $(".loading").fadeOut()
+        $(".loading").fadeOut(() => {
+          this.percentage = 0
+        })
       } else if (percentage < 100) {
         $(".loading").fadeIn()
       }
+    }, deleteFile(id) {
+      ajax.deleteFile(id)
+    }, down(id, name) {
+      ajax.down(id, name)
     }
   }, mounted() {
+    setTimeout(ajax.getFileList, 50)
   }
 }
 </script>
@@ -97,7 +114,7 @@ export default {
 
 .file-item {
   height: 50px;
-  font-size: 30px;
+  font-size: 25px;
   line-height: 50px;
   padding-left: 10px;
   padding-right: 10px;
@@ -110,7 +127,7 @@ export default {
 }
 
 .file-item i {
-  margin-right: 15px;
+  margin-right: 10px;
 }
 
 .file-item i:hover {
@@ -119,7 +136,9 @@ export default {
 }
 
 .file-uploadTime, .file-size {
-  margin-left: 50px;
+  width: 130px;
+  float: right;
+  margin-right: 10px;
   font-size: 15px;
   color: #737373;
 }

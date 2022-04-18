@@ -15,8 +15,8 @@
     </resultMap>
 
     <insert id="add" parameterType="top.cafebabe.undo.file.bean.UserFile">
-        insert into `file`(`user_id`, `name`, `size`, `md5`, `create_time`)
-            value (#{userId},#{name},#{size},#{md5},#{createTime})
+        insert into `file`(`id`, `user_id`, `name`, `size`, `md5`, `create_time`)
+            value (#{id},#{userId},#{name},#{size},#{md5},#{createTime})
     </insert>
 
     <delete id="delete">
@@ -52,6 +52,13 @@
         where user_id = #{userId}
           and id = #{id}
     </select>
+
+    <select id="getOneFile" resultMap="AllFile">
+        select *
+        from `file`
+        where id = #{id}
+    </select>
+
     <select id="getOneNotReview" resultMap="AllFile">
         select *
         from `file`

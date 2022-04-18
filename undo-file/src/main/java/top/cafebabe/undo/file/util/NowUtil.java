@@ -15,4 +15,8 @@ public class NowUtil {
     public static String nowTime() {
         return simpleDateFormat.format(System.currentTimeMillis());
     }
+
+    public static Long now(){
+        return System.currentTimeMillis();
+    }
 }

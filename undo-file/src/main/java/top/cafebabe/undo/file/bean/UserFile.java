@@ -8,7 +8,7 @@ import top.cafebabe.undo.file.util.NowUtil;
  */
 @Data
 public class UserFile {
-    private int id;
+    private String id;
     private int userId;
     private String name;
     private long size;
@@ -20,7 +20,10 @@ public class UserFile {
     public UserFile() {
     }
 
-    public UserFile(int userId, String name, long size, String md5) {
+    public UserFile(String id, int userId, String name, long size, String md5) {
+        System.out.println(id);
+        System.out.println(id.length());
+        this.id = id;
         this.userId = userId;
         this.name = name;
         this.size = size;

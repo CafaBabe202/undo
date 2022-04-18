@@ -3,6 +3,7 @@ import axios from "axios";
 import common from "./common";
 import Vue from "vue";
 import {Message} from "element-ui";
+import ajax from "./ajax";
 
 const apis = {
   uploadInit: "/fileApi/upload/initUpload.token",
@@ -37,6 +38,7 @@ const uploadInit = function (file, md5, status) {
     } else if (data.status === 101) {
       status(100)
       Vue.use(Message.success("上传成功"))
+      ajax.getFileList()
     }
   }, data => {
   })
@@ -68,6 +70,7 @@ const uplodOne = function (url, data, ok, done, error) {
     if (res.status === 101) {
       done()
       Vue.use(Message.success("上传成功"))
+      ajax.getFileList()
     } else if (res.status === 100) {
       if (ok !== null)
         ok(res.data)

@@ -28,13 +28,8 @@ public class FileCtl {
         if (loginUser == null)
             return MessageUtil.error("数据异常");
 
-        try {
-            return this.userFileSer.delete(loginUser.getId(), Integer.parseInt(id))
-                    ? MessageUtil.ok("删除成功") : MessageUtil.fail("删除失败");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return MessageUtil.fail("数据异常");
-        }
+        return this.userFileSer.delete(loginUser.getId(), id)
+                ? MessageUtil.ok("删除成功") : MessageUtil.fail("删除失败");
     }
 
     @PostMapping("/changePrivate.token/{id}")
@@ -43,15 +38,9 @@ public class FileCtl {
         if (loginUser == null)
             return MessageUtil.error("数据异常");
 
-        try {
-            return this.userFileSer.changePrivate(loginUser.getId(), Integer.parseInt(id))
-                    ? MessageUtil.ok("设置成功") : MessageUtil.fail("设置失败");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return MessageUtil.fail("数据异常");
-        }
+        return this.userFileSer.changePrivate(loginUser.getId(), id)
+                ? MessageUtil.ok("设置成功") : MessageUtil.fail("设置失败");
     }
-
 
     @PostMapping("/rename.token")
     public ResponseMessage rename(@RequestBody RenameForm form, HttpSession session) {
@@ -68,8 +57,6 @@ public class FileCtl {
         LoginUser loginUser = (LoginUser) session.getAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION);
         if (loginUser == null)
             return MessageUtil.error("数据异常");
-
         return MessageUtil.ok(this.userFileSer.getAllFile(loginUser.getId()));
     }
-
 }

@@ -131,7 +131,7 @@ export default {
       ajax.renameClazz()
       this.editClazzNameDialog = false;
     }, shareArticle(id) {
-      this.$copyText("http://127.0.0.1:8080/showArticle/" + id)
+      this.$copyText("http://undo.vip:8080/showArticle/" + id)
       Vue.use(Message.success("文章链接已添加到剪切板"))
     }, addArticle() {
       common.ArticleNowEdit.reset()

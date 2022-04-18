@@ -35,7 +35,7 @@ public class TokenUtil {
      */
     public static boolean checkLoginToken(String token, String key) {
         String content = decode(token, key);
-        if (content == null) return false;
+        if ("".equals(content)) return false;
         return checkLoginToken(content.split(SEPARATOR));
     }
 
@@ -48,7 +48,7 @@ public class TokenUtil {
      */
     public static int getLoginTokenId(String token, String key) {
         String content = decode(token, key);
-        if (content == null) return -1;
+        if ("".equals(content)) return -1;
 
         String[] split = content.split(SEPARATOR);
         return checkLoginToken(split) ? Integer.parseInt(split[1]) : -1;
@@ -63,7 +63,7 @@ public class TokenUtil {
      */
     public static String getLoginTokenIp(String token, String key) {
         String content = decode(token, key);
-        if (content == null) return null;
+        if ("".equals(content)) return null;
 
         String[] split = content.split(SEPARATOR);
         return checkLoginToken(split) ? split[2] : null;
@@ -78,7 +78,7 @@ public class TokenUtil {
      */
     public static long getLoginTokenTimeStamp(String token, String key) {
         String content = decode(token, key);
-        if (content == null) return -1;
+        if ("".equals(content)) return -1;
         String[] split = content.split(SEPARATOR);
         return checkLoginToken(split) ? Long.parseLong(split[3]) : -1;
     }
@@ -87,7 +87,7 @@ public class TokenUtil {
         try {
             return (new SymmetricCrypto(SymmetricAlgorithm.AES, key.getBytes(StandardCharsets.UTF_8))).decryptStr(token);
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
 

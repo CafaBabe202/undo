@@ -48,6 +48,12 @@ public class MessageUtil {
         return responseMessage;
     }
 
+    public static ResponseMessage corsError() {
+        ResponseMessage responseMessage = create(null);
+        responseMessage.setStatus(ResponseMessage.CORS_ERROR);
+        return responseMessage;
+    }
+
     /**
      * 创建一个失败的消息，error 代表的是由于服务器异常所导致的失败。
      *

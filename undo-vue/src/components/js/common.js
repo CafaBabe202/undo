@@ -136,32 +136,15 @@ const Index = {
 }
 
 const File = {
-  fileList: [{
-    id: "1",
-    name: "a.jpg",
-    size: "1234",
-    uploadTime: "asfdasf",
-  }, {
-    id: "2",
-    name: "a.jpg",
-    size: "1234",
-    uploadTime: "asfdasf",
-  }, {
-    id: "3",
-    name: "a.jpg",
-    size: "1234",
-    uploadTime: "asfdasf",
-  }, {
-    id: "1233",
-    name: "a.jpg",
-    size: "1234",
-    uploadTime: "asfdasf",
-  }]
+  fileList: []
 }
 
 const nowRenameFile = {
   id: "",
-  name: ""
+  name: "",
+  reset() {
+    this.id = this.name = ""
+  }
 }
 
 
@@ -180,5 +163,6 @@ export default {
   ArticleNowEdit,
   ArticleNowShow,
   File,
-  Index,nowRenameFile
+  Index,
+  nowRenameFile
 }
