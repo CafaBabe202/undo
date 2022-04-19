@@ -11,6 +11,7 @@ const apis = {
   getUserDetail: "/userApi/user/getDetail",
   getUsersDetail: "/userApi/user/getDetail",
   updateUser: "/userApi/user/set.token",
+  resetPass: "/userApi/user/changePass.token",
   uploadAvatar: "/userApi/avatar/uploadAvatar.token",
 
   editArticle: "/articleApi/article/editArticle.token",
@@ -111,6 +112,17 @@ const update = function () {
   POST(apis.updateUser, common.UserNowEdit, data => {
     Vue.use(Message.success("设置成功"))
   }, null)
+}
+
+const resetPass = function (oldPass, newPass) {
+  POST(apis.resetPass, {
+    oldPass: oldPass,
+    newPass: newPass
+  }, (data) => {
+    Vue.use(Message.success(data))
+  }, (data) => {
+    Vue.set(Message.error(data))
+  })
 }
 
 // 设置头像
@@ -355,7 +367,7 @@ const renameFile = function () {
 const changeFilePrivate = function (id) {
   POST(apis.changeFilePrivate + "/" + id, null, (data) => {
     for (let f in common.File.fileList) {
-      if(common.File.fileList[f].id === id)
+      if (common.File.fileList[f].id === id)
         common.File.fileList[f].private = !common.File.fileList[f].private
     }
   }, null)
@@ -434,6 +446,7 @@ export default {
   register,
   login,
   update,
+  resetPass,
   uploadAvatar,
   getMyDetail,
   editArticle,

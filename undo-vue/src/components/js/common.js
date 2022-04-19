@@ -42,11 +42,11 @@ const LoginForm = {
 
 const LoginFromRules = {
   email: [
-    {required: true, message: '请输入昵称', trigger: 'blur'},
-    {min: 1, max: 15, message: '长度在 3 到 5 个字符', trigger: 'blur'}
+    {required: true, message: '请输入邮箱', trigger: 'blur'},
+    {min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur'}
   ], password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
-    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+    {min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'blur'}
   ]
 }
 
@@ -64,16 +64,16 @@ const RegisterForm = {
 const RegisterFormRules = {
   username: [
     {required: true, message: '请输入昵称', trigger: 'blur'},
-    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+    {min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur'}
   ], email: [
     {required: true, message: '请输入邮箱', trigger: 'blur'},
-    {min: 3, max: 25, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+    {min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur'}
   ], password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
-    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+    {min: 3, max: 30, message: '长度在 3 到 30 个字符', trigger: 'blur'}
   ], checkPassword: [
     {required: true, message: '请输入验证密码', trigger: 'blur'},
-    {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}
+    {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
   ], code: [
     {required: true, message: '请输入密码', trigger: 'blur'},
     {min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur'}

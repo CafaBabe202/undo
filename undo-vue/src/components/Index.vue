@@ -20,7 +20,9 @@
     <div class="index-visit-rank">
       <div v-for="article in this.index.visitRank" class="index-article-card">
         <p class="index-article-card-title">
-          <span @click="showArticle(article.id)">{{ article.title }}</span>
+          <span>
+            <a target="_blank" :href="/showArticle/+article.id">{{ article.title }}</a>
+          </span>
           <i class="el-icon-share" @click="shareArticle(article.id)"/>
         </p>
         <p class="index-article-card-summary">{{ article.summary }}</p>
@@ -99,6 +101,11 @@ export default {
   padding-top: 10px;
   padding-bottom: 30px;
   background-image: url("/static/bg.png");
+}
+
+a {
+  color: black;
+  text-decoration: none;
 }
 
 .index-user-rank {

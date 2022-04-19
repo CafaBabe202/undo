@@ -12,6 +12,7 @@ import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.util.Logger;
 
 /**
+ * 输出日志的统一方式
  * @author cafababe
  */
 @ControllerAdvice

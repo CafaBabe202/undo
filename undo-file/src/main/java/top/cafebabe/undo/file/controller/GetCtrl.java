@@ -19,10 +19,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
+ * 主要处理文件获取相关的逻辑。
+ *
  * @author cafababe
  */
 @RestController
@@ -36,6 +36,11 @@ public class GetCtrl {
         this.userFileSer = userFileSer;
     }
 
+    /**
+     * 获取一个文件用来展示
+     *
+     * @param id 文件 ID
+     */
     @GetMapping("/get.cors/{id}")
     public ResponseMessage get(@PathVariable String id, HttpServletResponse response, HttpSession session) {
         try {
@@ -46,6 +51,9 @@ public class GetCtrl {
         return MessageUtil.error("获取文件失败");
     }
 
+    /**
+     * 请求下载一个文件，这并不会直接下载文件，而是生成一个临时的下载凭证，下载的逻辑通过下边的方法完成。
+     */
     @GetMapping("/down.tokCors/{fileId}")
     public ResponseMessage down(@PathVariable String fileId, HttpSession session) throws Exception {
         LoginUser loginUser = (LoginUser) session.getAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION);
@@ -59,6 +67,9 @@ public class GetCtrl {
         return MessageUtil.ok(DownIdUtil.createId(fileId));
     }
 
+    /**
+     * 下载一个文件，只验证凭证，只要凭证通过就可以下载。
+     */
     @GetMapping("/download/*")
     public ResponseMessage download(@RequestParam String downId, HttpServletResponse response, HttpSession session) throws Exception {
         if (!DownIdUtil.check(downId))
@@ -74,7 +85,7 @@ public class GetCtrl {
 
         // 判断是不是下载
         if (isDown) { // 下载直接下载，不验证信息
-            response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(file.getName(), StandardCharsets.UTF_8));
+            response.addHeader("Content-Disposition", "attachment");
         } else { // 预览就要验证信息
             LoginUser loginUser = (LoginUser) session.getAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION);
             if (file.isPrivate() && (loginUser == null || loginUser.getId() != file.getUserId()))

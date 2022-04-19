@@ -10,6 +10,9 @@ import top.cafebabe.fileManager.manger.splitter.SimpleSplitterFactory;
 import top.cafebabe.fileManager.manger.TempFileManager;
 
 /**
+ * 文件管理对的配置文件
+ * 配置一个文件管理的对象到 SpringIOC 中，方便使用。
+ *
  * @author cafababe
  */
 @Data

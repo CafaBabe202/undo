@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 /**
+ * 配置 MongoDB 储存对象时不保存类型。
  * @author cafababe
  */
 @Configuration

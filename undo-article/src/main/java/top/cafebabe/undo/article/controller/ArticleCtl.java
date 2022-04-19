@@ -34,12 +34,12 @@ public class ArticleCtl {
     // 编辑、新建文章
     @PostMapping("/editArticle.token")
     public ResponseMessage addArticle(@RequestBody EditArticleForm form, HttpSession session) {
+        if (!Checker.check(form) || !clazzService.existClazz(form.getClazzId()))
+            return MessageUtil.fail("数据异常");
+
         LoginUser loginUser = SessionUtil.getLoginUser(session);
         if (loginUser == null)
             return MessageUtil.error("变量错误");
-
-        if (!Checker.check(form) || !clazzService.existClazz(form.getClazzId()))
-            return MessageUtil.fail("数据异常");
 
         Article article = ClassConverter.toArticle(form);
         article.setUserId(loginUser.getId());
@@ -129,6 +129,7 @@ public class ArticleCtl {
         }
     }
 
+    // 搜索接口
     @GetMapping("/search")
     public ResponseMessage search(
             @RequestParam(value = "title", defaultValue = "") String title,
@@ -186,16 +187,19 @@ public class ArticleCtl {
                 MessageUtil.ok(ClassConverter.showRecords(articleService.getRecords(article.getRecordsId(), isPrivate))) : MessageUtil.permissionDenied();
     }
 
+    // 获取浏览量的榜单
     @GetMapping("/getVisitRank")
     public ResponseMessage getVisitRank() {
         return MessageUtil.ok(articleService.getVisitRank());
     }
 
+    // 获取用户的排名
     @GetMapping("/getUserRank")
     public ResponseMessage getUserRank() {
         return MessageUtil.ok(articleService.getUserRank());
     }
 
+    // 点赞文章
     @GetMapping("/like")
     public ResponseMessage like(@RequestParam(value = "id", defaultValue = "-1") String id) {
         try {

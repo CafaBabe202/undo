@@ -50,7 +50,22 @@
             <td>{{ userArticle.statistics.visit }}</td>
           </tr>
         </table>
+        <el-button type="primary" class="change-password" @click="changePass.show = true">修改密码</el-button>
       </div>
+      <el-dialog
+        title="修改密码"
+        :visible.sync="changePass.show"
+        width="30%"
+        center>
+        <input class="input-password" v-model="changePass.oldPass" type="password" placeholder="请输入旧密码"/>
+        <br/>
+        <input class="input-password" v-model="changePass.newPass" type="password" placeholder="请输入新密码"/>
+        <br/>
+        <input class="input-password" v-model="changePass.reNewPass" type="password" placeholder="再次输入新密码"/>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="resetPass">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -68,6 +83,15 @@ export default {
       user: common.User,
       userArticle: common.UserArticle,
       nowEdit: common.UserNowEdit,
+      changePass: {
+        show: false,
+        oldPass: "",
+        newPass: "",
+        reNewPass: "",
+        rest() {
+          this.oldPass = this.newPass = this.reNewPass = ""
+        }
+      },
     }
   }, methods: {
     edit(field) {
@@ -84,6 +108,12 @@ export default {
       this.nowEdit.field = ""
     }, uploadAvatar(parm) {
       ajax.uploadAvatar(parm.file)
+    }, resetPass() {
+      this.changePass.show = false
+      if (this.changePass.newPass === this.changePass.reNewPass)
+        ajax.resetPass(this.changePass.oldPass, this.changePass.newPass)
+      else
+        Vue.use(Message.info("两次密码不一样"))
     }
   }, watch: {
     nowEdit: {
@@ -98,13 +128,18 @@ export default {
           setTimeout("document.getElementById(\"sign\").focus()", 50);
         }
       }
-    },
-    user: {
+    }, user: {
       deep: true,
       handler: function (val) {
         if (!val.isLogin) {
           this.$router.push('/').catch(res => console.log(res));
         }
+      }
+    }, changePass: {
+      deep: true,
+      handler: function (val) {
+        if (val.show === false)
+          this.changePass.rest()
       }
     }
   }
@@ -124,14 +159,9 @@ export default {
 .user-body {
   width: 40%;
   margin-left: 30%;
-  background-color: #EFF0F1;
-  border: #EFF0F1 solid 1px;
-  border-radius: 5px;
-}
-
-.user-body:hover {
-  transition: 0.5s;
-  box-shadow: 3px 3px 10px #bebebe;
+  background-color: rgb(198, 226, 255);
+  border: rgb(198, 226, 255, 0) solid 1px;
+  border-radius: 20px;
 }
 
 .user-header {
@@ -144,9 +174,11 @@ export default {
   border-radius: 100px;
   margin-top: 30px;
   display: inline-block;
+  box-shadow: 0 0 50px rgb(255, 239, 159);
 }
 
 .user-detail {
+  text-align: center;
   width: 60%;
   margin-left: 20%;
   margin-top: 30px;
@@ -169,7 +201,7 @@ export default {
   height: 40px;
   color: rgb(100, 100, 100);
   font-size: 15px;
-  border: rgb(222, 222, 222) solid 2px;
+  border: rgb(100, 100, 100) solid 2px;
 }
 
 .user-detail-table input {
@@ -179,5 +211,19 @@ export default {
   outline: none;
   font-size: 20px;
   background-color: #EFF0F1;
+}
+
+.change-password {
+  margin-top: 20px;
+}
+
+.input-password {
+  width: 60%;
+  height: 30px;
+  outline: none;
+  border: #6c6c6c solid 1px;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-left: 20%;
 }
 </style>

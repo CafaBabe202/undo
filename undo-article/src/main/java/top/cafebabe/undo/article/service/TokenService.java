@@ -17,6 +17,12 @@ import java.util.Map;
 @Service
 public class TokenService {
 
+    /**
+     * 这个方法向 user 模块认证用户的 token 是否有效。
+     *
+     * @param userToken 用户 token。
+     * @return 返回该 token 代表的用户，如果 token 无效，将返回 null。
+     */
     public LoginUser getLoginUser(String userToken) {
         String get = HttpUtils.GET(AppConfig.USER_GET_LOGIN_USER_API + userToken, getAppHeader(), null, AppConfig.HTTP_TIMEOUT);
         if (get == null) return null;

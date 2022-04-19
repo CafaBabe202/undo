@@ -42,9 +42,9 @@
         </el-descriptions-item>
       </el-descriptions>
 
-      <el-button class="myArticle-summary-add" type="primary" @click="addArticle">
+      <el-button class="myArticle-summary-add" type="primary">
         <i class="el-icon-edit"/>
-        添加文章
+        <a style="color: white" href="/editArticle" target="_blank">添加文章</a>
       </el-button>
 
     </div>
@@ -53,8 +53,12 @@
     <div class="myArticle-show-article">
       <div v-for="article in this.article.articles" class="myArticle-article-card">
         <p class="myArticle-article-card-title">
-          <span @click="showArticle(article.id)">{{ article.title }}</span>
-          <i class="el-icon-edit" @click="editArticle(article.id)"/>
+          <span>
+            <a style="color: black" target="_blank" :href="/showArticle/+article.id">{{ article.title }}</a>
+          </span>
+          <a style="color:#000;" target="_blank" :href="/editArticle/+article.id">
+            <i class="el-icon-edit"/>
+          </a>
           <i class="el-icon-delete" @click="deleteArticle(article.id)"/>
           <i class="el-icon-share" @click="shareArticle(article.id)"/>
           <span @click="changePrivate(article.id)">
@@ -67,7 +71,7 @@
           <li><i class="el-icon-lollipop i-color"/>点赞：{{ article.like }}</li>
           <li><i class="el-icon-view i-color"/>浏览量：{{ article.visit }}</li>
           <li><i class="el-icon-collection i-color"/>分类：{{ article.clazzName }}</li>
-          <li><i class="el-icon-refresh-right i-color"/>更新时间：{{ article.updateTime.substr(0,10) }}</li>
+          <li><i class="el-icon-refresh-right i-color"/>更新时间：{{ article.updateTime.substr(0, 10) }}</li>
         </ul>
       </div>
     </div>
@@ -133,9 +137,6 @@ export default {
     }, shareArticle(id) {
       this.$copyText("http://undo.vip:8080/showArticle/" + id)
       Vue.use(Message.success("文章链接已添加到剪切板"))
-    }, addArticle() {
-      common.ArticleNowEdit.reset()
-      this.$router.push("/editArticle").catch(res => console.log(res))
     }, deleteArticle(id) {
       this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -144,12 +145,7 @@ export default {
       }).then(() => {
         ajax.deleteArticle(id)
       });
-    }, editArticle(id) {
-      this.$router.push("/editArticle/" + id).catch(data => console.log(data))
-    }, showArticle(id) {
-      this.$router.push("/showArticle/" + id).catch(data => console.log(data))
     },
-
   }, mounted() {
     setTimeout(ajax.refreshArticle, 50)
   }, watch: {}
@@ -159,6 +155,10 @@ export default {
 <style scoped>
 i {
   margin-right: 10px;
+}
+
+a {
+  text-decoration: none;
 }
 
 i:hover, .i-color {

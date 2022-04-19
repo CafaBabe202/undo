@@ -9,6 +9,13 @@ import top.cafebabe.undo.article.interceptor.TokInterceptor;
 import top.cafebabe.undo.article.interceptor.TokenInterceptor;
 
 /**
+ * 配置拦截器
+ * 各个接口的权限由接口的后缀标识。
+ * token：需要用户登录的 token。
+ * tok：有没有 token 都可以，但是有的敏感资源没有 token 将限制访问。
+ * cors：禁止跨域。
+ * tokCors：tok 与 Cors 的结合。
+ *
  * @author cafababe
  */
 @Configuration

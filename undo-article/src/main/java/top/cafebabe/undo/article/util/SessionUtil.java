@@ -6,6 +6,8 @@ import top.cafebabe.undo.common.bean.LoginUser;
 import javax.servlet.http.HttpSession;
 
 /**
+ * 通过 Session 获取登录的用户
+ *
  * @author cafababe
  */
 public class SessionUtil {

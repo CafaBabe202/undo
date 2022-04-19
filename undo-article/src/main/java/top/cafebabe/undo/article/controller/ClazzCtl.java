@@ -37,6 +37,7 @@ public class ClazzCtl {
         this.articleService = articleService;
     }
 
+    // 添加分类
     @PostMapping("/add.token")
     public ResponseMessage add(@RequestBody AddClazzForm form, HttpSession session) {
         if (!Checker.check(form))
@@ -50,6 +51,7 @@ public class ClazzCtl {
                 MessageUtil.ok("添加成功") : MessageUtil.fail("添加失败");
     }
 
+    // 删除分类
     @PostMapping("/delete.token/{id}")
     public ResponseMessage delete(@PathVariable String id, HttpSession session) {
         LoginUser loginUser = SessionUtil.getLoginUser(session);
@@ -70,6 +72,7 @@ public class ClazzCtl {
         }
     }
 
+    // 重命名分类
     @PostMapping("/rename.token")
     public ResponseMessage rename(@RequestBody RenameClazzForm form, HttpSession session) {
         if (!Checker.check(form))
@@ -83,6 +86,7 @@ public class ClazzCtl {
                 MessageUtil.ok("设置成功") : MessageUtil.fail("设置失败");
     }
 
+    // 获取某人的所有分类
     @GetMapping("/getAllClazz/{userId}")
     public ResponseMessage getAllClazz(@PathVariable String userId) {
         try {

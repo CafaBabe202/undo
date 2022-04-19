@@ -48,6 +48,12 @@
         where id = #{id}
     </update>
 
+    <update id="setPassword">
+        update user
+        set password = #{password}
+        where id = #{id}
+    </update>
+
     <select id="getByUserId" resultMap="SysUser">
         select *
         from user

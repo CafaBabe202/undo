@@ -11,6 +11,7 @@ import top.cafebabe.undo.file.service.UserFileSer;
 import javax.servlet.http.HttpSession;
 
 /**
+ * 主要处理和 MySQL 中用户文件相关的操作。
  * @author cafababe
  */
 @RestController

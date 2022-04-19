@@ -17,9 +17,6 @@ public class UserFile {
     private boolean isPrivate;
     private boolean isReview;
 
-    public UserFile() {
-    }
-
     public UserFile(String id, int userId, String name, long size, String md5) {
         System.out.println(id);
         System.out.println(id.length());
