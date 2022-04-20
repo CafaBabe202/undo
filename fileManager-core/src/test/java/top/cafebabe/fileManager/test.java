@@ -91,6 +91,4 @@ public class test {
         md5Util.update(buffer, 0, len);
         System.out.println(this.tempFileManager.store(tempFile, md5Util.design()));
     }
-
-
 }

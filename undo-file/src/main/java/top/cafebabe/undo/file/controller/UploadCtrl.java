@@ -9,7 +9,7 @@ import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.util.MessageUtil;
 import top.cafebabe.undo.file.bean.AppConfig;
 import top.cafebabe.undo.file.bean.form.FileUploadInitForm;
-import top.cafebabe.undo.file.util.RandomUtils;
+import top.cafebabe.undo.common.util.RandomUtils;
 import top.cafebabe.undo.file.bean.FileUploadStatus;
 import top.cafebabe.undo.file.service.UserFileSer;
 
@@ -57,7 +57,7 @@ public class UploadCtrl {
             }
         } else { // 不存在请求上传。
             FileUploadStatus status = new FileUploadStatus(form.getFileName(), form.getMd5(), tempFileManager.createTempFile(), form.getAllSize(), 0);
-            String uuid = RandomUtils.getUUID(); // 生成一个该文件上传对应的随机 ID，之所有不使用 MD5 是防止用户同时上传两个同 MD5 的文件造成文件的上传错误。
+            String uuid = RandomUtils.UUID(); // 生成一个该文件上传对应的随机 ID，之所有不使用 MD5 是防止用户同时上传两个同 MD5 的文件造成文件的上传错误。
             session.setAttribute(uuid, status);
             Map<String, Object> res = nexUpload(status); // 计算下次上传的片段位置。
             res.put("uuid", uuid); // 将上传状态等和文件的唯一上传 ID 放在 session 中。

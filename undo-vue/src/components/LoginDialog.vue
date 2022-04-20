@@ -14,7 +14,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitLoginForm('loginFormRules')">立即登录</el-button>
-            <el-button @click="resetLoginForm('loginFormRules')">重置</el-button>
+            <el-button @click="resetLoginForm">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -36,11 +36,12 @@
             <el-input type="password" v-model="registerForm.checkPassword" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="验证码" prop="code">
-            <el-input type="email" v-model="registerForm.code"/>
+            <el-input type="email" v-model="registerForm.code" style="width: 50%;"/>
+            <el-button @click="send"> 发送验证码</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitRegisterForm('registerFormRules')">立即注册</el-button>
-            <el-button @click="resetRegisterForm('registerFormRules')">重置</el-button>
+
           </el-form-item>
         </el-form>
       </div>
@@ -76,8 +77,10 @@ export default {
           return false
         }
       });
-    }, resetLoginForm(formName) {
+    }, resetLoginForm() {
       common.LoginForm.reset()
+    }, send() {
+      ajax.sendCode()
     }, submitRegisterForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -86,8 +89,6 @@ export default {
           return false;
         }
       });
-    }, resetRegisterForm(formName) {
-      common.RegisterForm.reset()
     }
   }
 }

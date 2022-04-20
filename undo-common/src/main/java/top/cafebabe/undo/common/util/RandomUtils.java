@@ -1,19 +1,21 @@
-package top.cafebabe.undo.file.util;
+package top.cafebabe.undo.common.util;
 
-import top.cafebabe.undo.common.util.NowUtil;
+import java.util.Random;
+import java.util.UUID;
 
 /**
- * 这看起来有点蠢，不过还是这样放着吧。
- *
  * @author cafababe
  */
-public class FileIdUtil {
-    public static String createId(int userId, String md5) {
-        return toString(toByteArr(userId)) + md5.toUpperCase() + toString(toByteArr(NowUtil.now()));
+public class RandomUtils {
+
+    private static final Random random = new Random();
+
+    public static String UUID() {
+        return UUID.randomUUID().toString();
     }
 
-    public static boolean check(String id) {
-        return id.length() == 56;
+    public static String registerCode() {
+        return toString(toByteArr(random.nextInt()));
     }
 
     private static byte[] toByteArr(int i) {

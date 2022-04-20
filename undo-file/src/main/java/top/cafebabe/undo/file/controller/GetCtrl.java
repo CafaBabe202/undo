@@ -97,7 +97,7 @@ public class GetCtrl {
         }
 
         response.reset();
-        Integrator integrator = tempFileManager.get(FileIdUtil.getMd5(fileId));
+        Integrator integrator = tempFileManager.get(file.getMd5());
         ServletOutputStream outputStream = response.getOutputStream();
         while (integrator.hasNext()) {
             Thread.sleep(500); // 延时，为了看前端的下载效果

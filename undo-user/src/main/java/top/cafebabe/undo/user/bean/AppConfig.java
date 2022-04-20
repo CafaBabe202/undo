@@ -13,7 +13,12 @@ public class AppConfig {
 
     // header 中令牌配置
     public static final String TOKEN_NAME_IN_HEADER = "token"; // token 在 header 中的 key
-    public static final String INNER_APP_PASSWORD_NAME_IN_HEADER = "innerApp";
+    public static final String INNER_APP_PASSWORD_NAME_IN_HEADER = "innerApp"; // 其他模块的密钥在 header 中的 key
+
+    // 发送邮件验证码的配置
+    public static final String LAST_SEND_TIME = "SendTime"; // 上次发送邮件的时间在 session 中的 key
+    public static final int SEND_TIME = 60 * 1000; // 发送邮件的间隔时间
+    public static final String REGISTER_CODE_KEY_IN_SESSION = "code";
 
     // Redis 中 Token 配置
     public static final String REDIS_TOKEN_PREFIX = "Token:";

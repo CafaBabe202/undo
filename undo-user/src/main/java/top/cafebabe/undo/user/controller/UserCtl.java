@@ -5,6 +5,7 @@ import top.cafebabe.undo.common.bean.LoginUser;
 import top.cafebabe.undo.common.bean.ResponseMessage;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.common.util.MessageUtil;
+import top.cafebabe.undo.common.util.NowUtil;
 import top.cafebabe.undo.common.util.RequestUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
 import top.cafebabe.undo.user.bean.form.*;
@@ -12,8 +13,10 @@ import top.cafebabe.undo.user.service.LoginUserSer;
 import top.cafebabe.undo.user.service.SysUserSer;
 import top.cafebabe.undo.user.util.Checker;
 import top.cafebabe.undo.user.util.ClassConverter;
+import top.cafebabe.undo.user.util.EmailSender;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 /**
@@ -33,11 +36,30 @@ public class UserCtl {
         this.loginUserSer = loginUserSer;
     }
 
+    @PostMapping("/sendEmail")
+    public ResponseMessage demo(@RequestBody SendEmailForm form, HttpSession session) {
+        long last = lastSendTime(session);
+        if (NowUtil.now() - last < AppConfig.SEND_TIME)
+            return MessageUtil.fail("技能冷却中");
+        if (!Checker.check(form))
+            return MessageUtil.fail("数据异常");
+
+        String code = EmailSender.sender(form.getEmail());
+        session.setAttribute(AppConfig.REGISTER_CODE_KEY_IN_SESSION, code);
+        session.setAttribute(AppConfig.LAST_SEND_TIME, NowUtil.now());
+        return MessageUtil.ok("验证码已发送");
+    }
+
     // 用户注册
     @PostMapping("/register")
-    public ResponseMessage register(@RequestBody RegisterForm form) {
+    public ResponseMessage register(@RequestBody RegisterForm form, HttpSession session) {
         if (!Checker.check(form))
             return MessageUtil.fail("参数异常");
+
+        long last = lastSendTime(session);
+        if (!form.getCode().equals(session.getAttribute(AppConfig.REGISTER_CODE_KEY_IN_SESSION))
+                || NowUtil.now() - last > AppConfig.SEND_TIME)
+            return MessageUtil.fail("验证码不正确");
 
         if (sysUserSer.existUsername(form.getUsername())) return MessageUtil.fail("用户名已经存在");
         if (sysUserSer.existEmail(form.getEmail())) return MessageUtil.fail("邮箱已被占用");
@@ -121,5 +143,13 @@ public class UserCtl {
 
         return form.getIds().size() > 20 ?
                 MessageUtil.fail("数据过大") : MessageUtil.ok(sysUserSer.getSysUserPublicDetail(form.getIds()));
+    }
+
+    private long lastSendTime(HttpSession session) {
+        try {
+            return Long.parseLong(session.getAttribute(AppConfig.LAST_SEND_TIME).toString());
+        } catch (NumberFormatException | NullPointerException e) {
+            return 0L;
+        }
     }
 }

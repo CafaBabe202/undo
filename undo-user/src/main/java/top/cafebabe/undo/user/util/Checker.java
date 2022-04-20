@@ -15,6 +15,10 @@ public class Checker {
                 && form.getCode() != null;
     }
 
+    public static boolean check(SendEmailForm form) {
+        return checkEmail(form.getEmail());
+    }
+
     public static boolean check(LoginForm form) {
         return checkEmail(form.getEmail()) && checkStringLen(form.getPassword(), 128);
     }

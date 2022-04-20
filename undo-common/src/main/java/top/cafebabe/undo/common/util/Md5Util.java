@@ -1,4 +1,4 @@
-package top.cafebabe.undo.user.util;
+package top.cafebabe.undo.common.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

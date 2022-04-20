@@ -3,12 +3,11 @@ package top.cafebabe.undo.user.service;
 import org.springframework.stereotype.Service;
 import top.cafebabe.undo.common.bean.SysUser;
 import top.cafebabe.undo.common.util.CurrentUtil;
-import top.cafebabe.undo.common.util.MessageUtil;
 import top.cafebabe.undo.common.util.TokenUtil;
 import top.cafebabe.undo.user.bean.AppConfig;
 import top.cafebabe.undo.user.dao.SysUserMapper;
 import top.cafebabe.undo.user.util.ClassConverter;
-import top.cafebabe.undo.user.util.Md5Util;
+import top.cafebabe.undo.common.util.Md5Util;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;

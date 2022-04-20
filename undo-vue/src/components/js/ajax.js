@@ -6,6 +6,7 @@ import {Message} from "element-ui";
 // 所有的 Api 接口地址
 const apis = {
   register: "/userApi/user/register",
+  sendCode: "/userApi/user/sendEmail",
   login: "/userApi/user/login",
   getMyDetail: "/userApi/user/getMyDetail.token",
   getUserDetail: "/userApi/user/getDetail",
@@ -91,6 +92,18 @@ const register = function () {
   }, data => {
     Vue.use(Message.error(data))
   })
+}
+
+// 发送验证码
+const sendCode = function () {
+  POST(apis.sendCode,
+    {email: common.RegisterForm.email},
+    (dat) => {
+      Vue.use(Message.success(data))
+    }, (data) => {
+      Vue.use(Message.error(data))
+    }
+  )
 }
 
 // 登录
@@ -444,6 +457,7 @@ const POST = function (url, data, ok, error) {
 
 export default {
   register,
+  sendCode,
   login,
   update,
   resetPass,

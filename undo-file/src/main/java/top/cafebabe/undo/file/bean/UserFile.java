@@ -1,7 +1,7 @@
 package top.cafebabe.undo.file.bean;
 
 import lombok.Data;
-import top.cafebabe.undo.file.util.NowUtil;
+import top.cafebabe.undo.common.util.NowUtil;
 
 /**
  * @author cafababe
@@ -18,8 +18,6 @@ public class UserFile {
     private boolean isReview;
 
     public UserFile(String id, int userId, String name, long size, String md5) {
-        System.out.println(id);
-        System.out.println(id.length());
         this.id = id;
         this.userId = userId;
         this.name = name;
