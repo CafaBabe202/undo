@@ -11,7 +11,7 @@
         <result property="avatar" column="avatar"/>
         <result property="sign" column="sign"/>
         <result property="createTime" column="create_ime" jdbcType="TIMESTAMP"/>
-        <result property="isDelete" column="isDelete"/>
+        <result property="isDelete" column="is_delete"/>
     </resultMap>
 
     <insert id="addUser" parameterType="top.cafebabe.undo.common.bean.SysUser">

@@ -37,7 +37,7 @@ public class UploadCtrl {
 
     /**
      * 初始化一个文件上传。
-     * 用户提交文件名，md5，大小等信息，如果文件已经存在，直接生成一个文件对象放在 MySQL 中，否则返回下载上传的位置片段。
+     * 用户提交文件名，md5，大小等信息，如果文件已经存在，直接生成一个 UserFile 对象放在 MySQL 中，否则返回下次上传片段的位置。
      */
     @PostMapping("/initUpload.token")
     public ResponseMessage initUpload(@RequestBody FileUploadInitForm form, HttpSession session) {

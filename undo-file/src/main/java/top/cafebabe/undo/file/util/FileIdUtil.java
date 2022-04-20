@@ -12,6 +12,16 @@ public class FileIdUtil {
     private static final String SEPARATOR = ":";
     private static final SymmetricCrypto symmetricCrypto = new SymmetricCrypto(SymmetricAlgorithm.AES, KEY.getBytes());
 
+    /**
+     * 这里存在一个 Bug，统一人创建上次传同一个文件时将会出现相同的 ID 然后抛 SQL 异常。
+     * 这是梦见的。
+     * 这是梦见的。
+     * 这是梦见的。
+     *
+     * @param userId 用户 ID。
+     * @param md5    文件 MD5。
+     * @return 创建的文件 ID。
+     */
     public static String createId(int userId, String md5) {
         return symmetricCrypto.encryptHex(userId + SEPARATOR + md5);
     }

@@ -55,7 +55,7 @@ public class GetCtrl {
      * 请求下载一个文件，这并不会直接下载文件，而是生成一个临时的下载凭证，下载的逻辑通过下边的方法完成。
      */
     @GetMapping("/down.tokCors/{fileId}")
-    public ResponseMessage down(@PathVariable String fileId, HttpSession session) throws Exception {
+    public ResponseMessage down(@PathVariable String fileId, HttpSession session) {
         LoginUser loginUser = (LoginUser) session.getAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION);
         UserFile file = userFileSer.getFile(fileId);
         if (file == null)
@@ -78,13 +78,17 @@ public class GetCtrl {
         return doGet(DownIdUtil.getFileId(downId), response, session, true);
     }
 
+    /**
+     * 这里其实很没有必要这么写，因为目前前端的做法，预览的用户信息跟不能被校验，所以预览的时候即使是自己私有文件还是不能被展示。
+     * 目前并不打算改这里，以后想想怎么改前端吧，想办法能够验证是自己访问自己的文章。
+     */
     private ResponseMessage doGet(String fileId, HttpServletResponse response, HttpSession session, boolean isDown) throws IOException, InterruptedException {
         UserFile file = userFileSer.getFile(fileId);
         if (file == null)
             return MessageUtil.fail("文件不存在");
 
         // 判断是不是下载
-        if (isDown) { // 下载直接下载，不验证信息
+        if (isDown) { // 下载不需要验证信息
             response.addHeader("Content-Disposition", "attachment");
         } else { // 预览就要验证信息
             LoginUser loginUser = (LoginUser) session.getAttribute(AppConfig.LOGIN_USER_KEY_IN_SESSION);
@@ -96,7 +100,7 @@ public class GetCtrl {
         Integrator integrator = tempFileManager.get(FileIdUtil.getMd5(fileId));
         ServletOutputStream outputStream = response.getOutputStream();
         while (integrator.hasNext()) {
-            Thread.sleep(500);
+            Thread.sleep(500); // 延时，为了看前端的下载效果
             outputStream.write(integrator.next());
         }
         outputStream.close();
