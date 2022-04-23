@@ -87,14 +87,13 @@
             $("#wait").text(data.wait)
             nowContent = data.content
             $("#content").html(marked.parse(nowContent.content))
-            $(document).s
         })
     }
     const pass = function () {
         GET("/review/pass/" + nowContent.id, null, (data) => {
             message.ok("操作成功")
             next()
-        }, (dta) => {
+        }, (data) => {
             message.fail("操作失败")
             next()
         })
@@ -104,7 +103,7 @@
         GET("/review/denied/" + nowContent.id, null, (data) => {
             message.ok("操作成功")
             next()
-        }, (dta) => {
+        }, (data) => {
             message.fail("操作失败")
             next()
         })

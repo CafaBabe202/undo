@@ -28,7 +28,9 @@ public class ReviewCtl {
 
     // 获取一篇未审核的文章
     @GetMapping("/get")
-    public ResponseMessage get() {
+    public ResponseMessage get(HttpSession session, HttpServletRequest request) {
+        System.out.println(session.getId());
+        System.out.println(request.getSession().getId());
         Map<String, Object> res = new HashMap<>();
         long notReviewNumber = contentDao.getNotReviewNumber();
         res.put("wait", notReviewNumber);

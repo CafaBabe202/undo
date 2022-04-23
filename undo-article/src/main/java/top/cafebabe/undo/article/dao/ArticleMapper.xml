@@ -107,8 +107,10 @@
 
     <select id="getArticleByTitleLike" resultMap="AllArticle" resultType="list"
             parameterType="top.cafebabe.undo.article.bean.Article">
-        select *
-        from article
+        select a.* , c.name as clazz_name
+        from article as a
+        left join clazz as c
+        on a.clazz_id = c.id
         where title like "%"#{likeTitle}"%"
         <if test="!#{isPrivate}">and is_private = 0</if>
         limit #{from},#{size}

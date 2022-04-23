@@ -37,7 +37,7 @@ public class SysUserSer {
      */
     public boolean register(SysUser user) {
         user.setCreateTime(new Timestamp(CurrentUtil.now()));
-        user.setAvatar(AppConfig.DEFAULT_USER_AVATAR);
+        user.setAvatar(AppConfig.AVATAR_BASE_URL + AppConfig.DEFAULT_USER_AVATAR);
         user.setSign(AppConfig.DEFAULT_USER_SIGN);
         return userMapper.addUser(user) == 1;
     }

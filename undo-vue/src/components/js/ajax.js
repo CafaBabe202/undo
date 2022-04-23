@@ -98,7 +98,7 @@ const register = function () {
 const sendCode = function () {
   POST(apis.sendCode,
     {email: common.RegisterForm.email},
-    (dat) => {
+    (data) => {
       Vue.use(Message.success(data))
     }, (data) => {
       Vue.use(Message.error(data))

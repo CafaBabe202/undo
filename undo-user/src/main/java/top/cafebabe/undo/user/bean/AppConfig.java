@@ -28,7 +28,7 @@ public class AppConfig {
 
     // 用户属性默认配置
     public static final String DEFAULT_USER_SIGN = ""; // 默认用户签名
-    public static final String DEFAULT_USER_AVATAR = ""; // 默认用户头像的 id
+    public static final String DEFAULT_USER_AVATAR = "8305be4c40f3afb1be15318257be5bb3"; // 默认用户头像的 id
 
     // 用户属性配置
     public static final int USERNAME_LEN = 16; // 用户名长度限制
