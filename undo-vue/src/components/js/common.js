@@ -121,6 +121,7 @@ const ArticleNowShow = {
       this.sign = this.id = this.avatar = this.username = ""
     }
   },
+  isGood: "",
   reset() {
     for (let a in this) {
       if (a !== "reset") {
@@ -147,6 +148,10 @@ const nowRenameFile = {
   }
 }
 
+const say = {
+  says: []
+}
+
 
 export default {
   MeConfig,
@@ -164,5 +169,6 @@ export default {
   ArticleNowShow,
   File,
   Index,
-  nowRenameFile
+  nowRenameFile,
+  say
 }

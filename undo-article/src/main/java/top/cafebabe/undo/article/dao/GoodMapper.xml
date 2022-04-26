@@ -1,0 +1,18 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.cafebabe.undo.article.dao.GoodMapper">
+
+    <insert id="good">
+        insert into good(article_id, user_id) value (#{articleId},#{userId})
+    </insert>
+
+    <select id="isGood" resultType="int">
+        select count(*)
+        from good
+        where user_id = #{userId}
+          and article_id = #{articleId}
+    </select>
+
+</mapper>

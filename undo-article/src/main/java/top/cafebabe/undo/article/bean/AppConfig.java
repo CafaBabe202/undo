@@ -32,6 +32,6 @@ public class AppConfig {
     public static final String RECORDS_COLLECTION_NAME = "record";
 
     // 搜索配置
-    public static final int SEARCH_PAGE_SIZE = 1;
+    public static final int SEARCH_PAGE_SIZE = 3;
 
 }

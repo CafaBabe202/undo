@@ -71,17 +71,21 @@ export default {
   },
   methods: {
     toIndex() {
-      this.$router.push('/').catch(res => console.log(res));
-      common.MeConfig.isDrawer = false;
+      window.location.href="/"
+      // this.$router.push('/').catch(res => console.log(res));
+      // common.MeConfig.isDrawer = false;
     }, toUser() {
-      this.$router.push('/user').catch(res => console.log(res));
-      common.MeConfig.isDrawer = false;
+      window.location.href="/user"
+      // this.$router.push('/user').catch(res => console.log(res));
+      // common.MeConfig.isDrawer = false;
     }, toArticle() {
-      this.$router.push('/myArticle').catch(res => console.log(res));
-      common.MeConfig.isDrawer = false;
+      window.location.href="/myArticle"
+      // this.$router.push('/myArticle').catch(res => console.log(res));
+      // common.MeConfig.isDrawer = false;
     }, toFile() {
-      this.$router.push('/myFile').catch(res => console.log(res));
-      common.MeConfig.isDrawer = false;
+      window.location.href="/myFile"
+      // this.$router.push('/myFile').catch(res => console.log(res));
+      // common.MeConfig.isDrawer = false;
     }, exit() {
       common.User.reset()
       this.toIndex()

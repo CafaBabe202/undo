@@ -22,12 +22,16 @@ const apis = {
   getMyArticles: "/articleApi/article/getArticles.token",
   getMyArticle: "/articleApi/article/getMyArticle.token",
   getArticle: "/articleApi/article/getArticle.tok",
+  say: "/articleApi/say/say.token",
+  getAllSay: "/articleApi/say/getAllSay",
   getArticleRecords: "/articleApi/article/getRecords.tok",
   search: "/articleApi/article/search",
   changeArticlePrivate: "/articleApi/article/changePrivate.token",
   getUserRank: "/articleApi/article/getUserRank",
   getVisitRank: "/articleApi/article/getVisitRank",
-  likeArticle: "/articleApi/article/like",
+  likeArticle: "/articleApi/article/like.token",
+  isLikeArticle: "/articleApi/article/isLike.token",
+
   addClazz: "/articleApi/clazz/add.token",
   deleteClazz: "/articleApi/clazz/delete.token",
   renameClazz: "/articleApi/clazz/rename.token",
@@ -237,7 +241,17 @@ const changeArticlePrivate = function (id) {
 }
 
 const likeArticle = function (id) {
-  GET(apis.likeArticle, {id: id}, null, null)
+  GET(apis.likeArticle, {id: id}, (data) => {
+    Vue.use(Message.success("点赞成功"))
+    isLikeArticle(id)
+  }, null)
+}
+
+const isLikeArticle = function (id) {
+  GET(apis.isLikeArticle + "/" + id, null, (data) => {
+    if (data === 1)
+      common.ArticleNowShow.isGood = true
+  }, null)
 }
 
 // 编辑前获取文章现有内容
@@ -270,7 +284,8 @@ const getArticleForShow = function (id, version) {
       }
     }
     getUserDetail(data.userId)
-
+    getAllSay(id)
+    isLikeArticle(id)
   }, data => {
     console.log(data)
   })
@@ -402,6 +417,22 @@ const down = function (id, name) {
   }, null)
 }
 
+// say
+const say = function (articleId, content) {
+  POST(apis.say, {articleId: articleId, content: content}, (data) => {
+    Vue.use(Message.success(data))
+    getAllSay(articleId)
+  }, (data) => {
+    Vue.use(Message.error(data))
+  })
+}
+
+const getAllSay = function (articleId) {
+  GET(apis.getAllSay + "/" + articleId, null, (data) => {
+    common.say.says = data
+  })
+}
+
 const GET = function (url, data, ok, error) {
   axios.get(
     url, {
@@ -484,5 +515,6 @@ export default {
   renameFile,
   changeFilePrivate,
   getFileList,
-  down
+  down,
+  say
 }

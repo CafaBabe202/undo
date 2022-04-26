@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import top.cafebabe.undo.article.bean.Article;
 import top.cafebabe.undo.article.bean.Content;
 import top.cafebabe.undo.article.bean.form.EditArticleForm;
+import top.cafebabe.undo.article.dao.GoodMapper;
 import top.cafebabe.undo.article.service.ArticleService;
 import top.cafebabe.undo.article.service.ClazzService;
 import top.cafebabe.undo.article.util.Checker;
@@ -25,10 +26,12 @@ public class ArticleCtl {
 
     final ArticleService articleService;
     final ClazzService clazzService;
+    final GoodMapper mapper;
 
-    public ArticleCtl(ArticleService articleService, ClazzService clazzService) {
+    public ArticleCtl(ArticleService articleService, ClazzService clazzService, GoodMapper mapper) {
         this.articleService = articleService;
         this.clazzService = clazzService;
+        this.mapper = mapper;
     }
 
     // 编辑、新建文章
@@ -200,12 +203,33 @@ public class ArticleCtl {
     }
 
     // 点赞文章
-    @GetMapping("/like")
-    public ResponseMessage like(@RequestParam(value = "id", defaultValue = "-1") String id) {
+    @GetMapping("/like.token")
+    public ResponseMessage like(@RequestParam(value = "id", defaultValue = "-1") String id, HttpSession session) {
+        LoginUser loginUser = SessionUtil.getLoginUser(session);
+        if (loginUser == null)
+            return MessageUtil.error("变量错误");
+
         try {
-            return articleService.like(Integer.parseInt(id)) ? MessageUtil.ok("点赞成功") : MessageUtil.fail("数据异常");
+            boolean res = articleService.like(Integer.parseInt(id))
+                    && mapper.good(loginUser.getId(), Integer.parseInt(id)) == 1;
+            return MessageUtil.ok(res ? "点赞成功！" : "成功");
         } catch (Exception e) {
+            e.printStackTrace();
             return MessageUtil.fail("数据异常");
+        }
+    }
+
+    // 是否点赞
+    @GetMapping("/isLike.token/{articleId}")
+    public ResponseMessage isLike(@PathVariable String articleId, HttpSession session) {
+        LoginUser loginUser = SessionUtil.getLoginUser(session);
+        if (loginUser == null)
+            return MessageUtil.error("变量错误");
+        try {
+            return MessageUtil.ok(mapper.isGood(loginUser.getId(), Integer.parseInt(articleId)) > 0 ? 1 : 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MessageUtil.ok(0);
         }
     }
 }

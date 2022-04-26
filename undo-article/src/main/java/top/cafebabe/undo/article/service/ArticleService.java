@@ -174,6 +174,7 @@ public class ArticleService {
     }
 
     public List<Article> search(String title, int page) {
+        System.out.println("from: " + (page - 1) * AppConfig.SEARCH_PAGE_SIZE + "Size:" + page * AppConfig.SEARCH_PAGE_SIZE);
         return articleMapper.getArticleByTitleLike(
                 title,
                 (page - 1) * AppConfig.SEARCH_PAGE_SIZE,

@@ -1,0 +1,31 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.cafebabe.undo.article.dao.SayMapper">
+
+    <resultMap id="all" type="top.cafebabe.undo.article.bean.Say">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="articleId" column="article_id"/>
+        <result property="content" column="content"/>
+        <result property="time" column="time"/>
+    </resultMap>
+
+    <insert id="say" parameterType="top.cafebabe.undo.article.bean.Say">
+        insert into say(user_id, article_id, content, `time`) value (#{userId},#{articleId},#{content},#{time})
+    </insert>
+
+    <select id="getAllSay" resultMap="all" resultType="list" parameterType="top.cafebabe.undo.article.bean.Say">
+        select s.id         as id,
+               s.user_id    as user_id,
+               u.username   as username,
+               s.article_id as article_id,
+               s.content    as content,
+               s.time as time
+        from say as s left join user as u
+        on s.user_id = u.id left join article as a on s.article_id = a.id
+        where s.article_id = #{articleId}
+    </select>
+</mapper>

@@ -25,7 +25,7 @@
           </tr>
           <tr>
             <td class="user-detail-table-label">邮箱</td>
-            <td @dblclick="edit('email')">
+            <td>
               <span v-show="nowEdit.field!=='email'">{{ user.email }}</span>
               <input id="email" @blur="submit" v-show="nowEdit.field==='email'" v-model="user.email" type="text"/>
             </td>

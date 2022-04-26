@@ -29,10 +29,10 @@
         </div>
         <div
           style="float: left;display: block;height: 50px;line-height: 50px;width: 100px;text-align: center">
-          <i class="el-icon-star-on" v-show="!this.good"
+          <i class="el-icon-star-on" v-show="!this.article.isGood"
              style="color:#d7d7d7;user-select: none;cursor: pointer;font-size: 30px;"
              @click="onGood"/>
-          <i class="el-icon-star-on" v-show="this.good"
+          <i class="el-icon-star-on" v-show="this.article.isGood"
              style="color: rgb(245, 108, 108);user-select: none;cursor: pointer;font-size: 30px;"/>
         </div>
         <div
@@ -49,7 +49,20 @@
         </el-timeline-item>
       </el-timeline>
     </div>
-    <div style="clear: both"></div>
+    <div class="say" style="clear: both">
+      <el-timeline>
+        <el-timeline-item v-for="s in say.says" :timestamp="s.time" placement="top">
+          <el-card>
+            <h4>{{ s.username }}</h4>
+            <p>{{ s.content }}</p>
+          </el-card>
+        </el-timeline-item>
+      </el-timeline>
+      <div>
+        <input class="iSay" v-model="iSay" placeholder="输入你的评论"/>
+        <el-button type="primary" style="width: 10%;margin-left: 45%;margin-bottom: 30px" @click="doSay">发布</el-button>
+      </div>
+    </div>
     <div class="showArticle-box-top" @click="toTop">Top</div>
   </div>
 
@@ -69,7 +82,8 @@ export default {
       nowUser: common.User,
       id: this.$route.params.id,
       article: common.ArticleNowShow,
-      good: false
+      say: common.say,
+      iSay: "",
     }
   }, methods: {
     createSummary() {
@@ -90,7 +104,6 @@ export default {
     }, toTop() {
       $("html,body").animate({scrollTop: 0}, 1000);
     }, onGood() {
-      this.good = true
       ajax.likeArticle(this.article.id)
     }, toVersion(id) {
       ajax.getArticleForShow(this.id, id)
@@ -103,8 +116,16 @@ export default {
         }
         ajax.getArticleForShow(this.id, null)
       })
+    }, doSay() {
+      if (!common.User.isLogin) {
+        Vue.use(Message.error("请先登录！"))
+      } else if (this.iSay === "") {
+        Vue.use(Message.error("评论不能为空"))
+      } else {
+        ajax.say(common.ArticleNowShow.id, this.iSay)
+        this.iSay = ""
+      }
     }
-
   }, mounted() {
     common.ArticleNowShow.reset()
     setTimeout(this.refresh, 100)
@@ -113,6 +134,29 @@ export default {
 </script>
 
 <style scoped>
+
+.say {
+  box-sizing: border-box;
+  width: 50%;
+  padding-right: 30px;
+  padding-top: 30px;
+  margin-left: 20%;
+  margin-top: 30px;
+  background-color: white;
+}
+
+.iSay {
+  width: 90%;
+  height: 50px;
+  margin-left: 70px;
+  font-size: 20px;
+  outline: none;
+  border: 0;
+  box-shadow: 0 0 10px #d7d7d7;
+  margin-bottom: 30px;
+  padding-left: 20px;
+}
+
 .showArticle-box {
   width: 100%;
   margin-top: 10px;
@@ -147,11 +191,11 @@ table td {
   font-size: 20px;
 }
 
-
 .article-content {
   width: 50%;
   float: left;
   margin-left: 20px;
+  margin-bottom: 30px;
 }
 
 .showArticle-box-records {

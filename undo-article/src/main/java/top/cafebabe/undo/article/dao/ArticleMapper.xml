@@ -131,6 +131,6 @@
         from article as a
                  left join clazz c on a.clazz_id = c.id
         where is_private = 0
-        order by visit desc
+        order by visit desc limit 0,15
     </select>
 </mapper>

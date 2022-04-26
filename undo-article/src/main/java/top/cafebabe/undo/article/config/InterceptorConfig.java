@@ -42,7 +42,6 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/**/*.token/**/*");
 
         registry.addInterceptor(adminInterceptor)
-                .addPathPatterns("/review/**/*")
                 .addPathPatterns("/review.html")
                 .excludePathPatterns("/review/login")
                 .excludePathPatterns("/login.html");

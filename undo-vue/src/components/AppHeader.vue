@@ -8,6 +8,9 @@
         <el-input placeholder="请输入内容" v-model="search.input" class="search_input" clearable/>
         <el-button class="search_button" type="primary" @click="doSearch">搜 索</el-button>
       </div>
+      <div class="logo">
+        <h1>UNDO</h1>
+      </div>
     </div>
   </div>
 </template>
@@ -63,5 +66,15 @@ export default {
 .search_button {
   width: 20%;
   float: right;
+}
+
+.logo{
+  height: 100%;
+  float: right;
+  width: 200px;
+  text-align: center;
+  user-select: none;
+  color: #409eff;
+  text-shadow: #409eff 1px 1px 5px;
 }
 </style>
