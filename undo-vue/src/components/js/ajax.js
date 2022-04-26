@@ -56,6 +56,7 @@ const getMyDetail = function () {
 const getUserDetail = function (id) {
   GET(apis.getUserDetail + "/" + id, null, data => {
     common.ArticleNowShow.user = data
+    console.log(data)
   }, data => {
     console.log(data)
   })
@@ -128,7 +129,10 @@ const login = function () {
 const update = function () {
   POST(apis.updateUser, common.UserNowEdit, data => {
     Vue.use(Message.success("设置成功"))
-  }, null)
+  }, (data)=>{
+    getMyDetail()
+    Vue.use(Message.error(data))
+  })
 }
 
 const resetPass = function (oldPass, newPass) {
@@ -449,7 +453,7 @@ const GET = function (url, data, ok, error) {
       if (error !== null)
         error(res)
     } else if (res.status === 401) {
-      Vue.use(Message.error("Token 失效，请重新登录"))
+    //  Vue.use(Message.error("Token 失效，请重新登录"))
       common.User.reset()
     } else if (res.status === 402) {
       Vue.use(Message.error("权限被拒绝"))
@@ -474,7 +478,7 @@ const POST = function (url, data, ok, error) {
       if (error !== null)
         error(res.data)
     } else if (res.status === 401) {
-      Vue.use(Message.error("Token 失效，请重新登录"))
+    //  Vue.use(Message.error("Token 失效，请重新登录"))
       common.User.reset()
     } else if (res.status === 402) {
       Vue.use(Message.error("权限被拒绝"))

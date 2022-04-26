@@ -104,7 +104,10 @@ export default {
     }, toTop() {
       $("html,body").animate({scrollTop: 0}, 1000);
     }, onGood() {
-      ajax.likeArticle(this.article.id)
+      if (!common.User.isLogin)
+        Vue.use(Message.error("请先登录"))
+      else
+        ajax.likeArticle(this.article.id)
     }, toVersion(id) {
       ajax.getArticleForShow(this.id, id)
     }, refresh() {
@@ -149,10 +152,11 @@ export default {
   width: 90%;
   height: 50px;
   margin-left: 70px;
-  font-size: 20px;
+  font-size: 15px;
   outline: none;
   border: 0;
-  box-shadow: 0 0 10px #d7d7d7;
+  box-shadow: 0 0 10px #dadada;
+  border-radius: 5px;
   margin-bottom: 30px;
   padding-left: 20px;
 }

@@ -2,5 +2,5 @@ host = smtp.163.com
 port = 25
 from = cafebabe202@163.com
 user = cafebabe202
-pass = ZHUEPTWL
+pass = ZHUEPTWLUTFRXTRF
 sslEnable = false

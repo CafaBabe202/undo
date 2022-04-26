@@ -111,8 +111,7 @@
         from article as a
         left join clazz as c
         on a.clazz_id = c.id
-        where title like "%"#{likeTitle}"%"
-        <if test="!#{isPrivate}">and is_private = 0</if>
+        where title like "%"#{likeTitle}"%" and is_private = 0
         limit #{from},#{size}
     </select>
 
@@ -122,7 +121,7 @@
         from article
         where is_private = 0
         group by user_id
-        order by `like` desc
+        order by `like` desc limit 0,10
     </select>
 
     <select id="getArticleVisitTop" resultMap="AllArticle" resultType="list"

@@ -33,8 +33,8 @@
           <tr>
             <td class="user-detail-table-label">签名</td>
             <td @dblclick="edit('sign')">
-              <span v-show="nowEdit.field!=='sign'">{{ user.sign }}</span>
-              <input id="sign" @blur="submit" v-show="nowEdit.field==='sign'" v-model="user.sign" type="text"/>
+              <span v-show="nowEdit.field!=='sign'" style="overflow: hidden">{{ user.sign }}</span>
+              <input id="sign" @blur="submit" v-show="nowEdit.field==='sign'" v-model="user.sign" type="text" style="overflow: hidden"/>
             </td>
           </tr>
           <tr>

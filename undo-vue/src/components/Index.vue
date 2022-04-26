@@ -39,7 +39,6 @@
         <span v-show="!this.search.hasMore">没有更多了</span>
       </div>
     </div>
-
     <div style="clear:both;"></div>
   </div>
 </template>
@@ -56,6 +55,7 @@ export default {
     return {
       index: common.Index,
       search: common.Searcher,
+      userDetail: false,
     }
   },
   methods: {

@@ -1,15 +1,15 @@
 <template>
   <div class="edit-box">
     <div class="editor-box">
-      <input v-model="nowEdit.title" type="text" class="editor-title" maxlength="32"/>
+      <input placeholder="请输入标题" v-model="nowEdit.title" type="text" class="editor-title" maxlength="32"/>
       <select v-model="nowEdit.clazzId" class="editor-clazz">
         <option value="" selected disabled hidden>请选择一个分类</option>
         <option v-for="c in article.allClazz" :value="c.id">
           {{ c.name }}
         </option>
       </select>
-      <textarea v-model="nowEdit.summary" class="editor-summary" maxlength="256"/>
-      <textarea v-model="nowEdit.updateSummary" class="editor-update-summary" v-show="nowEdit.id>0"
+      <textarea v-model="nowEdit.summary" class="editor-summary" maxlength="256" placeholder="请输入摘要"/>
+      <textarea v-model="nowEdit.updateSummary" placeholder="请输入更新日志" class="editor-update-summary" v-show="nowEdit.id>0"
                 maxlength="256"/>
       <mavon-editor class="editor" v-model="nowEdit.content" :toolbars="toolbars" :ishljs="true" @imgAdd="imgAdd"
                     @save="submitArticle"/>

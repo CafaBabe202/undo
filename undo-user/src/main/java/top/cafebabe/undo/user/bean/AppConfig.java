@@ -35,7 +35,7 @@ public class AppConfig {
     public static final int PASSWORD_LEN = 128; // 用户密码长度限制
     public static final String EMAIL_PATTEN = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"; // 邮箱正则
     public static final long AVATAR_SIZE = 2 * 1024 * 1024; // 头像文件的大小，单位：B
-    public static final int SIGN_LEN = 64; // 用户签名长度
+    public static final int SIGN_LEN = 16; // 用户签名长度
 
     // 基础路径配置
     public static final String AVATAR_BASE_URL = "/userApi/avatar/get/";
