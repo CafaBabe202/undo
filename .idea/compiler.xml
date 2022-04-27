@@ -7,10 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="fileManager-core" />
+        <module name="monitor-show" />
         <module name="undo-article" />
-        <module name="undo-common" />
         <module name="undo-user" />
+        <module name="fileManager-core" />
+        <module name="monitor" />
+        <module name="undo-common" />
         <module name="undo-file" />
       </profile>
     </annotationProcessing>
@@ -23,6 +25,8 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="intelligenceBureau" options="-parameters" />
+      <module name="monitor" options="-parameters" />
+      <module name="monitor-show" options="-parameters" />
       <module name="undo-article" options="-parameters" />
       <module name="undo-file" options="-parameters" />
       <module name="undo-user" options="-parameters" />

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor</title>
+    <script type="text/javascript" src="js/jQuery.js"></script>
+    <script type="text/javascript" src="js/ajax.js"></script>
+    <script type="text/javascript" src="js/message.js"></script>
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+</head>
+<body>
+<div class="list">
+    <ul class="server-list" id="serverList">
+        <li class="server-add" onclick="addServer()">添加服务器</li>
+        <div id="newServer">
+            <input id="serverName" placeholder="服务器名称"/>
+            <input id="ip" placeholder="IP"/>
+            <input id="port" type="number" placeholder="端口号"/>
+            <input id="pass" placeholder="密码"/>
+            <input id="time" placeholder="刷新时间"/>
+            <input id="email" type="email" placeholder="通知邮箱"/>
+            <input type="button" value="添加" style="text-align: center" onclick="submitServer()"/>
+            <input type="button" value="取消" style="text-align: center" onclick="cancelAdd()"/>
+        </div>
+    </ul>
+</div>
+<div class="show">
+    <h1 class="nowServerName" id="nowServerName"></h1>
+    <div class="chart-box">
+        <div id="cpu" class="chart"></div>
+        <div id="memory" class="chart"></div>
+        <div style="clear: both"></div>
+    </div>
+    <div class="os-box" id="osBox"></div>
+    <div class="net-box" id="netBox"></div>
+    <div class="disk-box" id="diskBox"></div>
+</div>
+</body>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        background-image: url("img/bg.png");
+    }
+
+    .list {
+        box-sizing: border-box;
+        height: 100%;
+        width: 20%;
+        background-color: white;
+        box-shadow: 0 0 10px #bebebe;
+        padding-top: 10px;
+        overflow: scroll auto;
+        float: left;
+        position: fixed;
+    }
+
+    .server, .server-add, input {
+        background-color: beige;
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    #newServer {
+        display: none;
+    }
+
+    input {
+        text-align: left;
+        outline: none;
+        border: 0;
+        background-color: #efefef;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 15px;
+    }
+
+    .show {
+        width: 70%;
+        float: left;
+        margin-left: 25%;
+        padding-bottom: 50px;
+    }
+
+    .nowServerName {
+        margin-top: 30px;
+        background-color: white;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        box-shadow: 0 0 10px #bebebe;
+        border-radius: 10px;
+    }
+
+    .chart-box {
+        height: 400px;
+        margin-top: 30px;
+        background-color: white;
+        box-shadow: 0 0 10px #bebebe;
+        border-radius: 10px;
+    }
+
+    .chart {
+        margin-left: 10%;
+        float: left;
+        height: 400px;
+        width: 35%;
+    }
+
+    .net-box, .disk-box, .os-box {
+        margin-top: 30px;
+        background-color: white;
+        border: rgba(255, 255, 255, 0) solid;
+        box-shadow: 0 0 10px #bebebe;
+        border-radius: 10px;
+    }
+
+    .net, .disk, .os {
+        width: 90%;
+        margin-left: 5%;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        line-height: 30px;
+    }
+
+    .disk {
+        font-size: 20px;
+    }
+</style>
+<script>
+
+    let input = {}
+    let cpu = {
+        chart: echarts.init(document.getElementById("cpu")),
+        show() {
+            this.chart.setOption(this.option)
+        },
+        set(num) {
+            if (num !== undefined)
+                num = Number(num.toFixed(2))
+            this.option.series[0].data[0].value = num
+            this.show()
+        },
+        option: {
+            tooltip: {
+                formatter: '{a} <br/>{b} : {c}%'
+            },
+            series: [
+                {
+                    name: 'Pressure',
+                    type: 'gauge',
+                    detail: {formatter: '{value}%'},
+                    data: [{value: 10, name: 'CPU'}]
+                }
+            ]
+        }
+    }
+    let memory = {
+        chart: echarts.init(document.getElementById("memory")),
+        show() {
+            this.chart.setOption(this.option)
+        },
+        set(num) {
+            if (num !== undefined)
+                num = Number(num.toFixed(2))
+            this.option.series[0].data[0].value = num
+            this.show()
+        },
+        option: {
+            tooltip: {
+                formatter: '{a} <br/>{b} : {c}%'
+            },
+            series: [
+                {
+                    name: 'Pressure',
+                    type: 'gauge',
+                    detail: {formatter: '{value}%'},
+                    data: [{value: 10, name: 'Memory'}]
+                }
+            ]
+        }
+    }
+    let serverList = []
+    let nowServer = ""
+
+    const submitServer = function () {
+        POST("/status/add", getInput(), (data) => {
+            message.ok("添加成功")
+            location.reload()
+        }, (data) => {
+            message.fail(data)
+        })
+    }
+
+    const addServer = function () {
+        $("#newServer").slideDown()
+    }
+
+    const cancelAdd = function () {
+        resetInput()
+        $("#newServer").slideUp()
+    }
+
+    const getInput = function () {
+        input.serverName = $("#serverName").val()
+        input.ip = $("#ip").val()
+        input.port = $("#port").val()
+        input.pass = $("#pass").val()
+        input.time = $("#time").val()
+        input.email = $("#email").val()
+        return input
+    }
+
+    const resetInput = function () {
+        $("#serverName,#ip,#port,#pass,#time,#email").val("")
+    }
+
+    const toServer = function (name) {
+        nowServer = name
+        getStatus()
+    }
+
+    const showAllServer = function () {
+        $(".server").remove()
+        for (s in serverList) {
+            let name = serverList[s]
+            $("<li>" + serverList[s] + "</li>")
+                .addClass("server")
+                .appendTo("#serverList")
+                .click(() => {
+                    toServer(name)
+                })
+        }
+        if (serverList.length === 0) {
+            $(".show").hide();
+        } else {
+            nowServer = serverList[0]
+        }
+    }
+
+    const getStatus = function () {
+        if (nowServer === "")
+            return
+        GET("/status/get/" + nowServer, null, (data) => {
+            $("#nowServerName").text(nowServer)
+            cpu.set(data.cpuUsed)
+            memory.set(100 - (data.availableMemory / data.allMemory) * 100)
+            showOs(data.os, data.virtualMemory)
+            showDisk(data.disk)
+            showNet(data.netWork)
+        }, (data) => [
+            message.fail(data)
+        ])
+    }
+
+    const showOs = function (a, b) {
+        $(".os").remove()
+        $("<div>" + a + "</div>")
+            .addClass("os")
+            .appendTo("#osBox")
+        $("<div>" + b + "</div>")
+            .addClass("os")
+            .appendTo("#osBox")
+    }
+
+    const showNet = function (net) {
+        $(".net").remove()
+        for (n in net) {
+            $("<div>" + net[n] + "</div>")
+                .addClass("net")
+                .appendTo("#netBox")
+        }
+    }
+
+    const showDisk = function (disk) {
+        $(".disk").remove()
+        for (d in disk) {
+            $("<div>" + disk[d] + "</div>")
+                .addClass("disk")
+                .appendTo("#diskBox")
+        }
+    }
+
+    $(function () {
+        GET("/status/getAllServer", null, (data) => {
+            serverList = data
+            showAllServer()
+            setTimeout(getStatus,1000)
+            setInterval(getStatus, 3000)
+        }, () => {
+            message.fail("获取服务器列表失败")
+        })
+    })
+
+</script>
+</html>

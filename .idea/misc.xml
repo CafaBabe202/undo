@@ -18,6 +18,8 @@
         <option value="$PROJECT_DIR$/undo-user/pom.xml" />
         <option value="$PROJECT_DIR$/undo-article/pom.xml" />
         <option value="$PROJECT_DIR$/undo-file/pom.xml" />
+        <option value="$PROJECT_DIR$/monitor/pom.xml" />
+        <option value="$PROJECT_DIR$/monitor-show/pom.xml" />
       </list>
     </option>
   </component>
