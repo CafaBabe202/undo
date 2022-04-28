@@ -8,18 +8,16 @@
     <script type="text/javascript" src="js/message.js"></script>
 </head>
 <body>
-<h1>欢迎来到 undo 监控系统</h1>
+<h1>欢迎来到监控系统</h1>
 <table>
     <tr>
-        <td>帐号：</td>
         <td style="text-align: left;padding-top: 20px;"><input type="text" id="id"/></td>
     </tr>
     <tr>
-        <td style="width: 30%">密码：</td>
         <td style="text-align: left"><input type="password" id="password"/></td>
     </tr>
     <tr>
-        <td colspan="2">
+        <td>
             <button id="login">登录</button>
         </td>
     </tr>
@@ -32,7 +30,7 @@
     }
 
     html {
-        background-image: url("img/bg.png");
+        background-image: url("img/loginBG.png");
         user-select: none;
     }
 
@@ -40,12 +38,12 @@
         width: 100%;
         text-align: center;
         margin-top: 150px;
+        color: white;
+        text-shadow: rgb(64, 158, 255) 0 0 30px;
     }
 
     table {
-        background-color: white;
         border-radius: 10px;
-        box-shadow: 0 0 10px #bebebe;
         width: 24%;
         height: 200px;
         margin-top: 100px;
@@ -59,13 +57,18 @@
     }
 
     input {
+        text-align: center;
         padding-left: 5px;
-        width: 80%;
+        width: 100%;
         font-size: 20px;
         height: 30px;
         outline: none;
-        border-radius: 3px;
-        border: rgb(160, 207, 255) solid 1px;
+        color: rgba(17, 209, 22, 1);
+        background-color: rgb(35, 38, 39);
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 2px solid rgba(17, 209, 22, 1);
     }
 
     button {
@@ -73,8 +76,11 @@
         font-size: 20px;
         width: 40%;
         border: none;
-        background-color: rgb(64, 158, 255);
+        background-color: rgba(17, 209, 22, 1);
+        color: white;
         border-radius: 3px;
+        text-shadow: rgb(64, 158, 255) 0 0 30px;
+        cursor: pointer;
     }
 </style>
 <script>
@@ -85,7 +91,7 @@
             POST("/login", {"id": id, "password": pass}, (data) => {
                 message.ok("登录成功！")
                 setTimeout(function () {
-                  //  window.location.href = "/review.html"
+                    window.location.href = "/monitor.html"
                 }, 1000)
             }, (data) => {
                 message.fail("登录失败")

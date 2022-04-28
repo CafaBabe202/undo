@@ -18,7 +18,7 @@ public class AddServerForm {
     public boolean check() {
         return serverName.length() < 16
                 && time < 600
-                && time > 3
+                && time >= 3
                 && StringUtil.isIpv4(this.ip);
     }
 }

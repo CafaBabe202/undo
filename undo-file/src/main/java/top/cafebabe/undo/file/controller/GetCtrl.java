@@ -13,7 +13,6 @@ import top.cafebabe.undo.file.bean.AppConfig;
 import top.cafebabe.undo.file.bean.UserFile;
 import top.cafebabe.undo.file.service.UserFileSer;
 import top.cafebabe.undo.file.util.DownIdUtil;
-import top.cafebabe.undo.file.util.FileIdUtil;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -100,7 +99,7 @@ public class GetCtrl {
         Integrator integrator = tempFileManager.get(file.getMd5());
         ServletOutputStream outputStream = response.getOutputStream();
         while (integrator.hasNext()) {
-            Thread.sleep(500); // 延时，为了看前端的下载效果
+            Thread.sleep(200); // 延时，为了看前端的下载效果
             outputStream.write(integrator.next());
         }
         outputStream.close();

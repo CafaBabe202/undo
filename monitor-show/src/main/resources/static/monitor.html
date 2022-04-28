@@ -34,6 +34,12 @@
     <div class="os-box" id="osBox"></div>
     <div class="net-box" id="netBox"></div>
     <div class="disk-box" id="diskBox"></div>
+    <div class="delete-box">
+        <div class="delete" onclick="stopServer()">取消监控</div>
+    </div>
+</div>
+<div class="logo">
+    欢迎使用监控系统
 </div>
 </body>
 <style>
@@ -85,7 +91,22 @@
         font-size: 15px;
     }
 
-    .show {
+    .logo {
+        display: none;
+        color: white;
+        height: 300px;
+        margin-top: 1%;
+        text-align: center;
+        font-size: 70px;
+        line-height: 350px;
+        border-radius: 10px;
+        text-shadow: rgb(64, 158, 255) 0 0 30px;
+        box-shadow: 0 0 10px #bebebe;
+        background-image: url("img/black.png");
+        user-select: none;
+    }
+
+    .show, .logo {
         width: 70%;
         float: left;
         margin-left: 25%;
@@ -117,7 +138,7 @@
         width: 35%;
     }
 
-    .net-box, .disk-box, .os-box {
+    .net-box, .disk-box, .os-box, .delete-box {
         margin-top: 30px;
         background-color: white;
         border: rgba(255, 255, 255, 0) solid;
@@ -135,6 +156,14 @@
 
     .disk {
         font-size: 20px;
+    }
+
+    .delete {
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
     }
 </style>
 <script>
@@ -157,7 +186,7 @@
             },
             series: [
                 {
-                    name: 'Pressure',
+                    name: 'CPU',
                     type: 'gauge',
                     detail: {formatter: '{value}%'},
                     data: [{value: 10, name: 'CPU'}]
@@ -182,7 +211,7 @@
             },
             series: [
                 {
-                    name: 'Pressure',
+                    name: 'Memory',
                     type: 'gauge',
                     detail: {formatter: '{value}%'},
                     data: [{value: 10, name: 'Memory'}]
@@ -200,6 +229,17 @@
         }, (data) => {
             message.fail(data)
         })
+    }
+
+    const stopServer = function () {
+        if (confirm("你确定要取消对该服务器的监控吗？")) {
+            GET("/status/stop/" + nowServer, null, () => {
+                location.reload()
+            }, () => {
+                message.fail("删除失败")
+            })
+        }
+
     }
 
     const addServer = function () {
@@ -243,7 +283,10 @@
         }
         if (serverList.length === 0) {
             $(".show").hide();
+            $(".logo").show();
         } else {
+            $(".logo").hide();
+            $(".show").show();
             nowServer = serverList[0]
         }
     }
@@ -295,9 +338,10 @@
         GET("/status/getAllServer", null, (data) => {
             serverList = data
             showAllServer()
-            setTimeout(getStatus,1000)
+            setTimeout(getStatus, 1000)
             setInterval(getStatus, 3000)
         }, () => {
+            showAllServer()
             message.fail("获取服务器列表失败")
         })
     })
