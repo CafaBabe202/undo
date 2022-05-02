@@ -11,5 +11,4 @@ public class MonitorShowApplication {
     public static void main(String[] args) {
         SpringApplication.run(MonitorShowApplication.class, args);
     }
-
 }
