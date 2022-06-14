@@ -10,13 +10,13 @@
         <module name="monitor-show" />
         <module name="undo-article" />
         <module name="undo-user" />
-        <module name="fileManager-core" />
         <module name="monitor" />
         <module name="undo-common" />
         <module name="undo-file" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="fileManager-core" target="11" />
       <module name="intelligenceBureau" target="11" />
       <module name="spy" target="11" />
       <module name="undo-user (1) (top.cafebabe.undo)" target="11" />

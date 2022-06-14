@@ -4,10 +4,10 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import top.cafebabe.fileManager.manger.integrator.SimpleIntegratorFactory;
-import top.cafebabe.fileManager.manger.memory.TempMongoMemory;
-import top.cafebabe.fileManager.manger.splitter.SimpleSplitterFactory;
-import top.cafebabe.fileManager.manger.TempFileManager;
+import top.cafebabe.fragment.manger.integrator.SimpleIntegratorFactory;
+import top.cafebabe.fragment.manger.memory.TempMongoMemory;
+import top.cafebabe.fragment.manger.splitter.SimpleSplitterFactory;
+import top.cafebabe.fragment.manger.TempFileManager;
 
 /**
  * 文件管理对的配置文件
